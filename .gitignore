@@ -1,0 +1,5 @@
+*.png
+*.sqlite
+*.ipynb
+__pycache__
+log.txt
