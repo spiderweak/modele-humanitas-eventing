@@ -119,6 +119,7 @@ def main():
 
         event_queue = EventQueue(environment)
         placement_event = Placement("Placement",event_queue)
+
         deployment_event = Deploy("Deployment", event_queue)
 
 
@@ -130,10 +131,8 @@ def main():
 
             deployed_onto_devices = placement_event.process(my_application, devices_list[current_device_id], devices_list, physical_network_link_list)
 
-            deployment_event.process(my_application, deployed_onto_devices, devices_list, physical_network_link_list)
-            print("Need to implement listener")
-
             if deployed_onto_devices:
+                deployment_event.process(my_application, deployed_onto_devices, devices_list, physical_network_link_list)
                 logging.info(f"Deployment success")
                 logging.info(f"application {my_application.id} successfully deployed")
                 for i in range(len(my_application.processus_list)):
