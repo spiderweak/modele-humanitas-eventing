@@ -74,10 +74,10 @@ def dump_from_db(devices_list, device_db):
         device.setDeviceMemLimit(row[6])
         device.setDeviceDiskLimit(row[7])
 
-        device.setDeviceCPUUsage(0,row[8])
-        device.setDeviceGPUUsage(0,row[9])
-        device.setDeviceMemUsage(0,row[10])
-        device.setDeviceDiskUsage(0,row[11])
+        device.allocateDeviceCPU(0,row[8])
+        device.allocateDeviceGPU(0,row[9])
+        device.allocateDeviceMem(0,row[10])
+        device.allocateDeviceDisk(0,row[11])
 
         if len(devices_list) <= device.getDeviceID():
             for i in range(device.getDeviceID()-len(devices_list)+1):
