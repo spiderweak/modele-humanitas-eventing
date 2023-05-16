@@ -2,6 +2,8 @@ import sqlite3
 import random
 from modules.Device import Device
 
+from modules.Environment import Environment
+
 
 def create_db(device_db):
     """
@@ -48,7 +50,7 @@ def populate_db(devices, device_db):
     con.commit()
     con.close()
 
-def dump_from_db(devices_list, device_db):
+def dump_from_db(env, device_db):
     """
     Dumps the database's content in the devices_list list to work with the remaining parts of the script.
     Function will need to be updated to fit needs when handling inputs/outputs.
@@ -59,6 +61,7 @@ def dump_from_db(devices_list, device_db):
     Returns:
         None
     """
+
     con = sqlite3.connect(device_db)
     cur = con.cursor()
     for row in cur.execute("SELECT * FROM device"):
@@ -79,8 +82,4 @@ def dump_from_db(devices_list, device_db):
         device.allocateDeviceMem(0,row[10])
         device.allocateDeviceDisk(0,row[11])
 
-        if len(devices_list) <= device.getDeviceID():
-            for i in range(device.getDeviceID()-len(devices_list)+1):
-                devices_list.append(None)
-
-        devices_list[device.getDeviceID()] = device
+        env.addDevice(device)
