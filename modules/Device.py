@@ -346,7 +346,7 @@ class Device:
             raise ValueError("Please use the associated allocation function to allocate resources to prevent this message")
 
 
-    def setDeviceDiskUsage(self, t, disk, force=False, overconsume = False):
+    def allocateDeviceDisk(self, t, disk, force=False, overconsume = False):
         """
         allocate a given amount of Device Disk Space
 
