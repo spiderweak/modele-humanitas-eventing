@@ -60,12 +60,7 @@ class Placement(Event):
             Boolean, True if deployable, else False
         """
 
-        
-
         if proc.cpu_request + device.getDeviceCPUUsage() <= device.cpu_limit:
-            logging.debug(proc.gpu_request)
-            logging.debug(device.getDeviceGPUUsage())
-            logging.debug(device.gpu_limit)
             if proc.gpu_request + device.getDeviceGPUUsage() <= device.gpu_limit:
                 if proc.mem_request + device.getDeviceMemUsage() <= device.mem_limit:
                     if proc.disk_request + device.getDeviceDiskUsage() <= device.disk_limit:
