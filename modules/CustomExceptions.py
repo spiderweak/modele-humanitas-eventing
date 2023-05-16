@@ -1,0 +1,2 @@
+class NoRouteToHost(Exception):
+    pass

@@ -1,0 +1,35 @@
+Application:
+    - Processus:
+        id : 0
+        cpu : 4
+        gpu : 4
+        memory : 2048
+        disk : 10240 # 10 GB SSD baseline
+
+    - Processus:
+        id : 1
+        cpu : 4
+        gpu : 4
+        memory : 1024
+        disk : 10240 # 10 GB SSD baseline
+
+    - Processus:
+        id : 2
+        cpu : 4
+        gpu : 4
+        memory : 1024
+        disk : 102400 # 100 GB SSD baseline
+
+AppLinks:
+    - Link:
+        Processus 1 : 0
+        Processus 2 : 1
+        Bandwidth : 10240
+    - Link:
+        Processus 1 : 1
+        Processus 2 : 2
+        Bandwidth : 10240
+    - Link:
+        Processus 1 : 0
+        Processus 2 : 2
+        Bandwidth : 20480

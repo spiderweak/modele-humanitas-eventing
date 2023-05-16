@@ -1,0 +1,32 @@
+DEVICES:
+    - DEVICE_1:
+    # Template based on NVIDIA Jetson Nano as a baseline
+        - cpu : 4
+        - gpu : 4
+        - memory : 4096
+        - disk : 128000 # 125 GB SSD baseline
+        - nw_interface modifier : 1 # No modification to plugged link
+
+    - DEVICE_2:
+    # Derived from 1 for mode performances, costs reduced by using a less performant network card
+        - cpu : 8
+        - gpu : 16
+        - memory : 8192
+        - disk : 65536 # 64 GB SSD
+        - nw_interface modifier : 0.5
+
+    - DEVICE_3:
+    # Low performances storage nodes
+        - cpu : 2
+        - gpu : 0
+        - memory : 4096
+        - disk : 1048576 # 1TB GB SSD
+        - nw_interface modifier : 1
+
+    - DEVICE_4:
+    # Link aggregator and network relay
+        - cpu : 4
+        - gpu : 0
+        - memory : 4096
+        - disk : 65536
+        - nw_interface modifier : 2
