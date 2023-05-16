@@ -196,13 +196,15 @@ class Device:
         self.disk_limit = disk
 
 
-    def allocateDeviceCPU(self, t, cpu, force=False, overconsume = False):
+    def allocateDeviceCPU(self, t, cpu, force = False, overconsume = False):
         """
         allocate a given amount of Device CPU
 
         Args:
             t : int, time value
             cpu : float, value for the quantity of CPU requested
+            force : bool, Forces allocation at previous moment in time (might cause discrepencies), defaults to False
+            overconsume : bool, Allow for allocation over GPU limit, defaults to False
 
         Returns:
             retrofitting_coefficient : value to propagate to remaining processus execution to slow/fasten processus time
@@ -210,7 +212,7 @@ class Device:
 
         previous_time, previous_value = self.cpu_usage_history[-1]
 
-        if previous_time < t and not force:
+        if previous_time <= t or force:
 
             try:
                 retrofiting_coefficient = self.current_cpu_usage / self.theorical_cpu_usage
@@ -231,8 +233,11 @@ class Device:
                     self.current_cpu_usage = self.cpu_limit
 
             if previous_value != self.current_cpu_usage:
-                self.cpu_usage_history.append(t-1, self.current_cpu_usage)
-                self.cpu_usage_history.append(t, self.current_cpu_usage)
+                if previous_time != t:
+                    self.cpu_usage_history.append(t-1, self.current_cpu_usage)
+                    self.cpu_usage_history.append(t, self.current_cpu_usage)
+                else:
+                    self.cpu_usage_history[-1] = (t, self.current_cpu_usage)
 
             return retrofiting_coefficient
 
@@ -247,13 +252,15 @@ class Device:
             raise ValueError("Please use the associated allocation function to allocate resources to prevent this message")
 
 
-    def allocateDeviceGPU(self, t, gpu, force=False, overconsume = False):
+    def allocateDeviceGPU(self, t, gpu, force = False, overconsume = False):
         """
         allocate a given amount of Device GPU
 
         Args:
             t : int, time value
             gpu : float, value for the quantity of GPU requested
+            force : bool, Forces allocation at previous moment in time (might cause discrepencies), defaults to False
+            overconsume : bool, Allow for allocation over GPU limit, defaults to False
 
         Returns:
             retrofitting_coefficient : value to propagate to remaining processus execution to slow/fasten processus time
@@ -261,7 +268,7 @@ class Device:
 
         previous_time, previous_value = self.gpu_usage_history[-1]
 
-        if previous_time < t and not force:
+        if previous_time <= t or force:
 
             try:
                 retrofiting_coefficient = self.current_gpu_usage / self.theorical_gpu_usage
@@ -281,8 +288,11 @@ class Device:
                     self.current_gpu_usage = self.gpu_limit
 
             if previous_value != self.current_gpu_usage:
-                self.gpu_usage_history.append(t-1, self.current_gpu_usage)
-                self.gpu_usage_history.append(t, self.current_gpu_usage)
+                if previous_time != t:
+                    self.gpu_usage_history.append(t-1, self.current_gpu_usage)
+                    self.gpu_usage_history.append(t, self.current_gpu_usage)
+                else:
+                    self.gpu_usage_history[-1] = (t, self.current_gpu_usage)
 
             return retrofiting_coefficient
 
@@ -297,13 +307,15 @@ class Device:
             raise ValueError("Please use the associated allocation function to allocate resources to prevent this message")
 
 
-    def allocateDeviceMem(self, t, mem, force=False, overconsume = False):
+    def allocateDeviceMem(self, t, mem, force = False, overconsume = False):
         """
         allocate a given amount of Device Memory
 
         Args:
             t : int, time value
             mem : float, value for the quantity of Memory requested
+            force : bool, Forces allocation at previous moment in time (might cause discrepencies), defaults to False
+            overconsume : bool, Allow for allocation over GPU limit, defaults to False
 
         Returns:
             retrofitting_coefficient : value to propagate to remaining processus execution to slow/fasten processus time
@@ -311,7 +323,7 @@ class Device:
 
         previous_time, previous_value = self.mem_usage_history[-1]
 
-        if previous_time < t and not force:
+        if previous_time <= t or force:
 
             try:
                 retrofiting_coefficient = self.current_mem_usage / self.theorical_mem_usage
@@ -330,8 +342,11 @@ class Device:
                     self.current_mem_usage = self.mem_limit
 
             if previous_value != self.current_mem_usage:
-                self.mem_usage_history.append(t-1, previous_value)
-                self.mem_usage_history.append(t, self.current_mem_usage)
+                if previous_time != t:
+                    self.mem_usage_history.append(t-1, previous_value)
+                    self.mem_usage_history.append(t, self.current_mem_usage)
+                else:
+                    self.mem_usage_history[-1] = (t, self.current_mem_usage)
 
             return retrofiting_coefficient
 
@@ -346,13 +361,15 @@ class Device:
             raise ValueError("Please use the associated allocation function to allocate resources to prevent this message")
 
 
-    def allocateDeviceDisk(self, t, disk, force=False, overconsume = False):
+    def allocateDeviceDisk(self, t, disk, force = False, overconsume = False):
         """
         allocate a given amount of Device Disk Space
 
         Args:
             t : int, time value
             disk : float, value for the quantity of Disk Usage requested
+            force : bool, Forces allocation at previous moment in time (might cause discrepencies), defaults to False
+            overconsume : bool, Allow for allocation over GPU limit, defaults to False
 
         Returns:
             retrofitting_coefficient : value to propagate to remaining processus execution to slow/fasten processus time
@@ -360,7 +377,7 @@ class Device:
 
         previous_time, previous_value = self.disk_usage_history[-1]
 
-        if previous_time < t and not force:
+        if previous_time <= t or force:
 
             try:
                 retrofiting_coefficient = self.current_disk_usage / self.theorical_disk_usage
@@ -379,8 +396,12 @@ class Device:
                     self.current_disk_usage = self.disk_limit
 
             if previous_value != self.current_disk_usage:
-                self.disk_usage_history.append(t-1, previous_value)
-                self.disk_usage_history.append(t, self.current_disk_usage)
+                if previous_time != t:
+                    self.disk_usage_history.append(t-1, previous_value)
+                    self.disk_usage_history.append(t, self.current_disk_usage)
+                else:
+                    self.disk_usage_history[-1] = (t, self.current_disk_usage)
+                
 
             return retrofiting_coefficient
 
