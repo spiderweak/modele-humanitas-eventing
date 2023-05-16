@@ -23,7 +23,6 @@ from modules.db.interact_db import populate_db
 from modules.db.interact_db import dump_from_db
 
 from simulation import generate_and_plot_devices_positions
-from simulation import generate_routing_table
 from simulation import simulate_deployments
 
 import argparse
@@ -91,30 +90,28 @@ def main():
 
     logging.basicConfig(filename=logfilename, encoding='utf-8', level=loglevel)
 
-    devices = list()
-    devices_list = []
-
-    generate_and_plot_devices_positions(devices)
-
     if not os.path.isfile(parsed_yaml['database_url']['device']):
+        logging.info("Generating random device positions")
+        devices = list()
+        generate_and_plot_devices_positions(devices)
         create_db(parsed_yaml['database_url']['device'])
         populate_db(devices, parsed_yaml['database_url']['device'])
 
-    dump_from_db(devices_list, parsed_yaml['database_url']['device'])
-
-    physical_network_link_list = [0]*len(devices_list)*len(devices_list)
-    generate_routing_table(devices_list, physical_network_link_list)
-
+    logging.info("Generating simulation environment")
     environment = Environment()
+
+    dump_from_db(environment, parsed_yaml['database_url']['device'])
+
+    environment.generate_routing_table()
 
     if options.simulate:
 
-        simulate_deployments(devices_list, physical_network_link_list)
+        simulate_deployments(environment)
 
         return 0,1
 
     else:
-        current_device_id = random.randint(0, len(devices_list)-1)
+        current_device_id = random.randint(0, len(environment.devices)-1)
         my_application = Application()
 
         event_queue = EventQueue(environment)
@@ -128,11 +125,10 @@ def main():
             app_yaml = yaml.safe_load(app_config)
             my_application.app_yaml_parser(app_yaml)
 
-
-            deployed_onto_devices = placement_event.process(my_application, devices_list[current_device_id], devices_list, physical_network_link_list)
+            deployed_onto_devices = placement_event.process(environment, my_application, current_device_id)
 
             if deployed_onto_devices:
-                deployment_event.process(my_application, deployed_onto_devices, devices_list, physical_network_link_list)
+                deployment_event.process(environment, my_application, deployed_onto_devices)
                 logging.info(f"Deployment success")
                 logging.info(f"application {my_application.id} successfully deployed")
                 for i in range(len(my_application.processus_list)):

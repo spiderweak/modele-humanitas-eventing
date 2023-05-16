@@ -3,31 +3,10 @@ import networkx as nx
 import random
 
 from modules.Application import Application
-from modules.PhysicalNetworkLink import PhysicalNetworkLink
-from modules.CustomExceptions import NoRouteToHost
 
 # GLOBAL VARIABLES (bad practice)
 N_DEVICES = 40
 wifi_range = 9
-
-
-def custom_distance(x1, y1, z1, x2, y2, z2):
-    """
-    Defines a custom distance for device wireless coverage to account for less coverage due to floor interception.
-
-    Args:
-        x1 : x value, device 1
-        z1 : z value, device 1
-        y1 : y value, device 1
-        x2 : x value, device 2
-        y2 : y value, device 2
-        z2 : z value, device 2
-
-    Returns:
-        distance : int, distance (as coverage) between device 1 and device 2.
-    """
-    distance = ((x2-x1)**2 + (y2-y1)**2 + (z2-z1)**2)**0.5
-    return distance
 
 
 def generate_and_plot_devices_positions(devices):
@@ -100,81 +79,6 @@ def generate_and_plot_devices_positions(devices):
 
     # Saves the graph in a file
     plt.savefig("fig/graph.png")
-
-
-    # Let's try to code a routing table
-def generate_routing_table(devices_list, physical_network_link_list):
-    """
-    Generates a routing table on each device
-    The function first lists the neighboring device, then iterate on the list to build a routing table based on shortest distance among links
-
-    Args:
-        devices : list, List of coords
-        physical_network_link_list: list, Lists the physical links between devices
-
-    Returns:
-        None
-    """
-    for device_1 in devices_list:
-        device_1_id = device_1.getDeviceID()
-        for device_2 in devices_list:
-            device_2_id = device_2.getDeviceID()
-            distance = custom_distance(device_1.x,device_1.y,device_1.z,device_2.x,device_2.y,device_2.z)
-            new_physical_network_link_id = device_1_id*len(devices_list) + device_2_id
-            if distance < wifi_range:
-                device_1.addToRoutingTable(device_2_id, device_2_id, distance)
-                device_2.addToRoutingTable(device_1_id, device_1_id, distance)
-                new_physical_network_link = PhysicalNetworkLink(device_1_id, device_2_id)
-                new_physical_network_link.setLinkID(new_physical_network_link_id)
-                if device_1_id == device_2_id:
-                    new_physical_network_link.setPhysicalNetworkLinkLatency(0)
-                physical_network_link_list[new_physical_network_link_id] = new_physical_network_link
-            else:
-                new_physical_network_link = PhysicalNetworkLink()
-                physical_network_link_list[new_physical_network_link_id] = None
-
-    ## We iterate on the matrix:
-
-    changes = True
-
-    while(changes):
-        ## As long as the values change
-        changes = False
-        for i in range(len(devices_list)):
-            for j in range(len(devices_list)):
-                device_1_id = devices_list[i].getDeviceID()
-                device_2_id = devices_list[j].getDeviceID()
-
-                try:
-                    next_hop,distance = devices_list[i].getRouteInfo(device_2_id)
-                except NoRouteToHost:
-                    next_hop,distance = (-1,1000)
-
-                nh_array = [next_hop]
-                dist_array = [distance]
-                for k in range(len(devices_list)):
-                    device_3_id = devices_list[k].getDeviceID()
-                    try:
-                        next_hop_1_3,distance_1_3 = devices_list[i].getRouteInfo(device_3_id)
-                    except NoRouteToHost:
-                        next_hop_1_3,distance_1_3 = (-1,1000)
-
-                    try:
-                        _,distance_3_2 = devices_list[k].getRouteInfo(device_2_id)
-                    except NoRouteToHost:
-                        distance_3_2 = 1000
-
-                    nh_array.append(next_hop_1_3)
-                    dist_array.append(distance_1_3 + distance_3_2)
-
-                min_index = dist_array.index(min(dist_array))
-                min_nh = nh_array[min_index]
-                min_array = dist_array[min_index]
-
-                if min_array < distance:
-                ## If we observe any change, update and break the loop
-                    changes = True
-                    devices_list[i].addToRoutingTable(device_2_id, min_nh, min_array)
 
 
 # Now, we can play with deployments
