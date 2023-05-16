@@ -1,6 +1,6 @@
 *.png
 *.sqlite
 *.ipynb
-*.cpython
+*.pyc
 __pycache__
 log.txt
