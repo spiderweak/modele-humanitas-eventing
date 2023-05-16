@@ -229,7 +229,7 @@ class Device:
                 if self.theorical_cpu_usage > self.cpu_limit:
                     self.current_cpu_usage = self.theorical_cpu_usage
                 else:
-                    retrofiting_coefficient = fit_resource(cpu, self.cpu_limit)
+                    retrofiting_coefficient = fit_resource(self.theorical_cpu_usage, self.cpu_limit)
                     self.current_cpu_usage = self.cpu_limit
 
             if previous_value != self.current_cpu_usage:
@@ -284,7 +284,7 @@ class Device:
                 if self.theorical_gpu_usage > self.gpu_limit:
                     self.current_gpu_usage = self.theorical_gpu_usage
                 else:
-                    retrofiting_coefficient = fit_resource(gpu, self.gpu_limit)
+                    retrofiting_coefficient = fit_resource(self.theorical_gpu_usage, self.gpu_limit)
                     self.current_gpu_usage = self.gpu_limit
 
             if previous_value != self.current_gpu_usage:
@@ -338,7 +338,7 @@ class Device:
                 if self.theorical_mem_usage <= self.mem_limit:
                     self.current_mem_usage = self.theorical_mem_usage
                 else:
-                    retrofiting_coefficient = fit_resource(mem, self.mem_limit)
+                    retrofiting_coefficient = fit_resource(self.theorical_mem_usage, self.mem_limit)
                     self.current_mem_usage = self.mem_limit
 
             if previous_value != self.current_mem_usage:
@@ -392,7 +392,7 @@ class Device:
                 if self.theorical_disk_usage <= self.disk_limit:
                     self.current_disk_usage = self.theorical_disk_usage
                 else:
-                    retrofiting_coefficient = fit_resource(disk, self.disk_limit)
+                    retrofiting_coefficient = fit_resource(self.theorical_disk_usage, self.disk_limit)
                     self.current_disk_usage = self.disk_limit
 
             if previous_value != self.current_disk_usage:
