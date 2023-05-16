@@ -222,11 +222,10 @@ class Device:
 
             self.theorical_cpu_usage += cpu
 
-
             if overconsume:
                 self.current_cpu_usage = self.theorical_cpu_usage
             else:
-                if self.theorical_cpu_usage > self.cpu_limit:
+                if self.theorical_cpu_usage <= self.cpu_limit:
                     self.current_cpu_usage = self.theorical_cpu_usage
                 else:
                     retrofiting_coefficient = fit_resource(self.theorical_cpu_usage, self.cpu_limit)
@@ -281,7 +280,7 @@ class Device:
             if overconsume:
                 self.current_gpu_usage = self.theorical_gpu_usage
             else:
-                if self.theorical_gpu_usage > self.gpu_limit:
+                if self.theorical_gpu_usage <= self.gpu_limit:
                     self.current_gpu_usage = self.theorical_gpu_usage
                 else:
                     retrofiting_coefficient = fit_resource(self.theorical_gpu_usage, self.gpu_limit)
@@ -401,7 +400,6 @@ class Device:
                     self.disk_usage_history.append(t, self.current_disk_usage)
                 else:
                     self.disk_usage_history[-1] = (t, self.current_disk_usage)
-                
 
             return retrofiting_coefficient
 

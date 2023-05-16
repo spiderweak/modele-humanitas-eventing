@@ -2,7 +2,7 @@ import logging
 from modules.Path import Path
 from modules.Environment import Environment
 
-MAX_TENTATIVES = 2000
+MAX_TENTATIVES = 2
 
 class Event():
     """An event with event_number occurs at a specific time ``event_time`` and involves a specific
@@ -60,10 +60,15 @@ class Placement(Event):
             Boolean, True if deployable, else False
         """
 
-        if proc.cpu_request + device.getDeviceCPUUsage()< device.cpu_limit:
-            if proc.gpu_request + device.getDeviceGPUUsage() < device.gpu_limit:
-                if proc.mem_request + device.getDeviceMemUsage() < device.mem_limit:
-                    if proc.disk_request + device.getDeviceDiskUsage() < device.disk_limit:
+        
+
+        if proc.cpu_request + device.getDeviceCPUUsage() <= device.cpu_limit:
+            logging.debug(proc.gpu_request)
+            logging.debug(device.getDeviceGPUUsage())
+            logging.debug(device.gpu_limit)
+            if proc.gpu_request + device.getDeviceGPUUsage() <= device.gpu_limit:
+                if proc.mem_request + device.getDeviceMemUsage() <= device.mem_limit:
+                    if proc.disk_request + device.getDeviceDiskUsage() <= device.disk_limit:
                         return True
         return False
 
@@ -144,7 +149,7 @@ class Placement(Event):
             if len(deployed_onto_devices) == 0 and len(first_dev_exclusion_list)==0:
                 distance_from_device = {i: device.routing_table[i][1] for i in device.routing_table}
                 sorted_distance_from_device = sorted(distance_from_device.items(), key=lambda x: x[1])
-                logging.debug(f"Deployment source {sorted_distance_from_device[0][0]}")
+                logging.debug(f"Source {sorted_distance_from_device[0][0]}")
             else:
                 if len(deployed_onto_devices)!= 0:
                     new_source_device = env.getDeviceByID(deployed_onto_devices[-1])
@@ -163,11 +168,11 @@ class Placement(Event):
                 distance_from_device = {i: new_source_device.routing_table[i][1] for i in new_source_device.routing_table}
                 sorted_distance_from_device = sorted(distance_from_device.items(), key=lambda x: x[1])
 
-                logging.debug(f"Switching deployment source to {sorted_distance_from_device[0][0]}")
+                logging.debug(f"Switching source to {sorted_distance_from_device[0][0]}")
 
             for device_id, deployment_latency in sorted_distance_from_device:
 
-                logging.debug(f"Testing deployment on device {device_id}")
+                logging.debug(f"Testing placement on device {device_id}")
 
                 proc_list = list()
 
@@ -181,7 +186,7 @@ class Placement(Event):
 
                 if self.deployable_proc(new_proc, env.getDeviceByID(device_id)):
 
-                    logging.debug(f"Deployment possible on device {device_id}")
+                    logging.debug(f"Placement possible on device {device_id}")
 
                     deployed_onto_devices.append(device_id)
 

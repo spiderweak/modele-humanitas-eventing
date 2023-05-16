@@ -1,4 +1,4 @@
-loglevel : info
+loglevel : debug
 
 logfile : log.txt
 

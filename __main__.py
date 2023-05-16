@@ -90,6 +90,8 @@ def main():
 
     logging.basicConfig(filename=logfilename, encoding='utf-8', level=loglevel)
 
+    logging.info('\n')
+
     if not os.path.isfile(parsed_yaml['database_url']['device']):
         logging.info("Generating random device positions")
         devices = list()
@@ -106,11 +108,14 @@ def main():
 
     if options.simulate:
 
+        logging.info("Running complete simulation")
         simulate_deployments(environment)
 
         return 0,1
 
     else:
+        logging.info("Testing a single app deployment")
+
         current_device_id = random.randint(0, len(environment.devices)-1)
         my_application = Application()
 
