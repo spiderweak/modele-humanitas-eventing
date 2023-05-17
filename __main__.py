@@ -50,7 +50,7 @@ def parse_args():
                         default='config.yaml')
     parser.add_argument('--simulate',
                         help='Boolean, default to False, run simulator if true',
-                        default=False)
+                        default=True)
     parser.add_argument('--application',
                         help='yaml application descriptor',
                         default='app.yaml')

@@ -1,7 +1,7 @@
 from modules.PhysicalNetworkLink import PhysicalNetworkLink
 from modules.CustomExceptions import NoRouteToHost
 
-from simulation import custom_distance
+from modules.ResourceManagement import custom_distance
 
 # GLOBAL VARIABLES (bad practice)
 wifi_range = 9

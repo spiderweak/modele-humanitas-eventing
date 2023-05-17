@@ -3,30 +3,16 @@ import networkx as nx
 import random
 
 from modules.Application import Application
+from modules.EventQueue import EventQueue
+from modules.Event import (Event, Placement, Deploy)
+
+from modules.ResourceManagement import custom_distance
+
+import logging
 
 # GLOBAL VARIABLES (bad practice)
 N_DEVICES = 40
 wifi_range = 9
-
-
-def custom_distance(x1, y1, z1, x2, y2, z2):
-    """
-    Defines a custom distance for device wireless coverage to account for less coverage due to floor interception.
-
-    Args:
-        x1 : x value, device 1
-        z1 : z value, device 1
-        y1 : y value, device 1
-        x2 : x value, device 2
-        y2 : y value, device 2
-        z2 : z value, device 2
-
-    Returns:
-        distance : int, distance (as coverage) between device 1 and device 2.
-    """
-    distance = ((x2-x1)**2 + (y2-y1)**2 + (z2-z1)**2)**0.5
-    return distance
-
 
 def generate_and_plot_devices_positions(devices):
     """
@@ -101,14 +87,13 @@ def generate_and_plot_devices_positions(devices):
 
 
 # Now, we can play with deployments
-def simulate_deployments(devices_list, physical_network_link_list):
+def simulate_deployments(env):
     """
     Simulates a complete deployment.
     Simulates 200 successive application deployments.
 
     Args:
-        devices : list, List of coords
-        physical_network_link_list: list, Lists the physical links between devices
+        env : environment
 
     Returns:
         None
@@ -128,8 +113,27 @@ def simulate_deployments(devices_list, physical_network_link_list):
         application.randomAppInit()
         application.setAppID(i)
 
+        event_queue = EventQueue(env)
+        placement_event = Placement("Placement",event_queue)
+
         # select a random device
-        device_id = random.choice(range(len(devices_list)))
+        device_id = random.choice(range(len(env.devices)))
+
+        deployment_event = Deploy("Deployment", event_queue)
+        deployed_onto_devices = placement_event.process(env, application, device_id)
+
+        if deployed_onto_devices:
+            deployment_event.process(env, application, deployed_onto_devices)
+            logging.info(f"Deployment success")
+            logging.info(f"application {application.id} successfully deployed")
+            for i in range(len(application.processus_list)):
+                logging.info(f"Deploying processus {application.processus_list[i].id} on device {deployed_onto_devices[i]}")
+        else:
+            logging.error(f"\nDeployment failure for application {application.id}")
+
+
+
+        """
 
         # deploy on device, get associated deployed status and latency
         success, latency, operational_latency, deployed_onto_devices = application_deploy(application, devices_list[device_id], devices_list, physical_network_link_list)
@@ -177,3 +181,5 @@ def simulate_deployments(devices_list, physical_network_link_list):
 
     # Print the graph
     plt.savefig("fig/results.png")
+
+    """
