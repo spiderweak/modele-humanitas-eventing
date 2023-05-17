@@ -2,5 +2,6 @@
 *.sqlite
 *.ipynb
 *.pyc
+*.csv
 __pycache__
 log.txt
