@@ -126,6 +126,8 @@ class Placement(Event):
                 deployed_onto_devices : list, device ids for all devices onto application were deployed
         """
 
+        deployment_latency_test = 0
+
         deployment_success = True
         # Get ordered device distance
 
@@ -188,6 +190,8 @@ class Placement(Event):
 
                     deployed_onto_devices.append(device_id)
 
+                    deployment_latency_test += deployment_latency
+
                     if self.linkability(env, deployed_onto_devices, self.application_to_place.proc_links):
 
                         # deploy links
@@ -216,7 +220,11 @@ class Placement(Event):
         else:
             print(f"application id : {self.application_to_place.id} , {self.application_to_place.num_procs} processus not deployed")
 
-        return deployed_onto_devices
+        if deployed_onto_devices:
+            Deploy("Deployment", self.queue, self.application_to_place, deployed_onto_devices, event_time=int(self.get_time()+deployment_latency_test)).add_to_queue()
+
+
+        return deployment_latency_test, deployed_onto_devices
 
 
 class Deploy(Event):
@@ -281,4 +289,12 @@ class RegularCheck(Event):
         super().__init__(event_name, queue, event_time)
         raise NotImplementedError('Process not implemented')
 
+
+class FinalReport(Event):
+    def __init__(self, event_name, queue, event_time=None):
+        super().__init__(event_name, queue, event_time)
+
+    def process(self, env):
+        for device in env.devices:
+            device.reportOnValue(self.get_time())
 

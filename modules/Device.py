@@ -233,7 +233,7 @@ class Device:
 
             if previous_value != self.current_cpu_usage:
                 if previous_time != t:
-                    self.cpu_usage_history.append((t-1, self.current_cpu_usage))
+                    self.cpu_usage_history.append((t-1, previous_value))
                     self.cpu_usage_history.append((t, self.current_cpu_usage))
                 else:
                     self.cpu_usage_history[-1] = (t, self.current_cpu_usage)
@@ -288,7 +288,7 @@ class Device:
 
             if previous_value != self.current_gpu_usage:
                 if previous_time != t:
-                    self.gpu_usage_history.append((t-1, self.current_gpu_usage))
+                    self.gpu_usage_history.append((t-1, previous_value))
                     self.gpu_usage_history.append((t, self.current_gpu_usage))
                 else:
                     self.gpu_usage_history[-1] = (t, self.current_gpu_usage)
@@ -413,6 +413,18 @@ class Device:
         else:
             raise ValueError("Please use the associated allocation function to allocate resources to prevent this message")
 
+
+    def reportOnValue(self, time, force=False):
+        previous_cpu_time, previous_cpu_value = self.cpu_usage_history[-1]
+        previous_gpu_time, previous_gpu_value = self.gpu_usage_history[-1]
+        previous_mem_time, previous_mem_value = self.mem_usage_history[-1]
+        previous_disk_time, previous_disk_value = self.disk_usage_history[-1]
+
+        if max(previous_cpu_time, previous_gpu_time,previous_mem_time, previous_disk_time) <= time or force:
+            self.cpu_usage_history.append((time,previous_cpu_value))
+            self.gpu_usage_history.append((time,previous_gpu_value))
+            self.mem_usage_history.append((time,previous_mem_value))
+            self.disk_usage_history.append((time,previous_disk_value))
 
     # Generates a rounting table progressively by adding devices
     # Path are not considered, only next hop and distance
