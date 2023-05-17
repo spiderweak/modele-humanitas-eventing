@@ -9,6 +9,8 @@ import random
 
 from modules.Processus import Processus
 
+TIME_PERIOD = 24*60*60*100
+
 class Application:
 
     id = 0
@@ -60,6 +62,8 @@ class Application:
         self.proc_links = np.zeros((num_procs, num_procs))
 
         self.deployment_info = dict()
+
+        self.duration = 0
 
 
     def setAppID(self, id):
@@ -124,6 +128,8 @@ class Application:
         # Sets the generated value as part of the device creation
         self.proc_links = proc_links
 
+        self.duration = random.randint(TIME_PERIOD/96,TIME_PERIOD/24)
+
 
     def app_yaml_parser(self, app_yaml):
         """
@@ -152,6 +158,8 @@ class Application:
         for app_links in links_details:
             link = app_links['Link']
             self.proc_links[link['Processus 1']][link['Processus 2']] = int(link['Bandwidth'])
+
+        self.duration = random.randint(TIME_PERIOD/96,TIME_PERIOD/24) # Random for now
 
 
     def setDeploymentInfo(self, deployed_onto_device):

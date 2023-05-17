@@ -222,6 +222,9 @@ class Device:
 
             self.theorical_cpu_usage += cpu
 
+            if self.theorical_cpu_usage < 0:
+                self.theorical_cpu_usage = 0
+
             if overconsume:
                 self.current_cpu_usage = self.theorical_cpu_usage
             else:
@@ -242,6 +245,10 @@ class Device:
 
         else:
             raise ValueError("Current time is before previous time")
+
+
+    def releaseDeviceCPU(self, t, cpu, force = False, overconsume = False):
+        self.allocateDeviceCPU(t, -cpu, force, overconsume)
 
 
     def getDeviceCPUUsage(self):
@@ -274,8 +281,10 @@ class Device:
             except ZeroDivisionError:
                 retrofiting_coefficient = 1
 
-
             self.theorical_gpu_usage += gpu
+
+            if self.theorical_gpu_usage < 0:
+                self.theorical_gpu_usage = 0
 
             if overconsume:
                 self.current_gpu_usage = self.theorical_gpu_usage
@@ -297,6 +306,10 @@ class Device:
 
         else:
             raise ValueError("Current time is before previous time")
+
+
+    def releaseDeviceGPU(self, t, gpu, force = False, overconsume = False):
+        self.allocateDeviceGPU(t, -gpu, force, overconsume)
 
 
     def getDeviceGPUUsage(self):
@@ -331,6 +344,9 @@ class Device:
 
             self.theorical_mem_usage += mem
 
+            if self.theorical_mem_usage < 0:
+                self.theorical_mem_usage = 0
+
             if overconsume:
                 self.current_mem_usage = self.theorical_mem_usage
             else:
@@ -352,6 +368,8 @@ class Device:
         else:
             raise ValueError("Current time is before previous time")
 
+    def releaseDeviceMem(self, t, mem, force = False, overconsume = False):
+        self.allocateDeviceMem(t, -mem, force, overconsume)
 
     def getDeviceMemUsage(self):
         if self.current_mem_usage == self.mem_usage_history[-1][1]:
@@ -385,6 +403,9 @@ class Device:
 
             self.theorical_disk_usage += disk
 
+            if self.theorical_disk_usage < 0:
+                self.theorical_disk_usage = 0
+
             if overconsume:
                 self.current_disk_usage = self.theorical_disk_usage
             else:
@@ -405,6 +426,10 @@ class Device:
 
         else:
             raise ValueError("Current time is before previous time")
+
+
+    def releaseDeviceDisk(self, t, disk, force = False, overconsume = False):
+        self.allocateDeviceDisk(t, -disk, force, overconsume)
 
 
     def getDeviceDiskUsage(self):

@@ -265,6 +265,8 @@ class Deploy(Event):
 
         self.application_to_deploy.setDeploymentInfo(self.devices_destinations)
 
+        Undeploy("Release", self.queue, self.application_to_deploy, event_time=int(self.get_time()+self.application_to_deploy.duration)).add_to_queue()
+
         return True
 
 
@@ -276,12 +278,41 @@ class Fit(Event):
 
 class Undeploy(Event):
 
-    def __init__(self, event_name, queue, event_time=None):
+    def __init__(self, event_name, queue, app, event_time=None):
         super().__init__(event_name, queue, event_time)
-        raise NotImplementedError('Process not implemented')
+        self.application_to_undeploy = app
 
-    def process(self, app):
-        pass
+
+    def process(self, env):
+
+        from modules.Application import Application
+
+        logging.info(f"Undeploying application id : {self.application_to_undeploy.id} , {self.application_to_undeploy.deployment_info}")
+
+        for process,device_id in self.application_to_undeploy.deployment_info.items():
+
+            logging.info(f"Deploying processus : {process.id} device {device_id}")
+
+            env.getDeviceByID(device_id).releaseDeviceCPU(self.time, process.cpu_request)
+            env.getDeviceByID(device_id).releaseDeviceGPU(self.time, process.gpu_request)
+            env.getDeviceByID(device_id).releaseDeviceMem(self.time, process.mem_request)
+            env.getDeviceByID(device_id).releaseDeviceDisk(self.time, process.disk_request)
+
+
+            # undeploy links
+            """
+            for j in range(i):
+                new_path = Path()
+                new_path.path_generation(env, device_id, self.devices_destinations[j])
+                for path_id in new_path.physical_links_path:
+                    if env.physical_network_links[path_id] is not None:
+                        env.physical_network_links[path_id].useBandwidth(self.application_to_deploy.proc_links[i-1][j])
+                        operational_latency += env.physical_network_links[path_id].getPhysicalNetworkLinkLatency()
+                    else:
+                        logging.error(f"Physical network link error, expexted PhysicalNetworkLink, got {env.physical_network_links[path_id]}")
+            """
+
+        return True
 
 
 class RegularCheck(Event):

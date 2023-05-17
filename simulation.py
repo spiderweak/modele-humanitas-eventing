@@ -15,7 +15,7 @@ from modules.ResourceManagement import custom_distance
 
 # GLOBAL VARIABLES (bad practice)
 N_DEVICES = 40
-NUM_APPS = 50
+NUM_APPS = 500
 TIME_PERIOD = 24 * 60 * 60 * 100
 wifi_range = 9
 
