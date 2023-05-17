@@ -287,11 +287,11 @@ class Undeploy(Event):
 
         from modules.Application import Application
 
-        logging.info(f"Undeploying application id : {self.application_to_undeploy.id} , {self.application_to_undeploy.deployment_info}")
+        logging.debug(f"Undeploying application id : {self.application_to_undeploy.id} , {self.application_to_undeploy.deployment_info}")
 
         for process,device_id in self.application_to_undeploy.deployment_info.items():
 
-            logging.info(f"Deploying processus : {process.id} device {device_id}")
+            logging.debug(f"Deploying processus : {process.id} device {device_id}")
 
             env.getDeviceByID(device_id).releaseDeviceCPU(self.time, process.cpu_request)
             env.getDeviceByID(device_id).releaseDeviceGPU(self.time, process.gpu_request)
