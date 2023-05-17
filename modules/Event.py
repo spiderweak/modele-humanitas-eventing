@@ -97,7 +97,7 @@ class Placement(Event):
         new_device_id = deployed_app_list[-1]
         for i in range(len(deployed_app_list)):
             new_path = Path()
-            new_path.path_generation(env.devices, new_device_id, deployed_app_list[i])
+            new_path.path_generation(env, new_device_id, deployed_app_list[i])
             if not self.reservable_bandwidth(env, new_path, proc_links[i][len(deployed_app_list)-1]):
                 return False
         return True
@@ -189,7 +189,7 @@ class Placement(Event):
                         # deploy links
                         for i in range(len(deployed_onto_devices)):
                             new_path = Path()
-                            new_path.path_generation(env.devices, device_id, deployed_onto_devices[i])
+                            new_path.path_generation(env, device_id, deployed_onto_devices[i])
                             for path_id in new_path.physical_links_path:
                                 if env.physical_network_links[path_id] is not None:
                                     pass
@@ -221,6 +221,7 @@ class Deploy(Event):
         super().__init__(event_name, queue, event_time)
 
     def process(self, env, app, deployed_onto_devices):
+
         operational_latency = 0
 
         logging.debug(f"Placing application id : {app.id} , {app.num_procs} processus on {deployed_onto_devices}")
@@ -231,26 +232,22 @@ class Deploy(Event):
 
             logging.debug(f"Deploying processus : {app.processus_list[i].id} device {device_id}")
 
-            device_deployed_onto = devices_list[device_id]
-
-            device_deployed_onto.setDeviceCPUUsage(self.time, device_deployed_onto.getDeviceCPUUsage() + app.processus_list[i].cpu_request)
-            device_deployed_onto.setDeviceGPUUsage(self.time, device_deployed_onto.getDeviceGPUUsage() + app.processus_list[i].gpu_request)
-            device_deployed_onto.setDeviceDiskUsage(self.time, device_deployed_onto.getDeviceMemUsage() + app.processus_list[i].disk_request)
-            device_deployed_onto.setDeviceMemUsage(self.time, device_deployed_onto.getDeviceDiskUsage() + app.processus_list[i].mem_request)
-
-            devices_list[device_id] = device_deployed_onto
+            env.getDeviceByID(device_id).allocateDeviceCPU(self.time, app.processus_list[i].cpu_request)
+            env.getDeviceByID(device_id).allocateDeviceGPU(self.time, app.processus_list[i].gpu_request)
+            env.getDeviceByID(device_id).allocateDeviceMem(self.time, app.processus_list[i].mem_request)
+            env.getDeviceByID(device_id).allocateDeviceDisk(self.time, app.processus_list[i].disk_request)
 
 
             # deploy links
             for j in range(i):
                 new_path = Path()
-                new_path.path_generation(devices_list, device_id, deployed_onto_devices[j])
+                new_path.path_generation(env, device_id, deployed_onto_devices[j])
                 for path_id in new_path.physical_links_path:
-                    if physical_network_link_list[path_id] is not None:
-                        physical_network_link_list[path_id].useBandwidth(app.proc_links[i-1][j])
-                        operational_latency += physical_network_link_list[path_id].getPhysicalNetworkLinkLatency()
+                    if env.physical_network_links[path_id] is not None:
+                        env.physical_network_links[path_id].useBandwidth(app.proc_links[i-1][j])
+                        operational_latency += env.physical_network_links[path_id].getPhysicalNetworkLinkLatency()
                     else:
-                        logging.error(f"Physical network link error, expexted PhysicalNetworkLink, got {physical_network_link_list[path_id]}")
+                        logging.error(f"Physical network link error, expexted PhysicalNetworkLink, got {env.physical_network_links[path_id]}")
 
         app.setDeploymentInfo(deployed_onto_devices)
 

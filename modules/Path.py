@@ -56,12 +56,12 @@ class Path:
         """
         self.destination_id = device_destination_id
 
-    def path_generation(self, devices_list, device_source_id, device_destination_id):
+    def path_generation(self, env, device_source_id, device_destination_id):
         """
         Generates both the list of devices on the path from source to destination and the list of links on this same path.
 
         Args:
-            device_list : List of devices, used to get devices IDs and routing table, non modified
+            env : Environment
             device_source_id : int, device source ID
             device_destination_id : int, device destination ID
 
@@ -69,7 +69,8 @@ class Path:
             None
         """
         # get Route from source to destination
-        device_source = devices_list[device_source_id]
+
+        device_source = env.getDeviceByID(device_source_id)
 
         self.setSourceID(device_source_id)
         self.setDestinationID(device_destination_id)
@@ -77,15 +78,15 @@ class Path:
         self.devices_path.append(device_source_id)
         next_hop_id = device_source.getRouteInfo(device_destination_id)[0]
 
-        self.physical_links_path.append(device_source_id*len(devices_list)+next_hop_id)
+        self.physical_links_path.append(device_source_id*len(env.devices)+next_hop_id)
 
         hops = 1
 
         while next_hop_id != device_destination_id and hops <100:
             self.devices_path.append(next_hop_id)
-            device_source = devices_list[next_hop_id]
+            device_source = env.getDeviceByID(next_hop_id)
             next_hop_id = device_source.getRouteInfo(device_destination_id)[0]
-            self.physical_links_path.append(device_source.getDeviceID()*len(devices_list)+next_hop_id)
+            self.physical_links_path.append(device_source.getDeviceID()*len(env.devices)+next_hop_id)
             hops+=1
 
         if self.devices_path[-1] != device_destination_id:
