@@ -233,8 +233,8 @@ class Device:
 
             if previous_value != self.current_cpu_usage:
                 if previous_time != t:
-                    self.cpu_usage_history.append(t-1, self.current_cpu_usage)
-                    self.cpu_usage_history.append(t, self.current_cpu_usage)
+                    self.cpu_usage_history.append((t-1, self.current_cpu_usage))
+                    self.cpu_usage_history.append((t, self.current_cpu_usage))
                 else:
                     self.cpu_usage_history[-1] = (t, self.current_cpu_usage)
 
@@ -288,8 +288,8 @@ class Device:
 
             if previous_value != self.current_gpu_usage:
                 if previous_time != t:
-                    self.gpu_usage_history.append(t-1, self.current_gpu_usage)
-                    self.gpu_usage_history.append(t, self.current_gpu_usage)
+                    self.gpu_usage_history.append((t-1, self.current_gpu_usage))
+                    self.gpu_usage_history.append((t, self.current_gpu_usage))
                 else:
                     self.gpu_usage_history[-1] = (t, self.current_gpu_usage)
 
@@ -342,8 +342,8 @@ class Device:
 
             if previous_value != self.current_mem_usage:
                 if previous_time != t:
-                    self.mem_usage_history.append(t-1, previous_value)
-                    self.mem_usage_history.append(t, self.current_mem_usage)
+                    self.mem_usage_history.append((t-1, previous_value))
+                    self.mem_usage_history.append((t, self.current_mem_usage))
                 else:
                     self.mem_usage_history[-1] = (t, self.current_mem_usage)
 
@@ -396,8 +396,8 @@ class Device:
 
             if previous_value != self.current_disk_usage:
                 if previous_time != t:
-                    self.disk_usage_history.append(t-1, previous_value)
-                    self.disk_usage_history.append(t, self.current_disk_usage)
+                    self.disk_usage_history.append((t-1, previous_value))
+                    self.disk_usage_history.append((t, self.current_disk_usage))
                 else:
                     self.disk_usage_history[-1] = (t, self.current_disk_usage)
 
