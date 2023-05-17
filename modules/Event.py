@@ -44,8 +44,14 @@ class Event():
 
 class Placement(Event):
 
-    def __init__(self, event_name, queue, event_time=None):
+    def __init__(self, event_name, queue, app, device_id, event_time=None):
+        """
+            app : Application, application to place
+            device : Device, first device to try placement, \"Placement Request Receptor\" device
+        """
         super().__init__(event_name, queue, event_time)
+        self.application_to_place = app
+        self.deployment_starting_point = device_id
 
     # Let's define how to deploy an application on the system.
     def deployable_proc(self, proc, device):
@@ -103,7 +109,7 @@ class Placement(Event):
         return True
 
 
-    def process(self, env, app, device_id):
+    def process(self, env):
         """
         Tries to place a multi-processus application from a given device
 
@@ -111,8 +117,6 @@ class Placement(Event):
 
         Args:
             env : Environment
-            app : Application, application to place
-            device : Device, first device to try placement, \"Placement Request Receptor\" device
 
         Returns:
             (deployment_success, latency, operational_latency, deployed_onto_devices)
@@ -128,15 +132,15 @@ class Placement(Event):
         deployed_onto_devices = list()
         first_dev_exclusion_list = list()
 
-        logging.debug(f"Placement procedure from {device_id}")
+        logging.debug(f"Placement procedure from {self.deployment_starting_point}")
 
-        device = env.getDeviceByID(device_id)
+        device = env.getDeviceByID(self.deployment_starting_point)
 
         deployment_success = True
 
         tentatives = 0
 
-        while len(deployed_onto_devices) < app.num_procs and tentatives < MAX_TENTATIVES:
+        while len(deployed_onto_devices) < self.application_to_place.num_procs and tentatives < MAX_TENTATIVES:
 
             tentatives +=1
 
@@ -172,9 +176,9 @@ class Placement(Event):
 
                 for i in range(len(deployed_onto_devices)):
                     if device_id == deployed_onto_devices[i]:
-                        proc_list.append(app.processus_list[i])
+                        proc_list.append(self.application_to_place.processus_list[i])
 
-                proc_list.append(app.processus_list[len(deployed_onto_devices)])
+                proc_list.append(self.application_to_place.processus_list[len(deployed_onto_devices)])
 
                 new_proc = sum(proc_list)
 
@@ -184,7 +188,7 @@ class Placement(Event):
 
                     deployed_onto_devices.append(device_id)
 
-                    if self.linkability(env, deployed_onto_devices, app.proc_links):
+                    if self.linkability(env, deployed_onto_devices, self.application_to_place.proc_links):
 
                         # deploy links
                         for i in range(len(deployed_onto_devices)):
@@ -208,48 +212,50 @@ class Placement(Event):
             deployed_onto_devices = list()
 
         if len(deployed_onto_devices) !=0:
-            print(f"application id : {app.id} , {app.num_procs} processus deployed on {deployed_onto_devices}")
+            print(f"application id : {self.application_to_place.id} , {self.application_to_place.num_procs} processus deployed on {deployed_onto_devices}")
         else:
-            print(f"application id : {app.id} , {app.num_procs} processus not deployed")
+            print(f"application id : {self.application_to_place.id} , {self.application_to_place.num_procs} processus not deployed")
 
         return deployed_onto_devices
 
 
 class Deploy(Event):
 
-    def __init__(self, event_name, queue, event_time=None):
+    def __init__(self, event_name, queue, app, deployed_onto_devices, event_time=None):
         super().__init__(event_name, queue, event_time)
+        self.application_to_deploy = app
+        self.devices_destinations = deployed_onto_devices
 
-    def process(self, env, app, deployed_onto_devices):
+    def process(self, env):
 
         operational_latency = 0
 
-        logging.debug(f"Placing application id : {app.id} , {app.num_procs} processus on {deployed_onto_devices}")
+        logging.debug(f"Deploying application id : {self.application_to_deploy.id} , {self.application_to_deploy.num_procs} processus on {self.devices_destinations}")
 
-        for i in range(app.num_procs):
+        for i in range(self.application_to_deploy.num_procs):
 
-            device_id = deployed_onto_devices[i]
+            device_id = self.devices_destinations[i]
 
-            logging.debug(f"Deploying processus : {app.processus_list[i].id} device {device_id}")
+            logging.debug(f"Deploying processus : {self.application_to_deploy.processus_list[i].id} device {device_id}")
 
-            env.getDeviceByID(device_id).allocateDeviceCPU(self.time, app.processus_list[i].cpu_request)
-            env.getDeviceByID(device_id).allocateDeviceGPU(self.time, app.processus_list[i].gpu_request)
-            env.getDeviceByID(device_id).allocateDeviceMem(self.time, app.processus_list[i].mem_request)
-            env.getDeviceByID(device_id).allocateDeviceDisk(self.time, app.processus_list[i].disk_request)
+            env.getDeviceByID(device_id).allocateDeviceCPU(self.time, self.application_to_deploy.processus_list[i].cpu_request)
+            env.getDeviceByID(device_id).allocateDeviceGPU(self.time, self.application_to_deploy.processus_list[i].gpu_request)
+            env.getDeviceByID(device_id).allocateDeviceMem(self.time, self.application_to_deploy.processus_list[i].mem_request)
+            env.getDeviceByID(device_id).allocateDeviceDisk(self.time, self.application_to_deploy.processus_list[i].disk_request)
 
 
             # deploy links
             for j in range(i):
                 new_path = Path()
-                new_path.path_generation(env, device_id, deployed_onto_devices[j])
+                new_path.path_generation(env, device_id, self.devices_destinations[j])
                 for path_id in new_path.physical_links_path:
                     if env.physical_network_links[path_id] is not None:
-                        env.physical_network_links[path_id].useBandwidth(app.proc_links[i-1][j])
+                        env.physical_network_links[path_id].useBandwidth(self.application_to_deploy.proc_links[i-1][j])
                         operational_latency += env.physical_network_links[path_id].getPhysicalNetworkLinkLatency()
                     else:
                         logging.error(f"Physical network link error, expexted PhysicalNetworkLink, got {env.physical_network_links[path_id]}")
 
-        app.setDeploymentInfo(deployed_onto_devices)
+        self.application_to_deploy.setDeploymentInfo(self.devices_destinations)
 
         return True
 

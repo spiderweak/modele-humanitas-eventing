@@ -100,12 +100,8 @@ def simulate_deployments(env):
     """
     testings = 200
 
-    latency_array = [0]
-    operational_latency_array = [0]
-    app_refused_array = [0]
-    app_success_array = [0]
-    proc_success_array = [0]
-    trivial_array = [0]
+    event_queue = EventQueue(env)
+
 
     for i in range(testings):
         trivial = 0
@@ -113,17 +109,16 @@ def simulate_deployments(env):
         application.randomAppInit()
         application.setAppID(i)
 
-        event_queue = EventQueue(env)
-        placement_event = Placement("Placement",event_queue)
-
-        # select a random device
         device_id = random.choice(range(len(env.devices)))
 
-        deployment_event = Deploy("Deployment", event_queue)
-        deployed_onto_devices = placement_event.process(env, application, device_id)
+        placement_event = Placement("Placement",event_queue, application, device_id)
+
+        deployed_onto_devices = placement_event.process(env)
 
         if deployed_onto_devices:
-            deployment_event.process(env, application, deployed_onto_devices)
+            deployment_event = Deploy("Deployment", event_queue, application, deployed_onto_devices)
+
+            deployment_event.process(env)
             logging.info(f"Deployment success")
             logging.info(f"application {application.id} successfully deployed")
             for i in range(len(application.processus_list)):
@@ -134,6 +129,14 @@ def simulate_deployments(env):
 
 
         """
+
+
+    latency_array = [0]
+    operational_latency_array = [0]
+    app_refused_array = [0]
+    app_success_array = [0]
+    proc_success_array = [0]
+    trivial_array = [0]
 
         # deploy on device, get associated deployed status and latency
         success, latency, operational_latency, deployed_onto_devices = application_deploy(application, devices_list[device_id], devices_list, physical_network_link_list)
