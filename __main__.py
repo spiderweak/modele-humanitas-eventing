@@ -22,6 +22,7 @@ from modules.db.interact_db import create_db
 from modules.db.interact_db import populate_db
 from modules.db.interact_db import dump_from_db
 
+from simulation import Simulation
 from simulation import generate_and_plot_devices_positions
 from simulation import simulate_deployments
 
@@ -107,9 +108,9 @@ def main():
     environment.generate_routing_table()
 
     if options.simulate:
-
         logging.info("Running complete simulation")
-        simulate_deployments(environment)
+        simulation = Simulation(environment)
+        simulation.simulate()
 
         return 0,1
 

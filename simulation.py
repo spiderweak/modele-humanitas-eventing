@@ -1,18 +1,71 @@
 import matplotlib.pyplot as plt
 import networkx as nx
 import random
+import logging
+
+import numpy as np
 
 from modules.Application import Application
 from modules.EventQueue import EventQueue
-from modules.Event import (Event, Placement, Deploy)
+from modules.Event import (Event, Placement, Deploy, FinalReport)
+from modules.Visualization import Visualizer
 
 from modules.ResourceManagement import custom_distance
 
-import logging
 
 # GLOBAL VARIABLES (bad practice)
 N_DEVICES = 40
+NUM_APPS = 50
+TIME_PERIOD = 24 * 60 * 60 * 100
 wifi_range = 9
+
+class Simulation(object):
+
+    def __init__(self, env):
+
+        self.__env = env
+        self.__queue = EventQueue(self.__env)
+
+        # Deploying 500 applictions
+        arrival_times = sorted([int(time) for time in np.random.uniform(0, TIME_PERIOD, NUM_APPS)])
+
+        for i in range(NUM_APPS):
+            # Generating 1 random application
+            application = Application()
+            application.randomAppInit()
+            application.setAppID(i)
+
+            # Getting a random device starting point
+            device_id = random.choice(range(len(env.devices)))
+
+            # Creating a placement event
+            Placement("Placement",self.__queue, application, device_id, event_time=arrival_times[i]).add_to_queue()
+
+        # Final reporting event
+
+        FinalReport("Final Report", self.__queue, event_time=TIME_PERIOD).add_to_queue()
+
+        # Init devices and network here ?
+
+
+    def simulate(self):
+        # main loop of the simulation
+
+        current_event = None
+
+        while not isinstance(current_event,FinalReport):
+            event_time, event_index, current_event = self.__queue.pop()
+
+            self.__env.current_time = event_time
+
+            process_event = current_event.process(self.__env)
+            logging.debug("process_event: {}".format(process_event))
+
+        visu = Visualizer()
+
+        visu.visualize_environment(self.__env)
+
+        logging.info("\n***************\nEND OF SIMULATION\n***************")
 
 def generate_and_plot_devices_positions(devices):
     """
@@ -113,7 +166,7 @@ def simulate_deployments(env):
 
         placement_event = Placement("Placement",event_queue, application, device_id)
 
-        deployed_onto_devices = placement_event.process(env)
+        latency, deployed_onto_devices = placement_event.process(env)
 
         if deployed_onto_devices:
             deployment_event = Deploy("Deployment", event_queue, application, deployed_onto_devices)
