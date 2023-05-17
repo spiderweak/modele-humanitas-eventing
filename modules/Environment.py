@@ -25,7 +25,7 @@ class Environment(object):
         self.current_time = 0
         self.applications = []
         self.devices = []
-        self.physical_network_links = []
+        self.physical_network_links = [0]
 
 
     def getApplicationByID(self, app_id):
@@ -59,7 +59,7 @@ class Environment(object):
         self.devices.append(device)
 
     # Let's try to code a routing table
-    def generate_routing_table(env):
+    def generate_routing_table(self):
         """
         Generates a routing table on each device
         The function first lists the neighboring device, then iterate on the list to build a routing table based on shortest distance among links
@@ -71,13 +71,13 @@ class Environment(object):
             None
         """
 
-        number_of_devices = len(env.devices)
+        number_of_devices = len(self.devices)
 
-        physical_network_link_list = [0]*number_of_devices*number_of_devices
+        self.physical_network_links = [0] * number_of_devices * number_of_devices
 
-        for device_1 in env.devices:
+        for device_1 in self.devices:
             device_1_id = device_1.getDeviceID()
-            for device_2 in env.devices:
+            for device_2 in self.devices:
                 device_2_id = device_2.getDeviceID()
                 distance = custom_distance(device_1.x,device_1.y,device_1.z,device_2.x,device_2.y,device_2.z)
                 new_physical_network_link_id = device_1_id*number_of_devices + device_2_id
@@ -88,10 +88,10 @@ class Environment(object):
                     new_physical_network_link.setLinkID(new_physical_network_link_id)
                     if device_1_id == device_2_id:
                         new_physical_network_link.setPhysicalNetworkLinkLatency(0)
-                    physical_network_link_list[new_physical_network_link_id] = new_physical_network_link
+                    self.physical_network_links[new_physical_network_link_id] = new_physical_network_link
                 else:
                     new_physical_network_link = PhysicalNetworkLink()
-                    physical_network_link_list[new_physical_network_link_id] = None
+                    self.physical_network_links[new_physical_network_link_id] = None
 
         ## We iterate on the matrix:
 
@@ -102,8 +102,8 @@ class Environment(object):
             changes = False
             for i in range(number_of_devices):
                 for j in range(number_of_devices):
-                    device_i = env.getDeviceByID(i)
-                    device_j = env.getDeviceByID(j)
+                    device_i = self.getDeviceByID(i)
+                    device_j = self.getDeviceByID(j)
 
                     try:
                         next_hop,distance = device_i.getRouteInfo(device_j.id)
@@ -113,7 +113,7 @@ class Environment(object):
                     nh_array = [next_hop]
                     dist_array = [distance]
                     for k in range(number_of_devices):
-                        device_k = env.getDeviceByID(k)
+                        device_k = self.getDeviceByID(k)
                         try:
                             next_hop_i_k,distance_i_k = device_i.getRouteInfo(device_k.id)
                         except NoRouteToHost:

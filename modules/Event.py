@@ -2,7 +2,7 @@ import logging
 from modules.Path import Path
 from modules.Environment import Environment
 
-MAX_TENTATIVES = 2
+MAX_TENTATIVES = 2000
 
 class Event():
     """An event with event_number occurs at a specific time ``event_time`` and involves a specific
@@ -67,19 +67,19 @@ class Placement(Event):
                         return True
         return False
 
-    def reservable_bandwidth(self, path, bandwidth_needed, physical_network_link_list):
+    def reservable_bandwidth(self, env, path, bandwidth_needed):
         """
         Checks if a given bandwidth can be reserved along a given path.
 
         Args:
+            env : Environment
             path : Path
             bandwidth_needed : Bandwidth to allocate on the Path
-            physical_network_link_list : List(PhysicalNetworkLink), List of physical links to evaluate the minimal bandwidth available on the Path 
 
         Returns:
             Boolean, True if bandwidth can be reserved, else False
         """
-        return bandwidth_needed <= path.minBandwidthAvailableonPath(physical_network_link_list)
+        return bandwidth_needed <= path.minBandwidthAvailableonPath(env)
 
 
     def linkability(self, env, deployed_app_list, proc_links):
@@ -87,10 +87,9 @@ class Placement(Event):
         Checks if a newly deployed processus can be linked to already deployed processus in a given app by checking the link quality on all Paths between the newly deployed processus and already deployed ones.
 
         Args:
-            deployed_app_list : int, Device ID of the Device on which the last processus deployed
+            env : Environment
+            deployed_app_list : list of devices on which deployment is proposed
             proc_links : Application.proc_links, len(Application.num_procs)*len(Application.num_procs) matrix indicating necessary bandwidth on each virtual link between application processus members
-            device_list : List of devices, used to get devices IDs and routing table, non modified (Global variable now, but globals are bad)
-            physical_network_link_list : List(PhysicalNetworkLink), List of physical links to evaluate the minimal bandwidth available on the Path 
 
         Returns:
             Boolean, True if all the interconnexions are possible with given bandwidths, False if at least one is impossible.
@@ -99,7 +98,7 @@ class Placement(Event):
         for i in range(len(deployed_app_list)):
             new_path = Path()
             new_path.path_generation(env.devices, new_device_id, deployed_app_list[i])
-            if not self.reservable_bandwidth(new_path, proc_links[i][len(deployed_app_list)-1], env.physical_network_links):
+            if not self.reservable_bandwidth(env, new_path, proc_links[i][len(deployed_app_list)-1]):
                 return False
         return True
 
@@ -194,8 +193,8 @@ class Placement(Event):
                             for path_id in new_path.physical_links_path:
                                 if env.physical_network_links[path_id] is not None:
                                     pass
-                                    #physical_network_link_list[path_id].useBandwidth(app.proc_links[len(deployed_onto_devices)-1][i])
-                                    #operational_latency += physical_network_link_list[path_id].getPhysicalNetworkLinkLatency()
+                                    #physical_network_links[path_id].useBandwidth(app.proc_links[len(deployed_onto_devices)-1][i])
+                                    #operational_latency += physical_network_links[path_id].getPhysicalNetworkLinkLatency()
                                 else:
                                     logging.error(f"Physical network link error, expexted PhysicalNetworkLink, got {env.physical_network_links[path_id]}")
 
@@ -206,16 +205,6 @@ class Placement(Event):
                     logging.debug(f"Impossible to deploy on {device_id}, testing next closest device")
 
         if (not deployment_success) or (tentatives == MAX_TENTATIVES):
-            for i in range(len(deployed_onto_devices)):
-                device_id = deployed_onto_devices[i]
-
-                device_deployed_onto = env.getDeviceByID(device_id)
-
-                env.getDeviceByID(device_id).setDeviceCPUUsage(device_deployed_onto.cpu_usage - app.processus_list[i].cpu_request)
-                env.getDeviceByID(device_id).setDeviceGPUUsage(device_deployed_onto.gpu_usage - app.processus_list[i].gpu_request)
-                env.getDeviceByID(device_id).setDeviceDiskUsage(device_deployed_onto.disk_usage - app.processus_list[i].disk_request)
-                env.getDeviceByID(device_id).setDeviceMemUsage(device_deployed_onto.mem_usage - app.processus_list[i].mem_request)
-
             deployed_onto_devices = list()
 
         if len(deployed_onto_devices) !=0:

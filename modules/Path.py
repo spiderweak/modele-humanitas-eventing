@@ -91,15 +91,15 @@ class Path:
         if self.devices_path[-1] != device_destination_id:
             self.devices_path.append(device_destination_id)
 
-    def minBandwidthAvailableonPath(self, path_list):
+    def minBandwidthAvailableonPath(self, env):
         """
         Sets the ID associated with the destination device
 
         Args:
-            path_list : list of PhysicalNetworkLinks corresponding the the IDs stored in the physical_links_path member of the instance
+            env: Environment
 
         Returns:
             min_bandwidth_available : float, minimum value for all the available network resources (bandwidth) on the path. Used to determine maximal allocation value.
         """
-        min_bandwidth_available = min(path_list[path_id].availableBandwidth() for path_id in self.physical_links_path)
+        min_bandwidth_available = min(env.physical_network_links[path_id].availableBandwidth() for path_id in self.physical_links_path)
         return min_bandwidth_available
