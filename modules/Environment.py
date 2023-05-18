@@ -3,49 +3,50 @@ from modules.CustomExceptions import NoRouteToHost
 
 from modules.ResourceManagement import custom_distance
 
-# GLOBAL VARIABLES (bad practice)
-wifi_range = 9
-
+import math
+import logging
+from tqdm import tqdm
 
 class Environment(object):
-    """The ``Environment`` class mostly serves as a structure for storing basic information about the environment
-        Attributes:
-        ----------
-        current_time: int
-            The date and time of the current event.
-        devices: list of devices
+    """
+    The ``Environment`` class mostly serves as a structure for storing information about the environment (configuration, device info, application info, network link...)
 
-        applications : list of Applications to deploy
-
-        physical_network_links : list of physical network links
-        """
+    Attributes:
+    ----------
+    current_time: `int`
+        The date and time of the current event.
+    config : `Config`
+        Environment configuration exported from the ``Config`` class
+    devices: list of `Device`
+        List of ``Device`` objects storing device information (position, resource availability, routing table...)
+    applications : list of `Application` to deploy
+        List of ``Application`` objects storing application information (processus, virtual links... )
+    physical_network_links : list of physical network links
+        List of Physical links between devices, connectivity matrix
+    """
 
 
     def __init__(self):
+
         self.current_time = 0
+
+        self.config = None
+
         self.applications = []
         self.devices = []
         self.physical_network_links = [0]
 
-        self.config = None
-    
+
     def setConfig(self, config):
+        """
+        Sets the configuration based on a given instanciated `Config` class.
+
+        Args:
+        ----
+        config: `Config`
+            Environment configuration generated in the `Config` module
+        """
         self.config = config
-
-    def getApplicationByID(self, app_id):
-        for application in self.applications:
-            if application.id == app_id:
-                return application
-
-
-    def addApplication(self, application):
-        """ Adds a new application to the applications list"""
-        self.applications.append(application)
-
-
-    def removeApplication(self, app_id):
-        """ Removes an application based on its id"""
-        self.applications = [application for application in self.applications if application.id != app_id]
 
 
     def getDevices(self):
@@ -53,39 +54,67 @@ class Environment(object):
 
 
     def getDeviceByID(self, dev_id):
+        """
+        Gets the first `Device` which ID matches `dev_id`.
+        `Device` IDs are supposed to be unique by construction.
+
+        Args:
+        ----
+        device_id: `int`
+            device identifier
+        """
         for device in self.devices:
             if device.id == dev_id:
                 return device
 
 
     def addDevice(self, device):
-        """ Adds a new device to the devices list"""
+        """ Adds a new `Device` to the devices list"""
         self.devices.append(device)
+
+
+    def getApplicationByID(self, app_id):
+        """
+        Gets the first `Application` which ID matches `app_id`.
+        `Application` IDs are supposed to be unique by construction.
+        """
+        for application in self.applications:
+            if application.id == app_id:
+                return application
+
+
+    def addApplication(self, application):
+        """ Adds a new `Application` to the applications list"""
+        self.applications.append(application)
+
+
+    def removeApplication(self, app_id):
+        """
+        Removes all `Application` with given `app_id`
+        `Application` IDs are supposed to be unique, so only one app should be removed
+        """
+        self.applications = [application for application in self.applications if application.id != app_id]
+
 
     # Let's try to code a routing table
     def generate_routing_table(self):
         """
-        Generates a routing table on each device
+        Generates a routing table on each device in `self.devices`
         The function first lists the neighboring device, then iterate on the list to build a routing table based on shortest distance among links
-
-        Args:
-            env : Environment
-
-        Returns:
-            None
+        This is bruteforcing the shortest path betweend devices, we can probably create a better algorithm, but this is not the point for now.
         """
 
-        number_of_devices = len(self.devices)
+        number_of_devices = len(self.getDevices())
 
         self.physical_network_links = [0] * number_of_devices * number_of_devices
 
-        for device_1 in self.devices:
+        for device_1 in self.getDevices():
             device_1_id = device_1.getDeviceID()
-            for device_2 in self.devices:
+            for device_2 in self.getDevices():
                 device_2_id = device_2.getDeviceID()
                 distance = custom_distance(device_1.x,device_1.y,device_1.z,device_2.x,device_2.y,device_2.z)
                 new_physical_network_link_id = device_1_id*number_of_devices + device_2_id
-                if distance < wifi_range:
+                if distance < self.config.wifi_range:
                     device_1.addToRoutingTable(device_2_id, device_2_id, distance)
                     device_2.addToRoutingTable(device_1_id, device_1_id, distance)
                     new_physical_network_link = PhysicalNetworkLink(device_1_id, device_2_id)
@@ -101,11 +130,17 @@ class Environment(object):
 
         changes = True
 
+        # Approximative number of loops : {100 : 7, 200 : 6}
+        print("Generating Routing Table, (maximal value is arbitrary)")
+        logging.info("Generating routing table")
+        progress_bar = tqdm(total=int(number_of_devices*number_of_devices*10))
+
         while(changes):
             ## As long as the values change
             changes = False
             for i in range(number_of_devices):
                 for j in range(number_of_devices):
+                    progress_bar.update(1)
                     device_i = self.getDeviceByID(i)
                     device_j = self.getDeviceByID(j)
 
@@ -136,7 +171,7 @@ class Environment(object):
                     min_array = dist_array[min_index]
 
                     if min_array < distance:
-                    ## If we observe any change, update and break the loop
+                    ## If we observe any change, update and break the loop, keep going
                         changes = True
                         device_i.addToRoutingTable(device_j.id, min_nh, min_array)
 
