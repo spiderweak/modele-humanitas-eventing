@@ -1,5 +1,5 @@
 *.png
-*.sqlite
+modules/db/archives
 *.ipynb
 *.pyc
 *.csv
