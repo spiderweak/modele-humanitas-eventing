@@ -4,3 +4,7 @@ logfile : log.txt
 
 database_url:
     device: db.sqlite
+
+application_number : 5000
+
+device_number : 200
