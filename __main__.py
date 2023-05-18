@@ -31,6 +31,7 @@ import random
 import os.path
 
 import logging
+import datetime
 
 
 
@@ -54,7 +55,9 @@ def parse_args():
     parser.add_argument('--application',
                         help='yaml application descriptor',
                         default='app.yaml')
-
+    parser.add_argument('--scratchdevicedb',
+                        help='Boolean, default to False, archives device database before runnning',
+                        default=False)
     options = parser.parse_args()
 
     return options
@@ -92,6 +95,11 @@ def main():
 
     logging.info('\n')
 
+    if options.scratchdevicedb:
+        date_string = datetime.datetime.now().isoformat(timespec='minutes').replace(":","-")
+        if os.path.isfile(parsed_yaml['database_url']['device']):
+            os.rename(parsed_yaml['database_url']['device'], f"modules/db/archives/{parsed_yaml['database_url']['device']}-{date_string}")
+
     if not os.path.isfile(parsed_yaml['database_url']['device']):
         logging.info("Generating random device positions")
         devices = list()
@@ -126,18 +134,6 @@ def main():
             my_application.app_yaml_parser(app_yaml)
 
             Placement("Placement", event_queue, my_application, current_device_id).add_to_queue()
-
-            """
-            if deployed_onto_devices:
-                deployment_event = Deploy("Deployment", event_queue)
-                deployment_event.process(environment, my_application, deployed_onto_devices)
-                logging.info(f"Deployment success")
-                logging.info(f"application {my_application.id} successfully deployed")
-                for i in range(len(my_application.processus_list)):
-                    logging.info(f"Deploying processus {my_application.processus_list[i].id} on device {deployed_onto_devices[i]}")
-            else:
-                logging.error(f"\nDeployment failure for application {my_application.id}")
-            """
 
             current_event = None
 
