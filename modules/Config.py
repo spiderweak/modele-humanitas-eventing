@@ -160,8 +160,8 @@ class Config():
 
         try:
             dump_from_db(env, self.database_file)
-        except:
-            pass
+        except Exception as e:
+            raise e
 
 
     def generate_and_plot_devices_positions(self, devices):
@@ -170,10 +170,8 @@ class Config():
         Each device will be represented with its coordinates (x, y, z)
 
         Args:
+        ----
             devices : list, List of coords
-
-        Returns:
-            None
         """
         n_devices = self.number_of_devices # Number of devices
 
