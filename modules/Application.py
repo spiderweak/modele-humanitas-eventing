@@ -9,6 +9,8 @@ import random
 
 from modules.Processus import Processus
 
+TIME_PERIOD = 24 * 60 * 60 * 100
+
 class Application:
 
     id = 0
@@ -129,13 +131,13 @@ class Application:
 
         # Random value between 15 and 60 minutes
 
-        self.setAppDuration(random.randint(15*60*1000, 60*60*1000))
+        self.setAppDuration(random.randint(TIME_PERIOD/96, TIME_PERIOD/24))
 
-    def setAppDuration(self, duration = 15*60*1000):
+    def setAppDuration(self, duration = TIME_PERIOD/48):
         """
         Application execution duration in milliseconds
 
-        Default value is 15 minutes
+        Default value is 30 minutes
 
         Args:
         ----

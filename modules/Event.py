@@ -117,13 +117,6 @@ class Placement(Event):
 
         Args:
             env : Environment
-
-        Returns:
-            (deployment_success, latency, operational_latency, deployed_onto_devices)
-                deployment_success : Bool, deployment success boolean
-                latency : float, cumulative latency along deployment procedure
-                operational_latency : float, cumulative latency between deployed processus based on links quality
-                deployed_onto_devices : list, device ids for all devices onto application were deployed
         """
 
         deployment_latency_test = 0
@@ -141,8 +134,10 @@ class Placement(Event):
         deployment_success = True
 
         tentatives = 0
+        from modules.Environment import Environment
+        env = Environment()
 
-        while len(deployed_onto_devices) < self.application_to_place.num_procs and tentatives < MAX_TENTATIVES:
+        while len(deployed_onto_devices) < self.application_to_place.num_procs and tentatives < len(env.getDevices())*len(env.getDevices()):
 
             tentatives +=1
 
@@ -221,7 +216,7 @@ class Placement(Event):
             print(f"application id : {self.application_to_place.id} , {self.application_to_place.num_procs} processus not deployed")
 
         if deployed_onto_devices:
-            Deploy("Deployment", self.queue, self.application_to_place, deployed_onto_devices, event_time=int(self.get_time()+deployment_latency_test)).add_to_queue()
+            Deploy("Deployment", self.queue, self.application_to_place, deployed_onto_devices, event_time=int((self.get_time()+deployment_latency_test)/10)*10).add_to_queue()
 
 
         return deployment_latency_test, deployed_onto_devices

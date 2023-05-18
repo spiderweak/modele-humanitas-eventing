@@ -51,6 +51,8 @@ class Config():
                         "z_min" : 0,
                         "z_max" : 0}
 
+        self.app_duration = 0
+
         # Parsing the folder
         try:
             with open(options.config, 'r') as config_file:
@@ -146,6 +148,14 @@ class Config():
             except (KeyError,TypeError) as e:
                 logging.error(f"Default simulation value {self._3D_space[boundary]} used for entry {boundary}")
 
+        # Setting application durations
+        try:
+            self.app_duration = int(self.parsed_yaml['app_duration'])
+        except (KeyError,TypeError) as e:
+            logging.error(f"Default simulation value {self.app_duration} used for entry {e}")
+
+
+        # Database interation
         try:
             if not os.path.isfile(self.database_file):
                 logging.info("Generating random device positions")

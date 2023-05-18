@@ -29,6 +29,8 @@ class Simulation(object):
             application = Application()
             application.randomAppInit()
             application.setAppID(i)
+            if env.config.app_duration != 0:
+                application.setAppDuration(env.config.app_duration)
 
             # Getting a random device starting point
             device_id = random.choice(range(len(env.devices)))
