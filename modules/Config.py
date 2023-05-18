@@ -96,13 +96,14 @@ class Config():
             logging.error(f"No entry in configuration file for {e}, default solution uses 'db.sqlite' in the project's root")
 
         # Device database renaming
-        not_all_checked = True
-        while not_all_checked:
+        dont_loop_infinitely = 0
+        while dont_loop_infinitely < 5:
             try:
+                dont_loop_infinitely +=1
                 if options.scratchdevicedb:
                     date_string = datetime.datetime.now().isoformat(timespec='minutes').replace(":","-")
                     os.rename(self.database_file, f"modules/db/archives/{self.database_file}-{date_string}")
-                not_all_checked = False
+                break
             except KeyError as e:
                 logging.error(f"No entry in configuration file for {e}, default solution uses existing database even if 'scratchdevicedb' parameter was given ")
             except FileNotFoundError:
@@ -111,7 +112,7 @@ class Config():
                     os.makedirs("modules/db/archives/")
                 else:
                     logging.error(f"'{self.database_file}' not found, no need to rename")
-                    not_all_checked = False
+                    break
             except TypeError:
                 logging.error("Configuration File Not Found, default solution is using existing database")
 
