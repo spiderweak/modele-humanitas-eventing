@@ -1,0 +1,6 @@
+loglevel : info
+
+logfile : log.txt
+
+database_url:
+    device: db.sqlite

@@ -1,0 +1,6 @@
+version: ''
+
+services:
+  modelisation-2d:
+    build: .
+# Add an additional database
