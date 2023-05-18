@@ -14,18 +14,21 @@ class Environment(object):
     ----------
     current_time: `int`
         The date and time of the current event.
-    config : `Config`
+    config: `Config`
         Environment configuration exported from the ``Config`` class
-    devices: list of `Device`
+    devices : list of `Device`
         List of ``Device`` objects storing device information (position, resource availability, routing table...)
-    applications : list of `Application` to deploy
+    applications: list of `Application` to deploy
         List of ``Application`` objects storing application information (processus, virtual links... )
-    physical_network_links : list of physical network links
+    physical_network_links: list of physical network links
         List of Physical links between devices, connectivity matrix
     """
 
 
     def __init__(self):
+        """
+        The ``Environment`` class is initialized to empty lists, None or 0 values
+        """
 
         self.current_time = 0
 
@@ -59,7 +62,7 @@ class Environment(object):
 
         Args:
         ----
-        device_id: `int`
+        dev_id: `int`
             device identifier
         """
         for device in self.devices:

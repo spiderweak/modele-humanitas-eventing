@@ -9,9 +9,28 @@ import random
 
 from modules.Processus import Processus
 
+# Number of group of 10 ms
 TIME_PERIOD = 24 * 60 * 60 * 100
 
 class Application:
+    """
+    An application is defined as a graph of processus
+    (array of array, for now, might be a networkx graph)
+    Initialized to empty data
+
+    Attributes:
+    ----------
+    id: `int`
+        Application ID
+    duration: `int`
+        Application duration in tens of milliseconds
+    processus_list: list of `Processus`
+        List of `Processus` application members
+    proc_links: matrix of `int`
+        Integer value corresponding to bandwidth request over virtual links
+    deployment_info: dict of `Processus`:`int`
+        Dictionary linking `Processus` and `Device` IDs
+    """
 
     id = 0
 
@@ -22,12 +41,12 @@ class Application:
         Class method for id generation
         Assigns id then increment for next generation
 
-        Args:
-            None
-
         Returns:
-            result : int, Application ID
+        -------
+        result: `int`
+            Application ID
         """
+
         result = cls.id
         cls.id +=1
         return result
@@ -40,13 +59,16 @@ class Application:
         Initializes to empty data
 
         Args:
-            num_procs : int, default 1, number of processus in the application
-
-        Returns:
-            None
+        ----
+        num_procs : `int`
+            default 1, number of processus in the application
         """
 
         self.id = Application._generate_id()
+
+        # Application duration
+        self.duration = 0
+
         # Initializes the number of processus required by the application
         self.num_procs = num_procs
 
@@ -63,20 +85,16 @@ class Application:
 
         self.deployment_info = dict()
 
-        self.duration = 0
-
-        self.duration = self.setAppDuration()
 
     def setAppID(self, id):
         """
         Used to set an application's ID by hand if necessary
 
         Args:
+        ----
             id : int, new application ID
-
-        Returns:
-            None
         """
+
         self.id=id
 
 
@@ -86,12 +104,11 @@ class Application:
         Random initialization of the application
 
         Args:
+        ----
             num_procs : int, number of processus to consider
             num_proc_random : Bool, default to True for random number of processus deployed between 1 and num_proc
-
-        Returns:
-            None
         """
+
         # If numproc is set to random, randomize the number of processus deployed
         if num_proc_random:
             num_procs = random.randint(1,num_procs)
@@ -130,8 +147,8 @@ class Application:
         self.proc_links = proc_links
 
         # Random value between 15 and 60 minutes
-
         self.setAppDuration(random.randint(TIME_PERIOD/96, TIME_PERIOD/24))
+
 
     def setAppDuration(self, duration = TIME_PERIOD/48):
         """
@@ -142,10 +159,11 @@ class Application:
         Args:
         ----
         duration: `int`
-            Application duration in milliseconds
+            Application duration in tens of milliseconds
         """
+
         self.duration = duration
-        pass
+
 
 
     def app_yaml_parser(self, app_yaml):
@@ -153,11 +171,11 @@ class Application:
         Parser to load application characteristics from yaml file.
 
         Args:
-            app_yaml : dictionary from yaml file content
-
-        Returns:
-            None
+        ----
+        app_yaml : `dict`
+            dictionary from yaml file content parsing
         """
+
         application_content = app_yaml["Application"]
 
         self.num_procs = len(application_content)
@@ -178,6 +196,14 @@ class Application:
 
 
     def setDeploymentInfo(self, deployed_onto_device):
+        """
+        Creates a dictionary matching `Processus` and `Device` ID
+
+        Args:
+        ----
+        deployed_onto_device : list of `int`
+            List of devices IDs that reference processus hosts
+        """
 
         for i in range(len(deployed_onto_device)):
             self.deployment_info[self.processus_list[i]] = deployed_onto_device[i]
