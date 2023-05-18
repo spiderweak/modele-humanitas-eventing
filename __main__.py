@@ -22,8 +22,8 @@ from modules.db.interact_db import create_db
 from modules.db.interact_db import populate_db
 from modules.db.interact_db import dump_from_db
 
-from simulation import Simulation
-from simulation import generate_and_plot_devices_positions
+from modules.Simulation import Simulation
+from modules.Simulation import generate_and_plot_devices_positions
 
 import argparse
 import yaml
