@@ -12,12 +12,7 @@ from modules.Visualization import Visualizer
 
 from modules.ResourceManagement import custom_distance
 
-
-# GLOBAL VARIABLES (bad practice)
-N_DEVICES = 40
-NUM_APPS = 5000
 TIME_PERIOD = 24 * 60 * 60 * 100
-wifi_range = 9
 
 class Simulation(object):
 
@@ -27,9 +22,9 @@ class Simulation(object):
         self.__queue = EventQueue(self.__env)
 
         # Deploying 500 applictions
-        arrival_times = [int(time) for time in np.random.uniform(0, TIME_PERIOD, NUM_APPS)]
+        arrival_times = [int(time) for time in np.random.uniform(0, TIME_PERIOD, env.config.number_of_applications)]
 
-        for i in range(NUM_APPS):
+        for i in range(env.config.number_of_applications):
             # Generating 1 random application
             application = Application()
             application.randomAppInit()
@@ -66,78 +61,6 @@ class Simulation(object):
         visu.final_results(self.__env)
 
         logging.info("\n***************\nEND OF SIMULATION\n***************")
-
-def generate_and_plot_devices_positions(devices):
-    """
-    Defines random devices position
-    Each device will be represented with its coordinates (x, y, z)
-
-    Args:
-        devices : list, List of coords
-
-    Returns:
-        None
-    """
-    n_devices = N_DEVICES # Number of devices
-
-    floor_size_x = 40 # in meters
-    floor_size_y = 40 # in meters
-
-
-    for j in range(n_devices):
-        # Processing device position, random x, y, z fixed to between various values (z=0 for now)
-        x = round(random.random() * floor_size_x,2)
-        y = round(random.random() * floor_size_y,2)
-        z = 0
-
-        devices.append([x,y,z])
-
-
-    # We'll try our hand on plotting everything in a graph
-
-    # Creating a graph
-    G = nx.Graph()
-
-    # We add the nodes, our devices, to our graph
-    for i in range(len(devices)):
-        G.add_node(i, pos=devices[i])
-
-    # We add the edges, to our graph, which correspond to wifi reachability
-
-    for i in range(len(devices)):
-        for j in range(i+1, len(devices)):
-            distance = custom_distance(devices[i][0],devices[i][1],devices[i][2],devices[j][0],devices[j][1],devices[j][2])
-            if distance < wifi_range:
-                ### We add edges if we have coverage
-                G.add_edge(i, j)
-
-    # Let's try plotting the network
-
-    # We alread have the coords, but let's process it again just to be sure
-    x_coords, y_coords, z_coords = zip(*devices)
-
-    #  We create a 3D scatter plot again
-    fig = plt.figure(figsize=(10, 10))
-    ax = fig.add_subplot()
-
-    # Lets trace the graph by hand
-    ## Placing the nodes
-    ax.scatter(x_coords, y_coords, c='b')
-    ## Placing the edges by hand
-    for i, j in G.edges():
-        ax.plot([devices[i][0], devices[j][0]],
-                [devices[i][1], devices[j][1]], c='lightgray')
-
-    # Set the labels
-    ax.set_xlabel('X')
-    ax.set_ylabel('Y')
-
-    # Title
-    ax.set_title(f'Undirected Graph of Devices with Edge Distance < {wifi_range}')
-
-    # Saves the graph in a file
-    plt.savefig("fig/graph.png")
-
 
 # Now, we can play with deployments
 def simulate_deployments(env):

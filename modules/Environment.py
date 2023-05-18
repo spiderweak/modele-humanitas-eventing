@@ -27,6 +27,10 @@ class Environment(object):
         self.devices = []
         self.physical_network_links = [0]
 
+        self.config = None
+    
+    def setConfig(self, config):
+        self.config = config
 
     def getApplicationByID(self, app_id):
         for application in self.applications:

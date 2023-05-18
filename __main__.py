@@ -8,6 +8,8 @@ Usage:
 
 """
 
+from modules.Config import Config
+
 from modules.Application import Application
 from modules.Device import Device
 from modules.PhysicalNetworkLink import PhysicalNetworkLink
@@ -18,28 +20,13 @@ from modules.Environment import Environment
 from modules.Event import (Event, Placement, Deploy)
 
 
-from modules.db.interact_db import create_db
-from modules.db.interact_db import populate_db
-from modules.db.interact_db import dump_from_db
-
 from modules.Simulation import Simulation
-from modules.Simulation import generate_and_plot_devices_positions
 
 import argparse
 import yaml
 import random
-import os.path
 
 import logging
-import datetime
-
-
-
-# GLOBAL VARIABLES (bad practice)
-N_DEVICES = 40
-
-## Setting the wifi range
-#wifi_range = 6
 
 logger = logging.getLogger(__name__)
 
@@ -66,52 +53,11 @@ def main():
 
     options = parse_args()
 
-    with open(options.config, 'r') as config_file:
-        parsed_yaml = yaml.safe_load(config_file)
-
-    # Log level
-    try:
-        match parsed_yaml['loglevel']:
-            case 'error':
-                loglevel = logging.ERROR
-            case 'warning':
-                loglevel = logging.WARNING
-            case 'info':
-                loglevel = logging.INFO
-            case 'debug':
-                loglevel = logging.DEBUG
-            case _:
-                loglevel = logging.INFO
-    except KeyError:
-        loglevel = logging.INFO
-
-    # Log file
-    try:
-        logfilename = parsed_yaml['logfile']
-    except KeyError:
-        logfilename = 'log.txt'
-
-    logging.basicConfig(filename=logfilename, encoding='utf-8', level=loglevel)
-
-    logging.info('\n')
-
-    if options.scratchdevicedb:
-        date_string = datetime.datetime.now().isoformat(timespec='minutes').replace(":","-")
-        if os.path.isfile(parsed_yaml['database_url']['device']):
-            os.rename(parsed_yaml['database_url']['device'], f"modules/db/archives/{parsed_yaml['database_url']['device']}-{date_string}")
-
-    if not os.path.isfile(parsed_yaml['database_url']['device']):
-        logging.info("Generating random device positions")
-        devices = list()
-        generate_and_plot_devices_positions(devices)
-        create_db(parsed_yaml['database_url']['device'])
-        populate_db(devices, parsed_yaml['database_url']['device'])
-
-    logging.info("Generating simulation environment")
     environment = Environment()
 
-    dump_from_db(environment, parsed_yaml['database_url']['device'])
+    config = Config(options, environment)
 
+    environment.setConfig(config)
     environment.generate_routing_table()
 
     if options.simulate:
