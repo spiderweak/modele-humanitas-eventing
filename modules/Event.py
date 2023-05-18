@@ -238,13 +238,13 @@ class Deploy(Event):
 
         operational_latency = 0
 
-        logging.debug(f"Deploying application id : {self.application_to_deploy.id} , {self.application_to_deploy.num_procs} processus on {self.devices_destinations}")
+        logging.info(f"Deploying application id : {self.application_to_deploy.id} , {self.application_to_deploy.num_procs} processus on {self.devices_destinations}")
 
         for i in range(self.application_to_deploy.num_procs):
 
             device_id = self.devices_destinations[i]
 
-            logging.debug(f"Deploying processus : {self.application_to_deploy.processus_list[i].id} device {device_id}")
+            logging.info(f"Deploying processus : {self.application_to_deploy.processus_list[i].id} device {device_id}")
 
             env.getDeviceByID(device_id).allocateDeviceCPU(self.time, self.application_to_deploy.processus_list[i].cpu_request)
             env.getDeviceByID(device_id).allocateDeviceGPU(self.time, self.application_to_deploy.processus_list[i].gpu_request)

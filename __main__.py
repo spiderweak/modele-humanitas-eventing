@@ -24,7 +24,6 @@ from modules.db.interact_db import dump_from_db
 
 from simulation import Simulation
 from simulation import generate_and_plot_devices_positions
-from simulation import simulate_deployments
 
 import argparse
 import yaml
@@ -108,11 +107,10 @@ def main():
     environment.generate_routing_table()
 
     if options.simulate:
+
         logging.info("Running complete simulation")
         simulation = Simulation(environment)
         simulation.simulate()
-
-        return 0,1
 
     else:
         logging.info("Testing a single app deployment")
@@ -121,19 +119,17 @@ def main():
         my_application = Application()
 
         event_queue = EventQueue(environment)
-        placement_event = Placement("Placement",event_queue)
-
-        deployment_event = Deploy("Deployment", event_queue)
-
 
         with open(options.application, 'r') as app_config:
 
             app_yaml = yaml.safe_load(app_config)
             my_application.app_yaml_parser(app_yaml)
 
-            deployed_onto_devices = placement_event.process(environment, my_application, current_device_id)
+            Placement("Placement", event_queue, my_application, current_device_id).add_to_queue()
 
+            """
             if deployed_onto_devices:
+                deployment_event = Deploy("Deployment", event_queue)
                 deployment_event.process(environment, my_application, deployed_onto_devices)
                 logging.info(f"Deployment success")
                 logging.info(f"application {my_application.id} successfully deployed")
@@ -141,10 +137,18 @@ def main():
                     logging.info(f"Deploying processus {my_application.processus_list[i].id} on device {deployed_onto_devices[i]}")
             else:
                 logging.error(f"\nDeployment failure for application {my_application.id}")
+            """
 
-        return deployed_onto_devices
+            current_event = None
 
+            while not event_queue.is_empty():
+                event_time, event_index, current_event = event_queue.pop()
 
+                process_event = current_event.process(environment)
+
+                logging.debug("process_event: {}".format(process_event))
+
+            logging.info("\n***************\nEND OF TEST\n***************")
 
 if __name__ == '__main__':
     logger.info("MAIN")
