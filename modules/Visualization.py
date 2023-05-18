@@ -149,12 +149,10 @@ class Visualizer():
         # Percentages
 
         df['cpu'] = df['cpu'] / sum(v for _,v in cpu_limit_data.items()) * 100
-        print(sum(v for _,v in cpu_limit_data.items()))
         df['gpu'] = df['gpu'] / sum(v for _,v in gpu_limit_data.items()) * 100
-        print(sum(v for _,v in gpu_limit_data.items()))
         df['mem'] = df['mem'] / sum(v for _,v in mem_limit_data.items()) * 100
-        print(sum(v for _,v in mem_limit_data.items()))
         df['disk'] = df['disk'] / sum(v for _,v in disk_limit_data.items())* 100
-        print(sum(v for _,v in disk_limit_data.items()))
 
         df.to_csv("results.csv")
+
+        # Can be good to keep track on deployment requests, failures, and eventually to backoff placement failures

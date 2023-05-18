@@ -15,7 +15,7 @@ from modules.ResourceManagement import custom_distance
 
 # GLOBAL VARIABLES (bad practice)
 N_DEVICES = 40
-NUM_APPS = 500
+NUM_APPS = 5000
 TIME_PERIOD = 24 * 60 * 60 * 100
 wifi_range = 9
 
@@ -27,7 +27,7 @@ class Simulation(object):
         self.__queue = EventQueue(self.__env)
 
         # Deploying 500 applictions
-        arrival_times = sorted([int(time) for time in np.random.uniform(0, TIME_PERIOD, NUM_APPS)])
+        arrival_times = [int(time) for time in np.random.uniform(0, TIME_PERIOD, NUM_APPS)]
 
         for i in range(NUM_APPS):
             # Generating 1 random application
