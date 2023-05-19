@@ -66,10 +66,10 @@ class Placement(Event):
             Boolean, True if deployable, else False
         """
 
-        if proc.cpu_request + device.getDeviceCPUUsage() <= device.resource_limit['cpu']:
-            if proc.gpu_request + device.getDeviceGPUUsage() <= device.resource_limit['gpu']:
-                if proc.mem_request + device.getDeviceMemUsage() <= device.resource_limit['mem']:
-                    if proc.disk_request + device.getDeviceDiskUsage() <= device.resource_limit['disk']:
+        if proc.cpu_request + device.getDeviceResourceUsage('cpu') <= device.resource_limit['cpu']:
+            if proc.gpu_request + device.getDeviceResourceUsage('gpu') <= device.resource_limit['gpu']:
+                if proc.mem_request + device.getDeviceResourceUsage('mem')  <= device.resource_limit['mem']:
+                    if proc.disk_request + device.getDeviceResourceUsage('disk')  <= device.resource_limit['disk']:
                         return True
         return False
 
@@ -238,10 +238,12 @@ class Deploy(Event):
 
             logging.info(f"Deploying processus : {self.application_to_deploy.processus_list[i].id} device {device_id}")
 
-            env.getDeviceByID(device_id).allocateDeviceResource(self.time, 'cpu', self.application_to_deploy.processus_list[i].cpu_request)
-            env.getDeviceByID(device_id).allocateDeviceGPU(self.time, self.application_to_deploy.processus_list[i].gpu_request)
-            env.getDeviceByID(device_id).allocateDeviceMem(self.time, self.application_to_deploy.processus_list[i].mem_request)
-            env.getDeviceByID(device_id).allocateDeviceDisk(self.time, self.application_to_deploy.processus_list[i].disk_request)
+            allocation_request = {'cpu': self.application_to_deploy.processus_list[i].cpu_request,
+                                'gpu': self.application_to_deploy.processus_list[i].gpu_request,
+                                'mem': self.application_to_deploy.processus_list[i].mem_request,
+                                'disk': self.application_to_deploy.processus_list[i].disk_request}
+
+            env.getDeviceByID(device_id).allocateAllResources(self.time, allocation_request)
 
             # deploy links
             for j in range(i):
@@ -282,11 +284,9 @@ class Undeploy(Event):
 
             logging.debug(f"Undeploying processus : {process.id} device {device_id}")
 
-            env.getDeviceByID(device_id).releaseDeviceCPU(self.time, process.cpu_request)
-            env.getDeviceByID(device_id).releaseDeviceGPU(self.time, process.gpu_request)
-            env.getDeviceByID(device_id).releaseDeviceMem(self.time, process.mem_request)
-            env.getDeviceByID(device_id).releaseDeviceDisk(self.time, process.disk_request)
+            release_request = {'cpu': process.cpu_request, 'gpu': process.gpu_request, 'mem': process.mem_request, 'disk': process.disk_request}
 
+            env.getDeviceByID(device_id).releaseAllResources(self.time, release_request)
 
             # undeploy links
             """

@@ -11,7 +11,7 @@ class Visualizer():
 
     def visualize_environment(self, env):
 
-        data = env.getDeviceByID(3).cpu_usage_history
+        data = env.getDeviceByID(3).resource_usage_history['cpu']
 
         x,y = zip(*data)
 
@@ -44,7 +44,7 @@ class Visualizer():
             cpu_data[device.getDeviceID()] = [(previous_time, previous_value)]
             cpu_limit_data[device.getDeviceID()] = device.resource_limit['cpu']
 
-            for time,value in device.cpu_usage_history:
+            for time,value in device.resource_usage_history['cpu']:
                 if time != previous_time:
                     cpu_data[device.getDeviceID()].append((time,value-previous_value))
                     previous_time = time
@@ -56,7 +56,7 @@ class Visualizer():
             gpu_data[device.getDeviceID()] = [(previous_time, previous_value)]
             gpu_limit_data[device.getDeviceID()] = device.resource_limit['gpu']
 
-            for time,value in device.gpu_usage_history:
+            for time,value in device.resource_usage_history['gpu']:
                 if time != previous_time:
                     gpu_data[device.getDeviceID()].append((time,value-previous_value))
                     previous_time = time
@@ -68,7 +68,7 @@ class Visualizer():
             mem_data[device.getDeviceID()] = [(previous_time, previous_value)]
             mem_limit_data[device.getDeviceID()] = device.resource_limit['mem']
 
-            for time,value in device.mem_usage_history:
+            for time,value in device.resource_usage_history['mem']:
                 if time != previous_time:
                     mem_data[device.getDeviceID()].append((time,value-previous_value))
                     previous_time = time
@@ -80,7 +80,7 @@ class Visualizer():
             disk_data[device.getDeviceID()] = [(previous_time, previous_value)]
             disk_limit_data[device.getDeviceID()] = device.resource_limit['disk']
 
-            for time,value in device.disk_usage_history:
+            for time,value in device.resource_usage_history['disk']:
                 if time != previous_time:
                     disk_data[device.getDeviceID()].append((time,value-previous_value))
                     previous_time = time
