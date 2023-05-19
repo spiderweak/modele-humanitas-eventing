@@ -6,20 +6,25 @@ def fit_resource(new_value, limit_value):
         return 1
 
 
-def custom_distance(x1, y1, z1, x2, y2, z2):
+def custom_distance(A,B):
     """
     Defines a custom distance for device wireless coverage to account for less coverage due to floor interception.
 
+    If A and B are not of the same size, distance is calculated among the first values up to min(len(A),len(B))
+
     Args:
-        x1 : x value, device 1
-        z1 : z value, device 1
-        y1 : y value, device 1
-        x2 : x value, device 2
-        y2 : y value, device 2
-        z2 : z value, device 2
+    ----
+    A : `list`
+        List of coords for point A
+    B : `list`
+        List of coords for point B
 
     Returns:
-        distance : int, distance (as coverage) between device 1 and device 2.
+    -------
+    distance : `int`
+        Distance (as coverage) between A and B.
     """
-    distance = ((x2-x1)**2 + (y2-y1)**2 + (z2-z1)**2)**0.5
-    return distance
+    squared_distance = 0
+    for a,b in zip(A,B):
+        squared_distance += (b-a)**2
+    return squared_distance ** 0.5

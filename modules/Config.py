@@ -46,7 +46,7 @@ class Config():
         config_file_not_found = False
 
         database_filename = 'db.sqlite'
-        
+
         self.database_file = Database(database_filename)
 
         self.number_of_applications = 500
@@ -149,8 +149,6 @@ class Config():
         except TypeError:
             logging.error("Configuration File Not Found, default simulations is 6 meters")
 
-        devices = list()
-
         # Simulated 2D/3D space
         for boundary in self._3D_space.keys():
             try:
@@ -171,7 +169,7 @@ class Config():
         try:
             if not os.path.isfile(database_filename):
                 logging.info("Generating random device positions")
-                devices = list()
+                devices = dict()
                 self.generate_and_plot_devices_positions(devices)
                 self.database_file.create_db()
                 self.database_file.populate_db(devices)
@@ -193,17 +191,18 @@ class Config():
 
         Args:
         ----
-            devices : list, List of coords
+        devices : `dict`
+            Coords dictionary
         """
         n_devices = self.number_of_devices # Number of devices
 
-        for j in range(n_devices):
+        for dev_id in range(n_devices):
             # Processing device position, random x, y, z fixed to between various values (z=0 for now)
             x = round(random.random() * (self._3D_space['x_max'] - self._3D_space['x_min']) + self._3D_space['x_min'],2)
             y = round(random.random() * (self._3D_space['y_max'] - self._3D_space['y_min']) + self._3D_space['y_min'],2)
             z = round(random.random() * (self._3D_space['z_max'] - self._3D_space['z_min']) + self._3D_space['z_min'],2)
 
-            devices.append([x,y,z])
+            devices[dev_id] = [x,y,z]
 
 
         # We'll try our hand on plotting everything in a graph
@@ -212,22 +211,23 @@ class Config():
         G = nx.Graph()
 
         # We add the nodes, our devices, to our graph
-        for i in range(len(devices)):
-            G.add_node(i, pos=devices[i])
+        for dev_id in devices.keys():
+            G.add_node(dev_id, pos=devices[dev_id])
 
         # We add the edges, to our graph, which correspond to wifi reachability
 
-        for i in range(len(devices)):
-            for j in range(i+1, len(devices)):
-                distance = custom_distance(devices[i][0],devices[i][1],devices[i][2],devices[j][0],devices[j][1],devices[j][2])
-                if distance < self.wifi_range:
-                    ### We add edges if we have coverage
-                    G.add_edge(i, j)
+        for dev_id in devices.keys():
+            for other_dev_id in devices.keys():
+                if dev_id < other_dev_id:
+                    distance = custom_distance(devices[dev_id],devices[other_dev_id])
+                    if distance < self.wifi_range:
+                        ### We add edges if we have coverage
+                        G.add_edge(dev_id, other_dev_id)
 
         # Let's try plotting the network
 
         # We alread have the coords, but let's process it again just to be sure
-        x_coords, y_coords, z_coords = zip(*devices)
+        x_coords, y_coords, z_coords = zip(*devices.values())
 
         #  We create a 3D scatter plot again
         fig = plt.figure(figsize=(10, 10))
