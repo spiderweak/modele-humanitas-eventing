@@ -40,12 +40,6 @@ class Device:
         """
         Initializes the device with basic values
         Assigns ID, initial position, resource values, routing table and resource limits
-
-        Args:
-            None
-
-        Returns:
-            None
         """
         # ID setting
         self.id = Device._generate_id()
@@ -55,43 +49,24 @@ class Device:
         self.position = {'x':0, 'y':0, 'z':0}
 
         # Maximal limit for each device feature
-        ## CPU Limit (int) in number of CPUs, initialized to 2
-        self.cpu_limit = 2
-        ## GPU Limit (int) in number of GPUs, initialized to 2
-        self.gpu_limit = 2
-        ## RAM (int) in MegaBytes, initialized to 4 GigaBytes
-        self.mem_limit = 4 * 1024
-        ## Disk size (int) in MegaBytes, initialized to 250 GigaBytes
-        self.disk_limit = 250 * 1024
+        self.resource_limit = {'cpu' : 2, 'gpu' : 2, 'mem' : 4 * 1024, 'disk' : 250 * 1024}
 
         # Current usage for each device feature
-        ## CPU Usage (float) in number of CPUs, initialized to 0
-        self.current_cpu_usage = 0
-        ## GPU Usage (float) in number of GPUs, initialized to 0
-        self.current_gpu_usage = 0
-        ## RAM Usage (float) in MegaBytes, initialized to 0
-        self.current_mem_usage = 0
-        ## Disk Usage (float) in MegaBytes, initialized to 0
-        self.current_disk_usage = 0
+        self.current_resource_usage = {'cpu' : 0, 'gpu' : 0, 'mem' : 0, 'disk' : 0}
 
         # Theorical usage for each device feature
-        ## CPU Usage (float) in number of CPUs, initialized to 0
-        self.theorical_cpu_usage = 0
-        ## GPU Usage (float) in number of GPUs, initialized to 0
-        self.theorical_gpu_usage = 0
-        ## RAM Usage (float) in MegaBytes, initialized to 0
-        self.theorical_mem_usage = 0
-        ## Disk Usage (float) in MegaBytes, initialized to 0
-        self.theorical_disk_usage = 0
+        self.theorical_resource_usage = {'cpu' : 0, 'gpu' : 0, 'mem' : 0, 'disk' : 0}
 
+        # Resource usage history
+        self.resource_usage_history = {'cpu' : [(0,0)], 'gpu' : [(0,0)], 'mem' : [(0,0)], 'disk' : [(0,0)]}
         ## CPU Usage (float) history, changes value when current usage changes, initialized at (0,0)
-        self.cpu_usage_history = [(0,0)]
+        self.cpu_usage_history = self.resource_usage_history['cpu']
         ## GPU Usage (float) in number of GPUs, initialized to 0
-        self.gpu_usage_history = [(0,0)]
+        self.gpu_usage_history = self.resource_usage_history['gpu']
         ## RAM Usage (float) in MegaBytes, initialized to 0
-        self.mem_usage_history = [(0,0)]
+        self.mem_usage_history = self.resource_usage_history['mem']
         ## Disk Usage (float) in MegaBytes, initialized to 0
-        self.disk_usage_history = [(0,0)]
+        self.disk_usage_history = self.resource_usage_history['disk']
 
         # Routing table, dict {destination:(next_hop, distance)}
         ## Initialized to {self.id:(self.id,0)} as route to self is considered as distance 0
@@ -139,57 +114,27 @@ class Device:
         self.position = position
 
 
-    def setDeviceCPULimit(self, cpu):
+    def setDeviceResourceLimit(self, resource, resource_limit):
         """
-        Sets Device CPU Limit
+        Sets Device Resource (CPU, GPU, Mem, Disk) Limit
 
         Args:
-            cpu : int, number of CPUs to set as device maximal limit
+        ----
+        resource : `str`
+            resource name
+        resource_limit : `float`
+            quantity of a given resource to set as device maximal limit
 
-        Returns:
-            None
         """
-        self.cpu_limit = cpu
+        self.resource_limit[resource] = resource_limit
 
+    def setAllResourceLimit(self, resources):
+        # Set all previous values to Zero
+        for resource in self.resource_limit:
+            self.setDeviceResourceLimit(resource, 0)
 
-    def setDeviceGPULimit(self, gpu):
-        """
-        Sets Device GPU Limit
-
-        Args:
-            gpu : int, number of GPUs to set as device maximal limit
-
-        Returns:
-            None
-        """
-        self.gpu_limit = gpu
-
-
-    def setDeviceMemLimit(self, mem):
-        """
-        Sets Device Memory Limit
-
-        Args:
-            mem : int, quantity of memory to set as device maximal limit, in MBytes
-
-        Returns:
-            None
-        """
-        self.mem_limit = mem
-
-
-    def setDeviceDiskLimit(self, disk):
-        """
-        Sets Device Disk Space Limit
-
-        Args:
-            mem : int, quantity of disk space to set as device maximal limit, in GBytes
-
-        Returns:
-            None
-        """
-        self.disk_limit = disk
-
+        for resource, resource_limit in resources.items():
+            self.setDeviceResourceLimit(resource, resource_limit)
 
     def allocateDeviceCPU(self, t, cpu, force = False, overconsume = False):
         """
@@ -210,31 +155,31 @@ class Device:
         if previous_time <= t or force:
 
             try:
-                retrofiting_coefficient = self.current_cpu_usage / self.theorical_cpu_usage
+                retrofiting_coefficient = self.current_resource_usage['cpu'] / self.theorical_resource_usage['cpu']
             except ZeroDivisionError:
                 retrofiting_coefficient = 1
 
 
-            self.theorical_cpu_usage += cpu
+            self.theorical_resource_usage['cpu'] += cpu
 
-            if self.theorical_cpu_usage < 0:
-                self.theorical_cpu_usage = 0
+            if self.theorical_resource_usage['cpu'] < 0:
+                self.theorical_resource_usage['cpu'] = 0
 
             if overconsume:
-                self.current_cpu_usage = self.theorical_cpu_usage
+                self.current_resource_usage['cpu'] = self.theorical_resource_usage['cpu']
             else:
-                if self.theorical_cpu_usage <= self.cpu_limit:
-                    self.current_cpu_usage = self.theorical_cpu_usage
+                if self.theorical_resource_usage['cpu'] <= self.resource_limit['cpu']:
+                    self.current_resource_usage['cpu'] = self.theorical_resource_usage['cpu']
                 else:
-                    retrofiting_coefficient = fit_resource(self.theorical_cpu_usage, self.cpu_limit)
-                    self.current_cpu_usage = self.cpu_limit
+                    retrofiting_coefficient = fit_resource(self.theorical_resource_usage['cpu'], self.resource_limit['cpu'])
+                    self.current_resource_usage['cpu'] = self.resource_limit['cpu']
 
-            if previous_value != self.current_cpu_usage:
+            if previous_value != self.current_resource_usage['cpu']:
                 if previous_time != t:
                     self.cpu_usage_history.append((t-1, previous_value))
-                    self.cpu_usage_history.append((t, self.current_cpu_usage))
+                    self.cpu_usage_history.append((t, self.current_resource_usage['cpu']))
                 else:
-                    self.cpu_usage_history[-1] = (t, self.current_cpu_usage)
+                    self.cpu_usage_history[-1] = (t, self.current_resource_usage['cpu'])
 
             return retrofiting_coefficient
 
@@ -247,8 +192,8 @@ class Device:
 
 
     def getDeviceCPUUsage(self):
-        if self.current_cpu_usage == self.cpu_usage_history[-1][1]:
-            return self.current_cpu_usage
+        if self.current_resource_usage['cpu'] == self.cpu_usage_history[-1][1]:
+            return self.current_resource_usage['cpu']
         else:
             raise ValueError("Please use the associated allocation function to allocate resources to prevent this message")
 
@@ -272,30 +217,30 @@ class Device:
         if previous_time <= t or force:
 
             try:
-                retrofiting_coefficient = self.current_gpu_usage / self.theorical_gpu_usage
+                retrofiting_coefficient = self.current_resource_usage['gpu'] / self.theorical_resource_usage['gpu']
             except ZeroDivisionError:
                 retrofiting_coefficient = 1
 
-            self.theorical_gpu_usage += gpu
+            self.theorical_resource_usage['gpu'] += gpu
 
-            if self.theorical_gpu_usage < 0:
-                self.theorical_gpu_usage = 0
+            if self.theorical_resource_usage['gpu'] < 0:
+                self.theorical_resource_usage['gpu'] = 0
 
             if overconsume:
-                self.current_gpu_usage = self.theorical_gpu_usage
+                self.current_resource_usage['gpu'] = self.theorical_resource_usage['gpu']
             else:
-                if self.theorical_gpu_usage <= self.gpu_limit:
-                    self.current_gpu_usage = self.theorical_gpu_usage
+                if self.theorical_resource_usage['gpu'] <= self.resource_limit['gpu']:
+                    self.current_resource_usage['gpu'] = self.theorical_resource_usage['gpu']
                 else:
-                    retrofiting_coefficient = fit_resource(self.theorical_gpu_usage, self.gpu_limit)
-                    self.current_gpu_usage = self.gpu_limit
+                    retrofiting_coefficient = fit_resource(self.theorical_resource_usage['gpu'], self.resource_limit['gpu'])
+                    self.current_resource_usage['gpu'] = self.resource_limit['gpu']
 
-            if previous_value != self.current_gpu_usage:
+            if previous_value != self.current_resource_usage['gpu']:
                 if previous_time != t:
                     self.gpu_usage_history.append((t-1, previous_value))
-                    self.gpu_usage_history.append((t, self.current_gpu_usage))
+                    self.gpu_usage_history.append((t, self.current_resource_usage['gpu']))
                 else:
-                    self.gpu_usage_history[-1] = (t, self.current_gpu_usage)
+                    self.gpu_usage_history[-1] = (t, self.current_resource_usage['gpu'])
 
             return retrofiting_coefficient
 
@@ -308,8 +253,8 @@ class Device:
 
 
     def getDeviceGPUUsage(self):
-        if self.current_gpu_usage == self.gpu_usage_history[-1][1]:
-            return self.current_gpu_usage
+        if self.current_resource_usage['gpu'] == self.gpu_usage_history[-1][1]:
+            return self.current_resource_usage['gpu']
         else:
             raise ValueError("Please use the associated allocation function to allocate resources to prevent this message")
 
@@ -333,30 +278,30 @@ class Device:
         if previous_time <= t or force:
 
             try:
-                retrofiting_coefficient = self.current_mem_usage / self.theorical_mem_usage
+                retrofiting_coefficient = self.current_resource_usage['mem'] / self.theorical_resource_usage['mem']
             except ZeroDivisionError:
                 retrofiting_coefficient = 1
 
-            self.theorical_mem_usage += mem
+            self.theorical_resource_usage['mem'] += mem
 
-            if self.theorical_mem_usage < 0:
-                self.theorical_mem_usage = 0
+            if self.theorical_resource_usage['mem'] < 0:
+                self.theorical_resource_usage['mem'] = 0
 
             if overconsume:
-                self.current_mem_usage = self.theorical_mem_usage
+                self.current_resource_usage['mem'] = self.theorical_resource_usage['mem']
             else:
-                if self.theorical_mem_usage <= self.mem_limit:
-                    self.current_mem_usage = self.theorical_mem_usage
+                if self.theorical_resource_usage['mem'] <= self.resource_limit['mem']:
+                    self.current_resource_usage['mem'] = self.theorical_resource_usage['mem']
                 else:
-                    retrofiting_coefficient = fit_resource(self.theorical_mem_usage, self.mem_limit)
-                    self.current_mem_usage = self.mem_limit
+                    retrofiting_coefficient = fit_resource(self.theorical_resource_usage['mem'], self.resource_limit['mem'])
+                    self.current_resource_usage['mem'] = self.resource_limit['mem']
 
-            if previous_value != self.current_mem_usage:
+            if previous_value != self.current_resource_usage['mem']:
                 if previous_time != t:
                     self.mem_usage_history.append((t-1, previous_value))
-                    self.mem_usage_history.append((t, self.current_mem_usage))
+                    self.mem_usage_history.append((t, self.current_resource_usage['mem']))
                 else:
-                    self.mem_usage_history[-1] = (t, self.current_mem_usage)
+                    self.mem_usage_history[-1] = (t, self.current_resource_usage['mem'])
 
             return retrofiting_coefficient
 
@@ -367,8 +312,8 @@ class Device:
         self.allocateDeviceMem(t, -mem, force, overconsume)
 
     def getDeviceMemUsage(self):
-        if self.current_mem_usage == self.mem_usage_history[-1][1]:
-            return self.current_mem_usage
+        if self.current_resource_usage['mem'] == self.mem_usage_history[-1][1]:
+            return self.current_resource_usage['mem']
         else:
             raise ValueError("Please use the associated allocation function to allocate resources to prevent this message")
 
@@ -392,30 +337,30 @@ class Device:
         if previous_time <= t or force:
 
             try:
-                retrofiting_coefficient = self.current_disk_usage / self.theorical_disk_usage
+                retrofiting_coefficient = self.current_resource_usage['disk'] / self.theorical_resource_usage['disk']
             except ZeroDivisionError:
                 retrofiting_coefficient = 1
 
-            self.theorical_disk_usage += disk
+            self.theorical_resource_usage['disk'] += disk
 
-            if self.theorical_disk_usage < 0:
-                self.theorical_disk_usage = 0
+            if self.theorical_resource_usage['disk'] < 0:
+                self.theorical_resource_usage['disk'] = 0
 
             if overconsume:
-                self.current_disk_usage = self.theorical_disk_usage
+                self.current_resource_usage['disk'] = self.theorical_resource_usage['disk']
             else:
-                if self.theorical_disk_usage <= self.disk_limit:
-                    self.current_disk_usage = self.theorical_disk_usage
+                if self.theorical_resource_usage['disk'] <= self.resource_limit['disk']:
+                    self.current_resource_usage['disk'] = self.theorical_resource_usage['disk']
                 else:
-                    retrofiting_coefficient = fit_resource(self.theorical_disk_usage, self.disk_limit)
-                    self.current_disk_usage = self.disk_limit
+                    retrofiting_coefficient = fit_resource(self.theorical_resource_usage['disk'], self.resource_limit['disk'])
+                    self.current_resource_usage['disk'] = self.resource_limit['disk']
 
-            if previous_value != self.current_disk_usage:
+            if previous_value != self.current_resource_usage['disk']:
                 if previous_time != t:
                     self.disk_usage_history.append((t-1, previous_value))
-                    self.disk_usage_history.append((t, self.current_disk_usage))
+                    self.disk_usage_history.append((t, self.current_resource_usage['disk']))
                 else:
-                    self.disk_usage_history[-1] = (t, self.current_disk_usage)
+                    self.disk_usage_history[-1] = (t, self.current_resource_usage['disk'])
 
             return retrofiting_coefficient
 
@@ -428,8 +373,8 @@ class Device:
 
 
     def getDeviceDiskUsage(self):
-        if self.current_disk_usage == self.disk_usage_history[-1][1]:
-            return self.current_disk_usage
+        if self.current_resource_usage['disk'] == self.disk_usage_history[-1][1]:
+            return self.current_resource_usage['disk']
         else:
             raise ValueError("Please use the associated allocation function to allocate resources to prevent this message")
 

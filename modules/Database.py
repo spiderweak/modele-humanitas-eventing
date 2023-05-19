@@ -82,10 +82,7 @@ class Database():
 
             device.setDevicePosition({'x':row[1], 'y':row[2], 'z':row[3]})
 
-            device.setDeviceCPULimit(row[4])
-            device.setDeviceGPULimit(row[5])
-            device.setDeviceMemLimit(row[6])
-            device.setDeviceDiskLimit(row[7])
+            device.setAllResourceLimit({'cpu' : row[4], 'gpu' : row[5], 'mem' : row[6], 'disk' : row[7]})
 
             device.allocateDeviceCPU(0,row[8])
             device.allocateDeviceGPU(0,row[9])

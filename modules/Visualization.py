@@ -42,7 +42,7 @@ class Visualizer():
             previous_time, previous_value = (0,0)
 
             cpu_data[device.getDeviceID()] = [(previous_time, previous_value)]
-            cpu_limit_data[device.getDeviceID()] = device.cpu_limit
+            cpu_limit_data[device.getDeviceID()] = device.resource_limit['cpu']
 
             for time,value in device.cpu_usage_history:
                 if time != previous_time:
@@ -54,7 +54,7 @@ class Visualizer():
 
             previous_time, previous_value = (0,0)
             gpu_data[device.getDeviceID()] = [(previous_time, previous_value)]
-            gpu_limit_data[device.getDeviceID()] = device.gpu_limit
+            gpu_limit_data[device.getDeviceID()] = device.resource_limit['gpu']
 
             for time,value in device.gpu_usage_history:
                 if time != previous_time:
@@ -66,7 +66,7 @@ class Visualizer():
 
             previous_time, previous_value = (0,0)
             mem_data[device.getDeviceID()] = [(previous_time, previous_value)]
-            mem_limit_data[device.getDeviceID()] = device.mem_limit
+            mem_limit_data[device.getDeviceID()] = device.resource_limit['mem']
 
             for time,value in device.mem_usage_history:
                 if time != previous_time:
@@ -78,7 +78,7 @@ class Visualizer():
 
             previous_time, previous_value = (0,0)
             disk_data[device.getDeviceID()] = [(previous_time, previous_value)]
-            disk_limit_data[device.getDeviceID()] = device.disk_limit
+            disk_limit_data[device.getDeviceID()] = device.resource_limit['disk']
 
             for time,value in device.disk_usage_history:
                 if time != previous_time:
