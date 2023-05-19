@@ -205,7 +205,7 @@ class Placement(Event):
                 else:
                     logging.debug(f"Impossible to deploy on {device_id}, testing next closest device")
 
-        if (not deployment_success) or (tentatives == MAX_TENTATIVES):
+        if (not deployment_success) or (tentatives == MAX_TENTATIVES) or len(deployed_onto_devices)!=self.application_to_place.num_procs :
             deployed_onto_devices = list()
 
         if len(deployed_onto_devices) !=0:
@@ -238,7 +238,7 @@ class Deploy(Event):
 
             logging.info(f"Deploying processus : {self.application_to_deploy.processus_list[i].id} device {device_id}")
 
-            env.getDeviceByID(device_id).allocateDeviceCPU(self.time, self.application_to_deploy.processus_list[i].cpu_request)
+            env.getDeviceByID(device_id).allocateDeviceResource(self.time, 'cpu', self.application_to_deploy.processus_list[i].cpu_request)
             env.getDeviceByID(device_id).allocateDeviceGPU(self.time, self.application_to_deploy.processus_list[i].gpu_request)
             env.getDeviceByID(device_id).allocateDeviceMem(self.time, self.application_to_deploy.processus_list[i].mem_request)
             env.getDeviceByID(device_id).allocateDeviceDisk(self.time, self.application_to_deploy.processus_list[i].disk_request)
