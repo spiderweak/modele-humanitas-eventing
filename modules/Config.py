@@ -16,20 +16,28 @@ class Config():
         Assigns default values if no values are given
 
         Args:
-            options : parsed arguments
-            env : Environment
+        ----
+        options : `argparse.Namespace`
+            parsed arguments from argument parser (`argparse`) module
+        env : `Environment`
+            Simulation environment
 
         Attributes:
-            parsed_yaml : dict, contains the outpout from loading the configuration YAML file, stored as a dict
-            log_level :
-            log_filename :
-            database_file :
-            number_of_applications :
-            number_of_devices : int, number of devices
-            wifi_range : float, distance necessary to establish links between two devices, defaults to 6m
-
-        Returns:
-            None
+        ----------
+        parsed_yaml : `dict`
+            Contains the outpout from loading the configuration YAML file, stored as a dict
+        log_level : `int`
+            Integer representation of the parsed log level
+        log_filename : `str`
+            LogFile name
+        database_file : `str`
+            SQLite database filename for reading and archival
+        number_of_applications : `int`
+            Number of application to test
+        number_of_devices : `int`
+            Number of devices in the infrastructure
+        wifi_range : `float`
+            Distance necessary to establish links between two devices, defaults to 6m
         """
 
         self.parsed_yaml = None
