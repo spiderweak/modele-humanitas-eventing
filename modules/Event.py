@@ -134,8 +134,6 @@ class Placement(Event):
         deployment_success = True
 
         tentatives = 0
-        from modules.Environment import Environment
-        env = Environment()
 
         while len(deployed_onto_devices) < self.application_to_place.num_procs and tentatives < len(env.getDevices())*len(env.getDevices()):
 
@@ -221,7 +219,6 @@ class Placement(Event):
 
         return deployment_latency_test, deployed_onto_devices
 
-
 class Deploy(Event):
 
     def __init__(self, event_name, queue, app, deployed_onto_devices, event_time=None):
@@ -245,7 +242,6 @@ class Deploy(Event):
             env.getDeviceByID(device_id).allocateDeviceGPU(self.time, self.application_to_deploy.processus_list[i].gpu_request)
             env.getDeviceByID(device_id).allocateDeviceMem(self.time, self.application_to_deploy.processus_list[i].mem_request)
             env.getDeviceByID(device_id).allocateDeviceDisk(self.time, self.application_to_deploy.processus_list[i].disk_request)
-
 
             # deploy links
             for j in range(i):
@@ -280,13 +276,11 @@ class Undeploy(Event):
 
     def process(self, env):
 
-        from modules.Application import Application
-
         logging.debug(f"Undeploying application id : {self.application_to_undeploy.id} , {self.application_to_undeploy.deployment_info}")
 
         for process,device_id in self.application_to_undeploy.deployment_info.items():
 
-            logging.debug(f"Deploying processus : {process.id} device {device_id}")
+            logging.debug(f"Undeploying processus : {process.id} device {device_id}")
 
             env.getDeviceByID(device_id).releaseDeviceCPU(self.time, process.cpu_request)
             env.getDeviceByID(device_id).releaseDeviceGPU(self.time, process.gpu_request)
