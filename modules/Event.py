@@ -66,10 +66,10 @@ class Placement(Event):
             Boolean, True if deployable, else False
         """
 
-        if proc.cpu_request + device.getDeviceCPUUsage() <= device.cpu_limit:
-            if proc.gpu_request + device.getDeviceGPUUsage() <= device.gpu_limit:
-                if proc.mem_request + device.getDeviceMemUsage() <= device.mem_limit:
-                    if proc.disk_request + device.getDeviceDiskUsage() <= device.disk_limit:
+        if proc.cpu_request + device.getDeviceResourceUsage('cpu') <= device.resource_limit['cpu']:
+            if proc.gpu_request + device.getDeviceResourceUsage('gpu') <= device.resource_limit['gpu']:
+                if proc.mem_request + device.getDeviceResourceUsage('mem')  <= device.resource_limit['mem']:
+                    if proc.disk_request + device.getDeviceResourceUsage('disk')  <= device.resource_limit['disk']:
                         return True
         return False
 
@@ -134,8 +134,6 @@ class Placement(Event):
         deployment_success = True
 
         tentatives = 0
-        from modules.Environment import Environment
-        env = Environment()
 
         while len(deployed_onto_devices) < self.application_to_place.num_procs and tentatives < len(env.getDevices())*len(env.getDevices()):
 
@@ -207,7 +205,7 @@ class Placement(Event):
                 else:
                     logging.debug(f"Impossible to deploy on {device_id}, testing next closest device")
 
-        if (not deployment_success) or (tentatives == MAX_TENTATIVES):
+        if (not deployment_success) or (tentatives == MAX_TENTATIVES) or len(deployed_onto_devices)!=self.application_to_place.num_procs :
             deployed_onto_devices = list()
 
         if len(deployed_onto_devices) !=0:
@@ -220,7 +218,6 @@ class Placement(Event):
 
 
         return deployment_latency_test, deployed_onto_devices
-
 
 class Deploy(Event):
 
@@ -241,11 +238,12 @@ class Deploy(Event):
 
             logging.info(f"Deploying processus : {self.application_to_deploy.processus_list[i].id} device {device_id}")
 
-            env.getDeviceByID(device_id).allocateDeviceCPU(self.time, self.application_to_deploy.processus_list[i].cpu_request)
-            env.getDeviceByID(device_id).allocateDeviceGPU(self.time, self.application_to_deploy.processus_list[i].gpu_request)
-            env.getDeviceByID(device_id).allocateDeviceMem(self.time, self.application_to_deploy.processus_list[i].mem_request)
-            env.getDeviceByID(device_id).allocateDeviceDisk(self.time, self.application_to_deploy.processus_list[i].disk_request)
+            allocation_request = {'cpu': self.application_to_deploy.processus_list[i].cpu_request,
+                                'gpu': self.application_to_deploy.processus_list[i].gpu_request,
+                                'mem': self.application_to_deploy.processus_list[i].mem_request,
+                                'disk': self.application_to_deploy.processus_list[i].disk_request}
 
+            env.getDeviceByID(device_id).allocateAllResources(self.time, allocation_request)
 
             # deploy links
             for j in range(i):
@@ -280,19 +278,15 @@ class Undeploy(Event):
 
     def process(self, env):
 
-        from modules.Application import Application
-
         logging.debug(f"Undeploying application id : {self.application_to_undeploy.id} , {self.application_to_undeploy.deployment_info}")
 
         for process,device_id in self.application_to_undeploy.deployment_info.items():
 
-            logging.debug(f"Deploying processus : {process.id} device {device_id}")
+            logging.debug(f"Undeploying processus : {process.id} device {device_id}")
 
-            env.getDeviceByID(device_id).releaseDeviceCPU(self.time, process.cpu_request)
-            env.getDeviceByID(device_id).releaseDeviceGPU(self.time, process.gpu_request)
-            env.getDeviceByID(device_id).releaseDeviceMem(self.time, process.mem_request)
-            env.getDeviceByID(device_id).releaseDeviceDisk(self.time, process.disk_request)
+            release_request = {'cpu': process.cpu_request, 'gpu': process.gpu_request, 'mem': process.mem_request, 'disk': process.disk_request}
 
+            env.getDeviceByID(device_id).releaseAllResources(self.time, release_request)
 
             # undeploy links
             """

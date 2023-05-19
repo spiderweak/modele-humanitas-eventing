@@ -6,9 +6,8 @@ import random
 import networkx as nx
 import matplotlib.pyplot as plt
 
-from modules.db.interact_db import (create_db, populate_db, dump_from_db)
+from modules.Database import Database
 from modules.ResourceManagement import custom_distance
-
 class Config():
     def __init__(self, options, env) -> None:
         """
@@ -16,20 +15,28 @@ class Config():
         Assigns default values if no values are given
 
         Args:
-            options : parsed arguments
-            env : Environment
+        ----
+        options : `argparse.Namespace`
+            parsed arguments from argument parser (`argparse`) module
+        env : `Environment`
+            Simulation environment
 
         Attributes:
-            parsed_yaml : dict, contains the outpout from loading the configuration YAML file, stored as a dict
-            log_level :
-            log_filename :
-            database_file :
-            number_of_applications :
-            number_of_devices : int, number of devices
-            wifi_range : float, distance necessary to establish links between two devices, defaults to 6m
-
-        Returns:
-            None
+        ----------
+        parsed_yaml : `dict`
+            Contains the outpout from loading the configuration YAML file, stored as a dict
+        log_level : `int`
+            Integer representation of the parsed log level
+        log_filename : `str`
+            LogFile name
+        database : `Database`
+            Custom SQLite database object for reading and archival
+        number_of_applications : `int`
+            Number of application to test
+        number_of_devices : `int`
+            Number of devices in the infrastructure
+        wifi_range : `float`
+            Distance necessary to establish links between two devices, defaults to 6m
         """
 
         self.parsed_yaml = None
@@ -38,7 +45,9 @@ class Config():
 
         config_file_not_found = False
 
-        self.database_file = 'db.sqlite'
+        database_filename = 'db.sqlite'
+
+        self.database_file = Database(database_filename)
 
         self.number_of_applications = 500
         self.number_of_devices = 40
@@ -91,19 +100,19 @@ class Config():
 
         # Device database information
         try:
-            self.database_file = self.parsed_yaml['database_url']['device']
+            database_filename = self.parsed_yaml['database_url']['device']
+            self.database_file = Database(database_filename)
         except KeyError as e:
             logging.error(f"No entry in configuration file for {e}, default solution uses 'db.sqlite' in the project's root")
 
         # Device database renaming
-        dont_loop_infinitely = 0
-        while dont_loop_infinitely < 5:
+        not_all_checked = True
+        while not_all_checked:
             try:
-                dont_loop_infinitely +=1
                 if options.scratchdevicedb:
                     date_string = datetime.datetime.now().isoformat(timespec='minutes').replace(":","-")
-                    os.rename(self.database_file, f"modules/db/archives/{self.database_file}-{date_string}")
-                break
+                    os.rename(database_filename, f"modules/db/archives/{database_filename}-{date_string}")
+                not_all_checked = False
             except KeyError as e:
                 logging.error(f"No entry in configuration file for {e}, default solution uses existing database even if 'scratchdevicedb' parameter was given ")
             except FileNotFoundError:
@@ -111,8 +120,8 @@ class Config():
                     logging.error(f"Destination folder does not exist, creating folder, then retrying")
                     os.makedirs("modules/db/archives/")
                 else:
-                    logging.error(f"'{self.database_file}' not found, no need to rename")
-                    break
+                    logging.error(f"'{database_filename}' not found, no need to rename")
+                    not_all_checked = False
             except TypeError:
                 logging.error("Configuration File Not Found, default solution is using existing database")
 
@@ -140,8 +149,6 @@ class Config():
         except TypeError:
             logging.error("Configuration File Not Found, default simulations is 6 meters")
 
-        devices = list()
-
         # Simulated 2D/3D space
         for boundary in self._3D_space.keys():
             try:
@@ -156,21 +163,23 @@ class Config():
             logging.error(f"Default simulation value {self.app_duration} used for entry {e}")
 
 
+
+
         # Database interation
         try:
-            if not os.path.isfile(self.database_file):
+            if not os.path.isfile(database_filename):
                 logging.info("Generating random device positions")
-                devices = list()
+                devices = dict()
                 self.generate_and_plot_devices_positions(devices)
-                create_db(self.database_file)
-                populate_db(devices, self.database_file)
+                self.database_file.create_db()
+                self.database_file.populate_db(devices)
         except KeyError as e:
             logging.error(f"No entry in configuration file for {e}, default solution uses existing database even if 'scratchdevicedb' parameter was given ")
 
         logging.info("Generating simulation environment")
 
         try:
-            dump_from_db(env, self.database_file)
+            self.database_file.dump_from_db(env)
         except Exception as e:
             raise e
 
@@ -182,17 +191,18 @@ class Config():
 
         Args:
         ----
-            devices : list, List of coords
+        devices : `dict`
+            Coords dictionary
         """
         n_devices = self.number_of_devices # Number of devices
 
-        for j in range(n_devices):
+        for dev_id in range(n_devices):
             # Processing device position, random x, y, z fixed to between various values (z=0 for now)
             x = round(random.random() * (self._3D_space['x_max'] - self._3D_space['x_min']) + self._3D_space['x_min'],2)
             y = round(random.random() * (self._3D_space['y_max'] - self._3D_space['y_min']) + self._3D_space['y_min'],2)
             z = round(random.random() * (self._3D_space['z_max'] - self._3D_space['z_min']) + self._3D_space['z_min'],2)
 
-            devices.append([x,y,z])
+            devices[dev_id] = [x,y,z]
 
 
         # We'll try our hand on plotting everything in a graph
@@ -201,22 +211,23 @@ class Config():
         G = nx.Graph()
 
         # We add the nodes, our devices, to our graph
-        for i in range(len(devices)):
-            G.add_node(i, pos=devices[i])
+        for dev_id in devices.keys():
+            G.add_node(dev_id, pos=devices[dev_id])
 
         # We add the edges, to our graph, which correspond to wifi reachability
 
-        for i in range(len(devices)):
-            for j in range(i+1, len(devices)):
-                distance = custom_distance(devices[i][0],devices[i][1],devices[i][2],devices[j][0],devices[j][1],devices[j][2])
-                if distance < self.wifi_range:
-                    ### We add edges if we have coverage
-                    G.add_edge(i, j)
+        for dev_id in devices.keys():
+            for other_dev_id in devices.keys():
+                if dev_id < other_dev_id:
+                    distance = custom_distance(devices[dev_id],devices[other_dev_id])
+                    if distance < self.wifi_range:
+                        ### We add edges if we have coverage
+                        G.add_edge(dev_id, other_dev_id)
 
         # Let's try plotting the network
 
         # We alread have the coords, but let's process it again just to be sure
-        x_coords, y_coords, z_coords = zip(*devices)
+        x_coords, y_coords, z_coords = zip(*devices.values())
 
         #  We create a 3D scatter plot again
         fig = plt.figure(figsize=(10, 10))
