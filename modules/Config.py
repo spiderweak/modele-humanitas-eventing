@@ -6,9 +6,8 @@ import random
 import networkx as nx
 import matplotlib.pyplot as plt
 
-from modules.db.interact_db import (create_db, populate_db, dump_from_db)
+from modules.db.interact_db import Database
 from modules.ResourceManagement import custom_distance
-
 class Config():
     def __init__(self, options, env) -> None:
         """
@@ -30,8 +29,8 @@ class Config():
             Integer representation of the parsed log level
         log_filename : `str`
             LogFile name
-        database_file : `str`
-            SQLite database filename for reading and archival
+        database : `Database`
+            Custom SQLite database object for reading and archival
         number_of_applications : `int`
             Number of application to test
         number_of_devices : `int`
@@ -46,7 +45,9 @@ class Config():
 
         config_file_not_found = False
 
-        self.database_file = 'db.sqlite'
+        database_filename = 'db.sqlite'
+        
+        self.database_file = Database(database_filename)
 
         self.number_of_applications = 500
         self.number_of_devices = 40
@@ -99,7 +100,8 @@ class Config():
 
         # Device database information
         try:
-            self.database_file = self.parsed_yaml['database_url']['device']
+            database_filename = self.parsed_yaml['database_url']['device']
+            self.database_file = Database(database_filename)
         except KeyError as e:
             logging.error(f"No entry in configuration file for {e}, default solution uses 'db.sqlite' in the project's root")
 
@@ -109,7 +111,7 @@ class Config():
             try:
                 if options.scratchdevicedb:
                     date_string = datetime.datetime.now().isoformat(timespec='minutes').replace(":","-")
-                    os.rename(self.database_file, f"modules/db/archives/{self.database_file}-{date_string}")
+                    os.rename(database_filename, f"modules/db/archives/{database_filename}-{date_string}")
                 not_all_checked = False
             except KeyError as e:
                 logging.error(f"No entry in configuration file for {e}, default solution uses existing database even if 'scratchdevicedb' parameter was given ")
@@ -118,7 +120,7 @@ class Config():
                     logging.error(f"Destination folder does not exist, creating folder, then retrying")
                     os.makedirs("modules/db/archives/")
                 else:
-                    logging.error(f"'{self.database_file}' not found, no need to rename")
+                    logging.error(f"'{database_filename}' not found, no need to rename")
                     not_all_checked = False
             except TypeError:
                 logging.error("Configuration File Not Found, default solution is using existing database")
@@ -163,21 +165,23 @@ class Config():
             logging.error(f"Default simulation value {self.app_duration} used for entry {e}")
 
 
+
+
         # Database interation
         try:
-            if not os.path.isfile(self.database_file):
+            if not os.path.isfile(database_filename):
                 logging.info("Generating random device positions")
                 devices = list()
                 self.generate_and_plot_devices_positions(devices)
-                create_db(self.database_file)
-                populate_db(devices, self.database_file)
+                self.database_file.create_db()
+                self.database_file.populate_db(devices)
         except KeyError as e:
             logging.error(f"No entry in configuration file for {e}, default solution uses existing database even if 'scratchdevicedb' parameter was given ")
 
         logging.info("Generating simulation environment")
 
         try:
-            dump_from_db(env, self.database_file)
+            self.database_file.dump_from_db(env)
         except Exception as e:
             raise e
 
