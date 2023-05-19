@@ -114,7 +114,7 @@ class Environment(object):
             device_1_id = device_1.getDeviceID()
             for device_2 in self.getDevices():
                 device_2_id = device_2.getDeviceID()
-                distance = custom_distance([device_1.x, device_1.y, device_1.z],[device_2.x, device_2.y, device_2.z])
+                distance = custom_distance(device_1.position.values(),device_2.position.values())
                 new_physical_network_link_id = device_1_id*number_of_devices + device_2_id
                 if distance < self.config.wifi_range:
                     device_1.addToRoutingTable(device_2_id, device_2_id, distance)

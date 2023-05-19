@@ -51,9 +51,8 @@ class Device:
         self.id = Device._generate_id()
 
         # Device Position in the area considered
-        self.x = 0
-        self.y = 0
-        self.z = 0
+
+        self.position = {'x':0, 'y':0, 'z':0}
 
         # Maximal limit for each device feature
         ## CPU Limit (int) in number of CPUs, initialized to 2
@@ -127,21 +126,17 @@ class Device:
         return self.id
 
 
-    def setDevicePosition(self, x, y, z):
+    def setDevicePosition(self, position):
         """
         Sets device position in a 3D space
 
         Args:
-            x : float, position along x axis
-            y : float, position along y axis
-            z : float, position along z axis
-
-        Returns:
-            None
+        ----
+        position : `dict`
+            Positions dictionary
         """
-        self.x = x
-        self.y = y
-        self.z = z
+
+        self.position = position
 
 
     def setDeviceCPULimit(self, cpu):

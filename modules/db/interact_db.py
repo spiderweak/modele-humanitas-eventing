@@ -73,7 +73,7 @@ class Database():
             if device.getDeviceID() != row[0]:
                 device.setDeviceID(row[0])
 
-            device.setDevicePosition(row[1], row[2], row[3])
+            device.setDevicePosition({'x':row[1], 'y':row[2], 'z':row[3]})
 
             device.setDeviceCPULimit(row[4])
             device.setDeviceGPULimit(row[5])
