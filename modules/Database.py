@@ -6,19 +6,26 @@ from modules.Environment import Environment
 
 class Database():
     def __init__(self, database_address) -> None:
+        """
+        Initializes the database with database_address (string, for now path to sqlite file)
+
+        Args:
+        ----
+        database_address : `str`
+            path to sqlite file
+
+        Attributes:
+        ----------
+        database_address : `str`
+            path to sqlite file
+        """
+
         self.database_address = database_address
 
     def create_db(self):
         """
         Creates an empty device table to store device features (CPU, GPU, Mem, Disk...)
         The module uses SQLite for now but will be migrated to network connected database further in the project (MariaDB, MySQL, ProstgreSQL)
-
-        Args:
-            None
-            Will be updated to add the database address
-
-        Returns:
-            None
         """
         con = sqlite3.connect(self.database_address)
         cur = con.cursor()

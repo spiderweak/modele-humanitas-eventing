@@ -6,7 +6,7 @@ import random
 import networkx as nx
 import matplotlib.pyplot as plt
 
-from modules.db.interact_db import Database
+from modules.Database import Database
 from modules.ResourceManagement import custom_distance
 class Config():
     def __init__(self, options, env) -> None:
