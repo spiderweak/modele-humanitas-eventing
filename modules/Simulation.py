@@ -3,7 +3,11 @@ import networkx as nx
 import random
 import logging
 
+import time
+
 import numpy as np
+
+from tqdm import tqdm
 
 from modules.Application import Application
 from modules.EventQueue import EventQueue
@@ -21,19 +25,23 @@ class Simulation(object):
         self.__env = env
         self.__queue = EventQueue(self.__env)
 
-        # Deploying 500 applictions
-        arrival_times = [int(time) for time in np.random.uniform(0, TIME_PERIOD, env.config.number_of_applications)]
+        # Deploying X applictions
+        #arrival_times = [int(time) for time in np.random.uniform(0, TIME_PERIOD, env.config.number_of_applications)]
 
-        for i in range(env.config.number_of_applications):
+        arrival_times = [int(time) for time in np.cumsum(np.random.poisson(1/(self.__env.config.number_of_applications/TIME_PERIOD), self.__env.config.number_of_applications))]
+
+        time.sleep(1)
+
+        for i in range(self.__env.config.number_of_applications):
             # Generating 1 random application
             application = Application()
             application.randomAppInit()
             application.setAppID(i)
-            if env.config.app_duration != 0:
-                application.setAppDuration(env.config.app_duration)
+            if self.__env.config.app_duration != 0:
+                application.setAppDuration(self.__env.config.app_duration)
 
             # Getting a random device starting point
-            device_id = random.choice(range(len(env.devices)))
+            device_id = random.choice(range(len(self.__env.devices)))
 
             # Creating a placement event
             Placement("Placement",self.__queue, application, device_id, event_time=arrival_times[i]).add_to_queue()
@@ -50,20 +58,34 @@ class Simulation(object):
 
         current_event = None
 
+        print("\nRunning The Event Queue")
+        progress_bar = tqdm(total=TIME_PERIOD)
+
+        previous_time=0
+
+        time.sleep(1)
+
         while not isinstance(current_event,FinalReport):
+
             event_time, event_index, current_event = self.__queue.pop()
+
+            progress_bar.update(event_time-previous_time)
 
             self.__env.current_time = event_time
 
             process_event = current_event.process(self.__env)
             logging.debug("process_event: {}".format(process_event))
 
+            previous_time = event_time
+
         visu = Visualizer()
 
+        visu.visualize_environment(self.__env)
         visu.final_results(self.__env)
 
         logging.info("\n***************\nEND OF SIMULATION\n***************")
 
+'''
 # Now, we can play with deployments
 def simulate_deployments(env):
     """
@@ -79,7 +101,6 @@ def simulate_deployments(env):
     testings = 200
 
     event_queue = EventQueue(env)
-
 
     for i in range(testings):
         trivial = 0
@@ -105,8 +126,8 @@ def simulate_deployments(env):
             logging.error(f"\nDeployment failure for application {application.id}")
 
 
-
-        """
+'''
+"""
 
 
     latency_array = [0]
@@ -163,4 +184,4 @@ def simulate_deployments(env):
     # Print the graph
     plt.savefig("fig/results.png")
 
-    """
+"""

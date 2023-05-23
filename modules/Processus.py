@@ -48,6 +48,8 @@ class Processus:
         self.mem_allocation = 0
         self.disk_allocation = 0
 
+        self.app_id = -1
+
 
     def __add__(self, other):
 

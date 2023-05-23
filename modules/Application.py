@@ -85,7 +85,6 @@ class Application:
 
         self.deployment_info = dict()
 
-
     def setAppID(self, id):
         """
         Used to set an application's ID by hand if necessary
@@ -184,6 +183,7 @@ class Application:
         for yaml_processus in application_content:
             new_processus = Processus()
             new_processus.processus_yaml_parser(yaml_processus)
+            new_processus.app_id = self.id
             self.processus_list.append(new_processus)
 
         links_details = app_yaml["AppLinks"]

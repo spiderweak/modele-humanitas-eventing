@@ -37,6 +37,7 @@ class Environment(object):
         self.applications = []
         self.devices = []
         self.physical_network_links = [0]
+        self.count_deployed_application=[(0,0)]
 
 
     def setConfig(self, config):
@@ -132,17 +133,16 @@ class Environment(object):
 
         changes = True
 
-        # Approximative number of loops : {100 : 7, 200 : 6}
-        print("Generating Routing Table, (maximal value is arbitrary)")
+        # Approximative number of loops
         logging.info("Generating routing table")
-        progress_bar = tqdm(total=int(number_of_devices*number_of_devices*10))
+        print("Generating Routing Table, (maximal value is arbitrary)")
+        progress_bar = tqdm(total=int(number_of_devices*number_of_devices*1.5))
 
         while(changes):
             ## As long as the values change
             changes = False
             for i in range(number_of_devices):
                 for j in range(number_of_devices):
-                    progress_bar.update(1)
                     device_i = self.getDeviceByID(i)
                     device_j = self.getDeviceByID(j)
 
@@ -175,5 +175,5 @@ class Environment(object):
                     if min_array < distance:
                     ## If we observe any change, update and break the loop, keep going
                         changes = True
+                        progress_bar.update()
                         device_i.addToRoutingTable(device_j.id, min_nh, min_array)
-

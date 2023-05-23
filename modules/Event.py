@@ -209,9 +209,9 @@ class Placement(Event):
             deployed_onto_devices = list()
 
         if len(deployed_onto_devices) !=0:
-            print(f"application id : {self.application_to_place.id} , {self.application_to_place.num_procs} processus deployed on {deployed_onto_devices}")
+            logging.debug(f"application id : {self.application_to_place.id} , {self.application_to_place.num_procs} processus deployed on {deployed_onto_devices}")
         else:
-            print(f"application id : {self.application_to_place.id} , {self.application_to_place.num_procs} processus not deployed")
+            logging.debug(f"application id : {self.application_to_place.id} , {self.application_to_place.num_procs} processus not deployed")
 
         if deployed_onto_devices:
             Deploy("Deployment", self.queue, self.application_to_place, deployed_onto_devices, event_time=int((self.get_time()+deployment_latency_test)/10)*10).add_to_queue()
@@ -260,10 +260,24 @@ class Deploy(Event):
 
         Undeploy("Release", self.queue, self.application_to_deploy, event_time=int(self.get_time()+self.application_to_deploy.duration)).add_to_queue()
 
+        env = Environment()
+        prev_time, prev_value = env.count_deployed_application[-1]
+
+        if env.current_time == prev_time:
+            env.count_deployed_application[-1] = (prev_time, prev_value+1)
+        else:
+            env.count_deployed_application.append(env.current_time, prev_value+1)
+
         return True
 
 
 class Fit(Event):
+    def __init__(self, event_name, queue, event_time=None):
+        super().__init__(event_name, queue, event_time)
+        raise NotImplementedError('Process not implemented')
+
+
+class Sync(Event):
     def __init__(self, event_name, queue, event_time=None):
         super().__init__(event_name, queue, event_time)
         raise NotImplementedError('Process not implemented')

@@ -16,9 +16,6 @@ class EventQueue(object):
 
     # add an element in the queue
     def put(self, event):
-
-        # Why -event.time?
-        # self.__queue.put((-event.time, event))
         self.__queue.put((event.time, self.__index, event))
         self.__index += 1
 
