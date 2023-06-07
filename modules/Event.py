@@ -269,6 +269,32 @@ class Deploy(Event):
 
         return True
 
+class Deploy_Proc(Event):
+
+    def __init__(self, event_name, queue, app, proc, device_destination_id, event_time=None, last=False, synchronization_time = 10):
+        super().__init__(event_name, queue, event_time)
+        self.proc_to_deploy = proc
+        self.device_destination_id = device_destination_id
+        self.last_proc = last
+        self.app = app
+        self.synchronization_time = synchronization_time
+
+    def process(self, env):
+
+        logging.info(f"Deploying processus : {self.proc.id} on {self.device_destination_id}")
+
+        allocation_request = {'cpu': self.proc_to_deploy.cpu_request,
+                            'gpu': self.proc_to_deploy.gpu_request,
+                            'mem': self.proc_to_deploy.mem_request,
+                            'disk': self.proc_to_deploy.disk_request}
+
+        env.getDeviceByID(self.device_destination_id).allocateAllResources(self.time, allocation_request)
+
+        if self.last_proc:
+            Sync("Synchronize", self.queue, self.app, event_time=int(self.get_time()+self.synchronization_time)).add_to_queue()
+
+
+        return True
 
 class Fit(Event):
     def __init__(self, event_name, queue, event_time=None):
@@ -279,7 +305,12 @@ class Fit(Event):
 class Sync(Event):
     def __init__(self, event_name, queue, event_time=None):
         super().__init__(event_name, queue, event_time)
-        raise NotImplementedError('Process not implemented')
+        pass
+        #raise NotImplementedError('Process not implemented')
+
+    # Will need to do that at some point
+    # self.application_to_deploy.setDeploymentInfo(self.devices_destinations)
+
 
 
 class Undeploy(Event):
