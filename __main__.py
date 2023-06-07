@@ -32,7 +32,7 @@ logger = logging.getLogger(__name__)
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='Process the processing algorithm\' input')
+    parser = argparse.ArgumentParser(description='Process the processing algorithm\'s input')
     parser.add_argument('--config',
                         help='Configuration file',
                         default='config.yaml')
