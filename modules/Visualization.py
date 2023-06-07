@@ -139,7 +139,7 @@ class Visualizer():
         df['mem'] = 0
         df['disk'] = 0
 
-        print("\nDumpting Output in results file")
+        print("\nDumping Output in results file\n")
 
         for t in tqdm(range(1,max_time)):
             try:
