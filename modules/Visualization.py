@@ -15,6 +15,7 @@ class Visualizer():
 
         x,y = zip(*data)
 
+        plt.clf()
         plt.plot(x,y)
 
         logging.info(data)
@@ -22,6 +23,16 @@ class Visualizer():
 
 
     def final_results(self, env):
+
+        #times = [time for time,_ in env.count_rejected_application]
+        #values = [value for _,value in env.count_rejected_application]
+
+        times, values = zip(*env.count_rejected_application)
+
+        plt.clf()
+        plt.plot(times, values)
+
+        plt.savefig("fig/apps.png")
 
         cpu_data = dict()
         cpu_limit_data = dict()
@@ -127,6 +138,8 @@ class Visualizer():
         df['gpu'] = 0
         df['mem'] = 0
         df['disk'] = 0
+
+        print("\nDumpting Output in results file")
 
         for t in tqdm(range(1,max_time)):
             try:

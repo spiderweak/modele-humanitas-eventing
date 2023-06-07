@@ -64,6 +64,8 @@ class Device:
         ## Initialized to {self.id:(self.id,0)} as route to self is considered as distance 0
         self.routing_table = {self.id:(self.id,0)}
 
+        self.proc = list()
+
 
     def setDeviceID(self, id):
         """

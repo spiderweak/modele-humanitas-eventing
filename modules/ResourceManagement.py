@@ -24,7 +24,4 @@ def custom_distance(A,B):
     distance : `int`
         Distance (as coverage) between A and B.
     """
-    squared_distance = 0
-    for a,b in zip(A,B):
-        squared_distance += (b-a)**2
-    return squared_distance ** 0.5
+    return sum([((b-a)**2) for a,b in zip(A.values(),B.values())]) ** 0.5
