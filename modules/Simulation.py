@@ -78,6 +78,8 @@ class Simulation(object):
 
             previous_time = event_time
 
+        time.sleep(1)
+
         visu = Visualizer()
 
         visu.visualize_environment(self.__env)

@@ -215,6 +215,13 @@ class Placement(Event):
 
         if deployed_onto_devices:
             Deploy("Deployment", self.queue, self.application_to_place, deployed_onto_devices, event_time=int((self.get_time()+deployment_latency_test)/10)*10).add_to_queue()
+        else:
+            prev_time, prev_value = env.count_rejected_application[-1]
+
+            if env.current_time == prev_time:
+                env.count_rejected_application[-1][1] += 1
+            else:
+                env.count_rejected_application.append((env.current_time, prev_value+1))
 
 
         return deployment_latency_test, deployed_onto_devices
@@ -259,14 +266,6 @@ class Deploy(Event):
         self.application_to_deploy.setDeploymentInfo(self.devices_destinations)
 
         Undeploy("Release", self.queue, self.application_to_deploy, event_time=int(self.get_time()+self.application_to_deploy.duration)).add_to_queue()
-
-        env = Environment()
-        prev_time, prev_value = env.count_deployed_application[-1]
-
-        if env.current_time == prev_time:
-            env.count_deployed_application[-1] = (prev_time, prev_value+1)
-        else:
-            env.count_deployed_application.append(env.current_time, prev_value+1)
 
         return True
 

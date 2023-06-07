@@ -37,7 +37,7 @@ class Environment(object):
         self.applications = []
         self.devices = []
         self.physical_network_links = [0]
-        self.count_deployed_application=[(0,0)]
+        self.count_rejected_application=[(0,0)]
 
 
     def setConfig(self, config):

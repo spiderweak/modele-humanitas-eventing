@@ -24,8 +24,10 @@ class Visualizer():
 
     def final_results(self, env):
 
-        times = [time for time,_ in env.count_deployed_application]
-        values = [value for _,value in env.count_deployed_application]
+        #times = [time for time,_ in env.count_rejected_application]
+        #values = [value for _,value in env.count_rejected_application]
+
+        times, values = zip(*env.count_rejected_application)
 
         plt.clf()
         plt.plot(times, values)
