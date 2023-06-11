@@ -17,6 +17,9 @@ class Visualizer():
 
         plt.clf()
         plt.plot(x,y)
+        plt.title("CPU consumption over time")
+        plt.xlabel("Time (in s)")
+        plt.ylabel("Theoretical CPU usage")
 
         logging.info(data)
         plt.savefig("fig/results.png")
@@ -30,7 +33,11 @@ class Visualizer():
         times, values = zip(*env.count_rejected_application)
 
         plt.clf()
+        # Set the labels
         plt.plot(times, values)
+        plt.title("Rejected Applications Over Time")
+        plt.xlabel("Time (in s)")
+        plt.ylabel("Number of Rejected Applications")
 
         plt.savefig("fig/apps.png")
 
@@ -139,7 +146,7 @@ class Visualizer():
         df['mem'] = 0
         df['disk'] = 0
 
-        print("\nDumping Output in results file\n")
+        print("\n\nDumping Output in results file")
 
         for t in tqdm(range(1,max_time)):
             try:
