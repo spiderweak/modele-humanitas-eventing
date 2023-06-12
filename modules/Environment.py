@@ -1,4 +1,4 @@
-from modules.PhysicalNetworkLink import PhysicalNetworkLink
+from modules.resource.PhysicalNetworkLink import PhysicalNetworkLink
 from modules.CustomExceptions import NoRouteToHost
 
 from modules.ResourceManagement import custom_distance

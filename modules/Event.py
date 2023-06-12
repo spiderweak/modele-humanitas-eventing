@@ -1,5 +1,5 @@
 import logging
-from modules.Path import Path
+from modules.resource.Path import Path
 from modules.Environment import Environment
 
 MAX_TENTATIVES = 2000

@@ -9,7 +9,7 @@ import numpy as np
 
 from tqdm import tqdm
 
-from modules.Application import Application
+from modules.resource.Application import Application
 from modules.EventQueue import EventQueue
 from modules.Event import (Event, Placement, Deploy, FinalReport)
 from modules.Visualization import Visualizer

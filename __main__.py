@@ -10,11 +10,11 @@ Usage:
 
 from modules.Config import Config
 
-from modules.Application import Application
-from modules.Device import Device
-from modules.PhysicalNetworkLink import PhysicalNetworkLink
-from modules.Processus import Processus
-from modules.Path import Path
+from modules.resource.Application import Application
+from modules.resource.Device import Device
+from modules.resource.PhysicalNetworkLink import PhysicalNetworkLink
+from modules.resource.Processus import Processus
+from modules.resource.Path import Path
 from modules.EventQueue import EventQueue
 from modules.Environment import Environment
 from modules.Event import (Event, Placement, Deploy)
