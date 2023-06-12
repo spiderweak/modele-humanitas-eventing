@@ -18,17 +18,20 @@ class Application:
     (array of array, for now, might be a networkx graph)
     Initialized to empty data
 
+
     Attributes:
     ----------
-    id: `int`
+    id : `int`
         Application ID
-    duration: `int`
-        Application duration in tens of milliseconds
-    processus_list: list of `Processus`
+    duration : `int`
+        Application duration (in chuncks of 10ms)
+    num_procs : `int`
+        Number of processus in application
+    processus_list : <List>`Processus`
         List of `Processus` application members
-    proc_links: matrix of `int`
+    proc_links : <Matrix>`int`
         Integer value corresponding to bandwidth request over virtual links
-    deployment_info: dict of `Processus`:`int`
+    deployment_info : `dict`
         Dictionary linking `Processus` and `Device` IDs
     """
 
@@ -62,21 +65,6 @@ class Application:
         ----
         num_procs : `int`
             default 1, number of processus in the application
-
-        Attributes:
-        ----------
-        id : `int`
-            Application identifier
-        duration : `int`
-            Application duration (in chuncks of 10ms)
-        num_procs : `int`
-            Number of processus in application
-        processus_list : <List>`Processus`
-            List of processus part of the application
-        proc_links : <Matrix>`int`
-            Bandwidth between application components
-        deployment_info : `dict`
-            Matching between Processus ID and Device ID
         """
 
         self.id = Application._generate_id()
