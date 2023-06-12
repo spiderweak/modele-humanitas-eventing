@@ -5,6 +5,10 @@ logfile : log.txt
 database_url:
     device: db.sqlite
 
+template_files:
+    applications: examples/perso/applications.json
+    devices: examples/perso/devices.json
+
 device_positionning:
     x_min: 0
     x_max: 40
