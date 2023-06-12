@@ -229,48 +229,6 @@ class Placement(Event):
 
         return deployment_times, deployed_onto_devices
 
-class Deploy(Event):
-
-    def __init__(self, event_name, queue, app, deployed_onto_devices, event_time=None):
-        super().__init__(event_name, queue, event_time)
-        self.application_to_deploy = app
-        self.devices_destinations = deployed_onto_devices
-
-    def process(self, env):
-
-        operational_latency = 0
-
-        logging.info(f"Deploying application id : {self.application_to_deploy.id} , {self.application_to_deploy.num_procs} processus on {self.devices_destinations}")
-
-        for i in range(self.application_to_deploy.num_procs):
-
-            device_id = self.devices_destinations[i]
-
-            logging.info(f"Deploying processus : {self.application_to_deploy.processus_list[i].id} device {device_id}")
-
-            allocation_request = {'cpu': self.application_to_deploy.processus_list[i].cpu_request,
-                                'gpu': self.application_to_deploy.processus_list[i].gpu_request,
-                                'mem': self.application_to_deploy.processus_list[i].mem_request,
-                                'disk': self.application_to_deploy.processus_list[i].disk_request}
-
-            env.getDeviceByID(device_id).allocateAllResources(self.time, allocation_request)
-
-            # deploy links
-            for j in range(i):
-                new_path = Path()
-                new_path.path_generation(env, device_id, self.devices_destinations[j])
-                for path_id in new_path.physical_links_path:
-                    if env.physical_network_links[path_id] is not None:
-                        env.physical_network_links[path_id].useBandwidth(self.application_to_deploy.proc_links[i-1][j])
-                        operational_latency += env.physical_network_links[path_id].getPhysicalNetworkLinkLatency()
-                    else:
-                        logging.error(f"Physical network link error, expexted PhysicalNetworkLink, got {env.physical_network_links[path_id]}")
-
-        self.application_to_deploy.setDeploymentInfo(self.devices_destinations)
-
-        Undeploy("Release", self.queue, self.application_to_deploy, event_time=int(self.get_time()+self.application_to_deploy.duration)).add_to_queue()
-
-        return True
 
 class Deploy_Proc(Event):
 
@@ -286,7 +244,7 @@ class Deploy_Proc(Event):
 
     def process(self, env):
 
-        logging.info(f"Deploying processus : {self.proc_to_deploy.id} on {self.device_destination_id}")
+        logging.debug(f"Deploying processus : {self.proc_to_deploy.id} on {self.device_destination_id}")
 
         allocation_request = {'cpu': self.proc_to_deploy.cpu_request,
                             'gpu': self.proc_to_deploy.gpu_request,
