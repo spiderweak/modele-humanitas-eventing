@@ -7,7 +7,7 @@ Usage:
 import numpy as np
 import random
 
-from modules.Processus import Processus
+from modules.resource.Processus import Processus
 
 # Number of group of 10 ms
 TIME_PERIOD = 24 * 60 * 60 * 100
