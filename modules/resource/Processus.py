@@ -169,7 +169,7 @@ class Processus:
 
         self.setProcessusCPURequest(random.choice([0.5,1,2,3,4]))
 
-        self.setProcessusGPURequest(random.choice([0,0.5,1,4,6,8]))
+        self.setProcessusGPURequest(random.choice([0]*4+[0.5,1,2,4]))
 
         self.setProcessusMemRequest((random.random() * 0.975 + 0.025) * 4 * 1024)
 
