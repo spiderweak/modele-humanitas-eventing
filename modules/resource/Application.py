@@ -62,6 +62,21 @@ class Application:
         ----
         num_procs : `int`
             default 1, number of processus in the application
+
+        Attributes:
+        ----------
+        id : `int`
+            Application identifier
+        duration : `int`
+            Application duration (in chuncks of 10ms)
+        num_procs : `int`
+            Number of processus in application
+        processus_list : <List>`Processus`
+            List of processus part of the application
+        proc_links : <Matrix>`int`
+            Bandwidth between application components
+        deployment_info : `dict`
+            Matching between Processus ID and Device ID
         """
 
         self.id = Application._generate_id()
@@ -84,6 +99,7 @@ class Application:
         self.proc_links = np.zeros((num_procs, num_procs))
 
         self.deployment_info = dict()
+
 
     def setAppID(self, id):
         """
@@ -164,7 +180,6 @@ class Application:
         self.duration = duration
 
 
-
     def app_yaml_parser(self, app_yaml):
         """
         Parser to load application characteristics from yaml file.
@@ -207,5 +222,3 @@ class Application:
 
         for i in range(len(deployed_onto_device)):
             self.deployment_info[self.processus_list[i]] = deployed_onto_device[i]
-
-
