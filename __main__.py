@@ -39,9 +39,12 @@ def parse_args():
     parser.add_argument('--simulate',
                         help='Boolean, default to False, run simulator if true',
                         default=True)
-    parser.add_argument('--application',
-                        help='yaml application descriptor',
+    parser.add_argument('--applications',
+                        help='application descriptor',
                         default='app.yaml')
+    parser.add_argument('--devices',
+                        help='json devices descriptor',
+                        default='examples/perso/devices.json')
     parser.add_argument('--scratchdevicedb',
                         help='Boolean, default to False, archives device database before runnning',
                         default=False)
