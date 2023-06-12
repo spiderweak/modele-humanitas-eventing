@@ -52,7 +52,7 @@ class Database():
             with open(device_template) as devices_template_file:
                 devices_data = json.load(devices_template_file)
                 for device in devices_data:
-                    data.append((device['id'], device['x'], device['y'], device['z'], device['cpu'], device['gpu'], device['mem'], device['disk'], 0, 0, 0, 0))
+                    data.append((device['id'], device['x'], device['y'], device['z'], device['resource']['cpu'], device['resource']['gpu'], device['resource']['mem'], device['resource']['disk'], 0, 0, 0, 0))
         else:
             for i in range(len(devices)):
                 new_device_cpu = random.choice([2,4,8])
