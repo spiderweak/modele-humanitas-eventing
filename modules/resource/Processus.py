@@ -73,7 +73,7 @@ class Processus:
         resource_order = ['gpu', 'cpu', 'mem', 'disk']
 
         for resource in resource_order:
-            if self.resource_request[resource] >= other.resource_request[resource]:
+            if self.resource_request[resource] > other.resource_request[resource]:
                 return False
         return True
 
