@@ -38,15 +38,9 @@ class Processus:
         self.id = Processus._generate_id()
 
         # A process requests ressources among the 4 resources defined : CPU, GPU, Memory and Disk
-        self.cpu_request = 0
-        self.gpu_request = 0
-        self.mem_request = 0 * 1024
-        self.disk_request = 0 * 1024
+        self.resource_request = {'cpu' : 0, 'gpu' : 0, 'mem' : 0, 'disk' : 0}
 
-        self.cpu_allocation = 0
-        self.gpu_allocation = 0
-        self.mem_allocation = 0
-        self.disk_allocation = 0
+        self.resource_allocation = {'cpu' : 0, 'gpu' : 0, 'mem' : 0, 'disk' : 0}
 
         self.app_id = -1
 
@@ -60,10 +54,10 @@ class Processus:
         if isinstance(other, Processus):
             new_proc = Processus()
 
-            new_proc.setProcessusCPURequest(self.cpu_request + other.cpu_request)
-            new_proc.setProcessusGPURequest(self.gpu_request + other.gpu_request)
-            new_proc.setProcessusMemRequest(self.mem_request + other.mem_request)
-            new_proc.setProcessusDiskRequest(self.disk_request + other.disk_request)
+            new_proc.setProcessusResourceRequest('cpu', self.cpu_request + other.cpu_request)
+            new_proc.setProcessusResourceRequest('gpu', self.gpu_request + other.gpu_request)
+            new_proc.setProcessusResourceRequest('mem', self.mem_request + other.mem_request)
+            new_proc.setProcessusResourceRequest('disk', self.disk_request + other.disk_request)
 
             return new_proc
         else:
@@ -100,56 +94,35 @@ class Processus:
         return self.id
 
 
-    def setProcessusCPURequest(self, cpu):
+    def setProcessusResourceRequest(self, resource, resource_request):
         """
-        Sets Processus CPU Request
+        Sets Processus Resource (CPU, GPU, Mem, Disk) Request
 
         Args:
-            cpu : float, number of CPUs to request from device.
-
-        Returns:
-            None
+        ----
+        resource : `str`
+            resource name
+        resource_request : `float`
+            quantity of a given resource to request from device.
         """
-        self.cpu_request = cpu
+        self.resource_request[resource] = resource_request
 
 
-    def setProcessusGPURequest(self, gpu):
+    def setAllResourceRequest(self, resources):
         """
-        Sets Processus GPU Request
+        Sets All Processus Resource (CPU, GPU, Mem, Disk) Request
+
+        Removes previous values for safety
 
         Args:
-            gpu : float, number of GPUs to request from device.
-
-        Returns:
-            None
+        ----
+        resources : `dict`
+            dictionary of all resources to request
         """
-        self.gpu_request = gpu
+        self.resource_request = dict()
 
-
-    def setProcessusMemRequest(self, mem):
-        """
-        Sets Processus Memory Request
-
-        Args:
-            mem : float, quantity of memory to request from device, in MBytes.
-
-        Returns:
-            None
-        """
-        self.mem_request = mem
-
-
-    def setProcessusDiskRequest(self, disk):
-        """
-        Sets Processus Disk Space Request
-
-        Args:
-            disk : float, quantity of disk space to request from device, in MBytes.
-
-        Returns:
-            None
-        """
-        self.disk_request = disk
+        for resource, resource_request in resources.items():
+            self.setProcessusResourceRequest(resource, resource_request)
 
 
     def randomProcInit(self):
@@ -167,13 +140,10 @@ class Processus:
             None
         """
 
-        self.setProcessusCPURequest(random.choice([0.5,1,2,3,4]))
-
-        self.setProcessusGPURequest(random.choice([0]*4+[0.5,1,2,4]))
-
-        self.setProcessusMemRequest((random.random() * 0.975 + 0.025) * 4 * 1024)
-
-        self.setProcessusDiskRequest((random.random() * 9 + 1) * 10 * 1024)
+        self.setProcessusResourceRequest('cpu', random.choice([0.5,1,2,3,4]))
+        self.setProcessusResourceRequest('gpu', random.choice([0]*4+[0.5,1,2,4]))
+        self.setProcessusResourceRequest('mem', (random.random() * 0.975 + 0.025) * 4 * 1024)
+        self.setProcessusResourceRequest('disk', (random.random() * 9 + 1) * 10 * 1024)
 
 
     def processus_yaml_parser(self, processus_yaml):
@@ -188,7 +158,7 @@ class Processus:
         """
         processus_content = processus_yaml['Processus']
 
-        self.setProcessusCPURequest(processus_content['cpu'])
-        self.setProcessusGPURequest(processus_content['gpu'])
-        self.setProcessusMemRequest(processus_content['memory'])
-        self.setProcessusDiskRequest(processus_content['disk'])
+        self.setProcessusResourceRequest('cpu', processus_content['cpu'])
+        self.setProcessusResourceRequest('gpu', processus_content['gpu'])
+        self.setProcessusResourceRequest('mem', processus_content['memory'])
+        self.setProcessusResourceRequest('disk', processus_content['disk'])
