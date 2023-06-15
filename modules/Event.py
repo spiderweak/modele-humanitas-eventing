@@ -66,12 +66,11 @@ class Placement(Event):
             Boolean, True if deployable, else False
         """
 
-        if proc.resource_request['cpu'] + device.getDeviceResourceUsage('cpu') <= device.resource_limit['cpu']:
-            if proc.resource_request['gpu'] + device.getDeviceResourceUsage('gpu') <= device.resource_limit['gpu']:
-                if proc.resource_request['mem'] + device.getDeviceResourceUsage('mem')  <= device.resource_limit['mem']:
-                    if proc.resource_request['disk'] + device.getDeviceResourceUsage('disk')  <= device.resource_limit['disk']:
-                        return True
-        return False
+        for resource in proc.resource_request:
+            if proc.resource_request[resource] + device.getDeviceResourceUsage(resource) > device.resource_limit[resource]:
+                return False
+        return True
+
 
     def reservable_bandwidth(self, env, path, bandwidth_needed):
         """
