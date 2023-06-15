@@ -68,6 +68,20 @@ class Processus:
         return self.__add__(other)
 
 
+    def __lt__(self, other):
+        # Arbitrary resource order
+        resource_order = ['gpu', 'cpu', 'mem', 'disk']
+
+        for resource in resource_order:
+            if self.resource_request[resource] >= other.resource_request[resource]:
+                return False
+            return True
+
+
+    def __gt__(self, other):
+        return other.__lt__(self)
+
+
     def setProcessusID(self, id):
         """
         Used to set a processus's ID by hand if necessary
