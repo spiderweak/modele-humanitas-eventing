@@ -75,7 +75,7 @@ class Processus:
         for resource in resource_order:
             if self.resource_request[resource] >= other.resource_request[resource]:
                 return False
-            return True
+        return True
 
 
     def __gt__(self, other):
