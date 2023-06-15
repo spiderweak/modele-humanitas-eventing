@@ -54,10 +54,10 @@ class Processus:
         if isinstance(other, Processus):
             new_proc = Processus()
 
-            new_proc.setProcessusResourceRequest('cpu', self.cpu_request + other.cpu_request)
-            new_proc.setProcessusResourceRequest('gpu', self.gpu_request + other.gpu_request)
-            new_proc.setProcessusResourceRequest('mem', self.mem_request + other.mem_request)
-            new_proc.setProcessusResourceRequest('disk', self.disk_request + other.disk_request)
+            new_proc.setProcessusResourceRequest('cpu', self.resource_request['cpu'] + other.resource_request['cpu'])
+            new_proc.setProcessusResourceRequest('gpu', self.resource_request['gpu'] + other.resource_request['gpu'])
+            new_proc.setProcessusResourceRequest('mem', self.resource_request['mem'] + other.resource_request['mem'])
+            new_proc.setProcessusResourceRequest('disk', self.resource_request['disk'] + other.resource_request['disk'])
 
             return new_proc
         else:

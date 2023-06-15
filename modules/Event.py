@@ -66,10 +66,10 @@ class Placement(Event):
             Boolean, True if deployable, else False
         """
 
-        if proc.cpu_request + device.getDeviceResourceUsage('cpu') <= device.resource_limit['cpu']:
-            if proc.gpu_request + device.getDeviceResourceUsage('gpu') <= device.resource_limit['gpu']:
-                if proc.mem_request + device.getDeviceResourceUsage('mem')  <= device.resource_limit['mem']:
-                    if proc.disk_request + device.getDeviceResourceUsage('disk')  <= device.resource_limit['disk']:
+        if proc.resource_request['cpu'] + device.getDeviceResourceUsage('cpu') <= device.resource_limit['cpu']:
+            if proc.resource_request['gpu'] + device.getDeviceResourceUsage('gpu') <= device.resource_limit['gpu']:
+                if proc.resource_request['mem'] + device.getDeviceResourceUsage('mem')  <= device.resource_limit['mem']:
+                    if proc.resource_request['disk'] + device.getDeviceResourceUsage('disk')  <= device.resource_limit['disk']:
                         return True
         return False
 
@@ -246,10 +246,10 @@ class Deploy_Proc(Event):
 
         logging.debug(f"Deploying processus : {self.proc_to_deploy.id} on {self.device_destination_id}")
 
-        allocation_request = {'cpu': self.proc_to_deploy.cpu_request,
-                            'gpu': self.proc_to_deploy.gpu_request,
-                            'mem': self.proc_to_deploy.mem_request,
-                            'disk': self.proc_to_deploy.disk_request}
+        allocation_request = {'cpu': self.proc_to_deploy.resource_request['cpu'],
+                            'gpu': self.proc_to_deploy.resource_request['gpu'],
+                            'mem': self.proc_to_deploy.resource_request['mem'],
+                            'disk': self.proc_to_deploy.resource_request['disk']}
 
         env.getDeviceByID(self.device_destination_id).allocateAllResources(self.time, allocation_request)
 
@@ -309,7 +309,7 @@ class Undeploy(Event):
 
             logging.debug(f"Undeploying processus : {process.id} device {device_id}")
 
-            release_request = {'cpu': process.cpu_request, 'gpu': process.gpu_request, 'mem': process.mem_request, 'disk': process.disk_request}
+            release_request = {'cpu': process.resource_request['cpu'], 'gpu': process.resource_request['gpu'], 'mem': process.resource_request['mem'], 'disk': process.resource_request['disk']}
 
             env.getDeviceByID(device_id).releaseAllResources(self.time, release_request)
 
