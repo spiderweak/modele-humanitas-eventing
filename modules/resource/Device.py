@@ -10,12 +10,40 @@ from modules.CustomExceptions import NoRouteToHost
 from modules.ResourceManagement import fit_resource
 
 class Device:
-    # A Device is defined as a group of values : CPU, GPU, Memory, Disk space
-    # Each value is set twice, the maximal value as #_limit and current_use as #_usage
-    # Additionally, each device has a form of routing table, the routing table stores the next_hop value and distance from the device to each other device in the network
+    """
+    A device
+    A Device is defined as a group of values : CPU, GPU, Memory, Disk space
+    Each value is set twice, the maximal value as #_limit and current_use as #_usage
+    Additionally, each device has a form of routing table, the routing table stores the next_hop value and distance from the device to each other device in the network
+
+
+    Attributes:
+    ----------
+    id : `int`
+        Device ID
+    position : `dict`
+        Device position (in meters, from (0,0,0) origin)
+        defaults : {'x':0, 'y':0, 'z':0}
+    resource_limit : `dict`
+        Device maximal resource values
+        defaults : {'cpu' : 2, 'gpu' : 2, 'mem' : 4 * 1024, 'disk' : 250 * 1024}
+    current_resource_usage : `dict`
+        Current usage for each device feature
+        defaults : {'cpu' : 0, 'gpu' : 0, 'mem' : 0, 'disk' : 0}
+    theorical_resource_usage : `dict`
+        Theorical usage for each device feature
+        defaults : {'cpu' : 0, 'gpu' : 0, 'mem' : 0, 'disk' : 0}
+    resource_usage_history : `dict`
+        Resource usage changes history
+        Init : {'cpu' : [(0,0)], 'gpu' : [(0,0)], 'mem' : [(0,0)], 'disk' : [(0,0)]}
+    routing_table : `dict`
+        Single path routing table, dictionary of destination:(next_hop, distance)
+        Init : {self.id:(self.id,0)}
+    proc : <List>`Processus`
+        List of `Processus` running on the device
+    """
 
     # Devices have a given id
-
     id = 0
 
 
@@ -44,8 +72,7 @@ class Device:
         # ID setting
         self.id = Device._generate_id()
 
-        # Device Position in the area considered
-
+        # Device Position in the area considered, initialized to {'x':0, 'y':0, 'z':0}
         self.position = {'x':0, 'y':0, 'z':0}
 
         # Maximal limit for each device feature
@@ -86,11 +113,10 @@ class Device:
         """
         Returns device ID
 
-        Args:
-            None
-
         Returns:
-            id : int, device ID
+        -------
+        id : `int`
+            device ID
         """
         return self.id
 
@@ -118,12 +144,21 @@ class Device:
             resource name
         resource_limit : `float`
             quantity of a given resource to set as device maximal limit
-
         """
         self.resource_limit[resource] = resource_limit
 
 
     def setAllResourceLimit(self, resources):
+        """
+        Sets All Device Resource (CPU, GPU, Mem, Disk) Limit
+
+        Sets Previous values to zero for safety
+
+        Args:
+        ----
+        resources : `dict`
+            dictionary of all device resources
+        """
         # Set all previous values to Zero
         for resource in self.resource_limit:
             self.setDeviceResourceLimit(resource, 0)
@@ -134,13 +169,20 @@ class Device:
 
     def allocateDeviceResource(self, t, resource_name, resource, force = False, overconsume = False):
         """
-        allocate a given amount of Device CPU
+        allocate a given amount of Device Resource
 
         Args:
-            t : int, time value
-            cpu : float, value for the quantity of CPU requested
-            force : bool, Forces allocation at previous moment in time (might cause discrepencies), defaults to False
-            overconsume : bool, Allow for allocation over GPU limit, defaults to False
+        ----
+        t : `int`
+            current time value
+        resource_name : `str`
+            Name for the allocated resource
+        resource : float
+            value for the quantity of Resource requested
+        force : bool
+            Forces allocation at previous moment in time (might cause discrepencies), defaults to False
+        overconsume : bool
+            Allow for allocation over Resource limit, defaults to False
 
         Returns:
             retrofitting_coefficient : value to propagate to remaining processus execution to slow/fasten processus time
@@ -223,9 +265,13 @@ class Device:
         Reminder - routing table element are : {destination:(next_hop, distance)}
 
         Args:
-            destination_id : int, Device ID of the destination point
-            next_hop_id : int, Device ID of the next hop in the path to destination
-            distance_destination : int, distance from device (self) to destination (destination_id), when passing through device (next_hop_id), distance is arbitrary, can be actual distance, number of hops, ...
+        ----
+        destination_id : `int`
+            Device ID of the destination point
+        next_hop_id : `int`
+            Device ID of the next hop in the path to destination
+        distance_destination : `int`
+            distance from device (self) to destination (destination_id), when passing through device (next_hop_id), distance is arbitrary, can be actual distance, number of hops, ...
 
         Returns:
             None
@@ -247,13 +293,16 @@ class Device:
         Returns the values associated to the route from the device to the destination
 
         Args:
+        ----
             destination_id : int, Device ID of the destination point
 
         Returns:
+        -------
             (next_hop, distance) : (int, float), next hop in the routing table to reach destination, distance from host to destination
 
         Raises:
-            DestinationUnknown: If destination is not in routing table -- To Be Implemented
+        ------
+            NoRouteToHost: If destination is not in routing table
         """
         # We check if the destination is known
         try:
