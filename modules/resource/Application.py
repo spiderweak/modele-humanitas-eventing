@@ -15,12 +15,14 @@ TIME_PERIOD = 24 * 60 * 60 * 100
 class Application:
     """
     An application is defined as a graph of processus
+
     (array of array, for now, might be a networkx graph)
+
     Initialized to empty data
 
 
     Attributes:
-    ----------
+    -----------
     id : `int`
         Application ID
     duration : `int`
@@ -42,10 +44,11 @@ class Application:
     def _generate_id(cls):
         """
         Class method for id generation
+
         Assigns id then increment for next generation
 
         Returns:
-        -------
+        --------
         result: `int`
             Application ID
         """
@@ -57,12 +60,8 @@ class Application:
 
     def __init__(self, num_procs = 1) -> None:
         """
-        An application is defined as a graph of processus
-        (array of array, for now, might be a networkx graph)
-        Initializes to empty data
-
         Args:
-        ----
+        -----
         num_procs : `int`
             default 1, number of processus in the application
         """
@@ -94,22 +93,24 @@ class Application:
         Used to set an application's ID by hand if necessary
 
         Args:
-        ----
-            id : int, new application ID
+        -----
+        id : `int`
+            New application ID
         """
 
         self.id=id
 
 
-    # Random application initialization
     def randomAppInit(self, num_procs=3, num_proc_random=True):
         """
         Random initialization of the application
 
         Args:
         ----
-            num_procs : int, number of processus to consider
-            num_proc_random : Bool, default to True for random number of processus deployed between 1 and num_proc
+        num_procs : `int`
+            Number of processus to consider
+        num_proc_random : `bool`
+            Default to `True` for random number of processus deployed between 1 and num_proc
         """
 
         # If numproc is set to random, randomize the number of processus deployed
@@ -210,3 +211,14 @@ class Application:
 
         for i in range(len(deployed_onto_device)):
             self.deployment_info[self.processus_list[i]] = deployed_onto_device[i]
+
+
+    def getAppProcsIDs(self):
+        return [proc.getProcessusID() for proc in self.processus_list]
+
+
+    def getAppProcByID(self, id):
+        for proc in self.processus_list:
+            if proc.getProcessusID() == id:
+                return proc
+        raise KeyError("Proc not found")
