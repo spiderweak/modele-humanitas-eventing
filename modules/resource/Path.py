@@ -6,8 +6,8 @@ Usage:
 
 """
 
-from modules.Device import Device
-from modules.PhysicalNetworkLink import PhysicalNetworkLink
+from modules.resource.Device import Device
+from modules.resource.PhysicalNetworkLink import PhysicalNetworkLink
 
 class Path:
 

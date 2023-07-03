@@ -1,6 +1,6 @@
 import sqlite3
 import random
-from modules.Device import Device
+from modules.resource.Device import Device
 
 from modules.Environment import Environment
 

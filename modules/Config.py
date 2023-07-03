@@ -31,7 +31,11 @@ class Config():
             Integer representation of the parsed log level
         log_filename : `str`
             LogFile name
-        database : `Database`
+        devices_template_filename : `str`
+            Device Template Filename
+        application_template_filename : `str`
+            Application Template Filename
+        database_file : `Database`
             Custom SQLite database object for reading and archival
         number_of_applications : `int`
             Number of application to test
