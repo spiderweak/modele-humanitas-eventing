@@ -17,14 +17,14 @@ class Config():
         Assigns default values if no values are given
 
         Args:
-        ----
+        -----
         options : `argparse.Namespace`
             parsed arguments from argument parser (`argparse`) module
         env : `Environment`
             Simulation environment
 
         Attributes:
-        ----------
+        -----------
         parsed_yaml : `dict`
             Contains the outpout from loading the configuration YAML file, stored as a dict
         log_level : `int`
@@ -206,7 +206,7 @@ class Config():
         Each device will be represented with its coordinates (x, y, z)
 
         Args:
-        ----
+        -----
         devices : `dict`
             Coords dictionary
         """
