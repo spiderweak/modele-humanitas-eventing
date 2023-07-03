@@ -21,10 +21,13 @@ class PhysicalNetworkLink:
         Assigns id then increment for next generation
 
         Args:
-            None
+        -----
+        None
 
         Returns:
-            result : int, Device ID
+        --------
+        result : `int`
+            Device ID
         """
         result = cls.id
         cls.id +=1
@@ -37,10 +40,12 @@ class PhysicalNetworkLink:
         Assigns ID, initial position, resource values, routing table and resource limits
 
         Args:
-            None
+        -----
+        None
 
         Returns:
-            None
+        --------
+        None
         """
         # ID setting
         self.id = PhysicalNetworkLink._generate_id()
@@ -57,10 +62,13 @@ class PhysicalNetworkLink:
         Sets a Physical Link's ID by hand if necessary
 
         Args:
-            id : int, new device ID
+        -----
+        id : `int`
+            New device ID
 
         Returns:
-            None
+        --------
+        None
         """
         self.id = id
 
@@ -70,10 +78,13 @@ class PhysicalNetworkLink:
         Sets a Physical Link's Bandwidth (in kBytes/s)
 
         Args:
-            bandwidth : float, physical link's bandwidth (in kBytes/s)
+        -----
+        bandwidth : `float`
+            Physical link's bandwidth (in kBytes/s)
 
         Returns:
-            None
+        --------
+        None
         """
         self.bandwidth = bandwidth
 
@@ -83,10 +94,13 @@ class PhysicalNetworkLink:
         Sets a Physical Link's associated latency
 
         Args:
-            latency : float, physical link's latency
+        -----
+        latency : `float`
+            Physical link's latency
 
         Returns:
-            None
+        --------
+        None
         """
         self.latency = latency
 
@@ -96,10 +110,13 @@ class PhysicalNetworkLink:
         Returns the Physical Link's associated latency
 
         Args:
-            None
+        -----
+        None
 
         Returns:
-            latency : float, physical link's latency
+        --------
+        latency : `float`
+            Physical link's latency
         """
         return self.latency
 
@@ -109,10 +126,13 @@ class PhysicalNetworkLink:
         Returns the Physical Link's available (unused) bandwidth (in kBytes/s)
 
         Args:
-            None
+        -----
+        None
 
         Returns:
-            available_bandwidth : float, physical link's available bandwidth
+        --------
+        available_bandwidth : `float`
+            Physical link's available bandwidth
         """
         available_bandwidth = self.bandwidth - self.bandwidth_use
         return available_bandwidth
@@ -123,10 +143,14 @@ class PhysicalNetworkLink:
         Allocates Physical Link's bandwidth based on bandwidth request (in kBytes/s)
 
         Args:
-            bandwidth_request : float, necessary bandwidth to allocate (in kBytes/s)
+        -----
+        bandwidth_request : `float`
+            Necessary bandwidth to allocate (in kBytes/s)
 
         Returns:
-            Boolean, True if allocation possible and successfull, else False
+        --------
+        `Boolean`
+            True if allocation possible and successfull, else False
         """
         if bandwidth_request < self.availableBandwidth():
             self.bandwidth_use += bandwidth_request
@@ -140,10 +164,13 @@ class PhysicalNetworkLink:
         If requested bandwidth is superior to allocated bandwidth, bandwidth use is set to 0 instead of negative value
 
         Args:
-            free_bandwidth_request : float, necessary bandwidth to free (in kBytes/s)
+        -----
+        free_bandwidth_request : `float`
+            Necessary bandwidth to free (in kBytes/s)
 
         Returns:
-            None
+        --------
+        None
         """
         self.bandwidth_use = max(self.bandwidth_use-free_bandwidth_request, 0)
 
@@ -152,10 +179,13 @@ class PhysicalNetworkLink:
         Check if the associated link actually links the two given devices
 
         Args:
-            free_bandwidth_request : float, necessary bandwidth to free (in kBytes/s)
+        -----
+        free_bandwidth_request : `float`
+            Necessary bandwidth to free (in kBytes/s)
 
         Returns:
-            None
+        --------
+        None
         """
         if self.device_1_id == device_1_id and self.device_2_id == device_2_id:
             return True
