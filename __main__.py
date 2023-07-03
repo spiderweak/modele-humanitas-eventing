@@ -10,14 +10,14 @@ Usage:
 
 from modules.Config import Config
 
-from modules.Application import Application
-from modules.Device import Device
-from modules.PhysicalNetworkLink import PhysicalNetworkLink
-from modules.Processus import Processus
-from modules.Path import Path
+from modules.resource.Application import Application
+from modules.resource.Device import Device
+from modules.resource.PhysicalNetworkLink import PhysicalNetworkLink
+from modules.resource.Processus import Processus
+from modules.resource.Path import Path
 from modules.EventQueue import EventQueue
 from modules.Environment import Environment
-from modules.Event import (Event, Placement, Deploy)
+from modules.Event import (Event, Placement, Deploy_Proc, Sync)
 
 
 from modules.Simulation import Simulation
@@ -39,12 +39,6 @@ def parse_args():
     parser.add_argument('--simulate',
                         help='Boolean, default to False, run simulator if true',
                         default=True)
-    parser.add_argument('--applications',
-                        help='application descriptor',
-                        default='app.yaml')
-    parser.add_argument('--devices',
-                        help='json devices descriptor',
-                        default='examples/perso/devices.json')
     parser.add_argument('--scratchdevicedb',
                         help='Boolean, default to False, archives device database before runnning',
                         default=False)

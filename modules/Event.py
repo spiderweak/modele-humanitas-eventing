@@ -1,6 +1,7 @@
 import logging
-from modules.Path import Path
+from modules.resource.Path import Path
 from modules.Environment import Environment
+import json
 
 MAX_TENTATIVES = 2000
 
@@ -53,6 +54,28 @@ class Placement(Event):
         self.application_to_place = app
         self.deployment_starting_point = device_id
 
+    def __json__(self):
+        return {
+            "placement_time" : self.get_time(),
+            "requesting_device" : self.deployment_starting_point,
+            "application" : self.application_to_place
+        }
+
+
+    def export(self, filename="placement.json"):
+        try:
+            with open(filename) as file:
+                data = json.load(file)
+        except FileNotFoundError:
+            data = []
+
+        json_string = json.dumps(self, default=lambda o: o.__json__(), indent=4)
+        data.append(json.loads(json_string))
+
+        with open(filename, 'w') as file:
+            file.write(json.dumps(data, default=lambda o: o.__json__(), indent=4))
+
+
     # Let's define how to deploy an application on the system.
     def deployable_proc(self, proc, device):
         """
@@ -66,12 +89,11 @@ class Placement(Event):
             Boolean, True if deployable, else False
         """
 
-        if proc.cpu_request + device.getDeviceResourceUsage('cpu') <= device.resource_limit['cpu']:
-            if proc.gpu_request + device.getDeviceResourceUsage('gpu') <= device.resource_limit['gpu']:
-                if proc.mem_request + device.getDeviceResourceUsage('mem')  <= device.resource_limit['mem']:
-                    if proc.disk_request + device.getDeviceResourceUsage('disk')  <= device.resource_limit['disk']:
-                        return True
-        return False
+        for resource in proc.resource_request:
+            if proc.resource_request[resource] + device.getDeviceResourceUsage(resource) > device.resource_limit[resource]:
+                return False
+        return True
+
 
     def reservable_bandwidth(self, env, path, bandwidth_needed):
         """
@@ -119,158 +141,89 @@ class Placement(Event):
             env : Environment
         """
 
-        deployment_latency_test = 0
-
         deployment_success = True
         # Get ordered device distance
 
         deployed_onto_devices = list()
-        first_dev_exclusion_list = list()
         deployment_times = list()
+        deployment_success = True
+
 
         logging.debug(f"Placement procedure from {self.deployment_starting_point}")
 
         device = env.getDeviceByID(self.deployment_starting_point)
+        distance_from_device = {i: device.routing_table[i][1] for i in device.routing_table}
+        sorted_distance_from_device = sorted(distance_from_device.items(), key=lambda x: x[1])
 
-        deployment_success = True
+        pref_proc = dict()
+        for proc in self.application_to_place.processus_list:
+            pref_proc[proc.id] = list()
+            for dev_id,dev_latency in sorted_distance_from_device:
+                device = env.getDeviceByID(dev_id)
+                if self.deployable_proc(proc, device):
+                    pref_proc[proc.id].append((dev_id, dev_latency))
 
-        tentatives = 0
+        matching = dict()
+        matching_latency = dict()
+        to_match  = self.application_to_place.getAppProcsIDs()
 
-        while len(deployed_onto_devices) < self.application_to_place.num_procs and tentatives < len(env.getDevices())*len(env.getDevices()):
+        while len(to_match)!=0:
+            proc_id = to_match.pop(0)
 
-            tentatives +=1
+            try:
+                deployed, deployment_latency  = pref_proc[proc_id].pop(0)
+            except IndexError:
+                deployment_success = False
+                break
 
-            if len(deployed_onto_devices) == 0 and len(first_dev_exclusion_list)==0:
-                distance_from_device = {i: device.routing_table[i][1] for i in device.routing_table}
-                sorted_distance_from_device = sorted(distance_from_device.items(), key=lambda x: x[1])
-                logging.debug(f"Source {sorted_distance_from_device[0][0]}")
+            if deployed not in matching.values():
+                matching[proc_id] = deployed
+                matching_latency[proc_id] = deployment_latency
             else:
-                if len(deployed_onto_devices)!= 0:
-                    new_source_device = env.getDeviceByID(deployed_onto_devices[-1])
+                matching_procs = [self.application_to_place.getAppProcByID(proc) for proc,dev in matching.items() if dev == deployed]
+                agglomerated = sum(matching_procs)# + proc
+                if self.deployable_proc(agglomerated, env.getDeviceByID(dev_id)):
+                    matching[proc_id] = deployed
+                    matching_latency[proc_id] = deployment_latency
                 else:
-                    distance_from_device = {i: device.routing_table[i][1] for i in device.routing_table}
-                    if len(first_dev_exclusion_list) == len(distance_from_device):
-                        deployment_success = False
-                        break
+                    max_proc_deployed = max([self.application_to_place.getAppProcByID(proc) for proc,dev in matching.items() if dev == deployed])
+                    if self.application_to_place.getAppProcByID(proc_id) < max_proc_deployed:
+                        max_proc_deployed_id = max_proc_deployed.getProcessusID()
+                        to_match.append(max_proc_deployed_id)
+                        matching[proc_id] = deployed
+                        matching_latency[proc_id] = deployment_latency
+                        matching.pop(max_proc_deployed_id, None)
+                        matching_latency.pop(max_proc_deployed_id, None)
                     else:
-                        for j in first_dev_exclusion_list:
-                            if j in distance_from_device:
-                                del distance_from_device[j]
-                        sorted_distance_from_device = sorted(distance_from_device.items(), key=lambda x: x[1])
-                        new_source_device = sorted_distance_from_device[0][0]
+                        to_match.append(proc_id)
 
-                distance_from_device = {i: new_source_device.routing_table[i][1] for i in new_source_device.routing_table}
-                sorted_distance_from_device = sorted(distance_from_device.items(), key=lambda x: x[1])
+        if deployment_success:
 
-                logging.debug(f"Switching source to {sorted_distance_from_device[0][0]}")
+            for proc_id in self.application_to_place.getAppProcsIDs():
+                deployed_onto_devices.append(matching[proc_id])
+                deployment_times.append(matching_latency[proc_id])
 
-            for device_id, deployment_latency in sorted_distance_from_device:
+            logging.info(f"Placement Module : application id : {self.application_to_place.id} , {self.application_to_place.num_procs} processus deployed on {deployed_onto_devices}")
 
-                logging.debug(f"Testing placement on device {device_id}")
-
-                proc_list = list()
-
-                for i in range(len(deployed_onto_devices)):
-                    if device_id == deployed_onto_devices[i]:
-                        proc_list.append(self.application_to_place.processus_list[i])
-
-                proc_list.append(self.application_to_place.processus_list[len(deployed_onto_devices)])
-
-                new_proc = sum(proc_list)
-
-                if self.deployable_proc(new_proc, env.getDeviceByID(device_id)):
-
-                    logging.debug(f"Placement possible on device {device_id}")
-
-                    deployed_onto_devices.append(device_id)
-
-                    deployment_times.append(deployment_latency)
-
-                    if self.linkability(env, deployed_onto_devices, self.application_to_place.proc_links):
-
-                        # deploy links
-                        for i in range(len(deployed_onto_devices)):
-                            new_path = Path()
-                            new_path.path_generation(env, device_id, deployed_onto_devices[i])
-                            for path_id in new_path.physical_links_path:
-                                if env.physical_network_links[path_id] is not None:
-                                    pass
-                                    #physical_network_links[path_id].useBandwidth(app.proc_links[len(deployed_onto_devices)-1][i])
-                                    #operational_latency += physical_network_links[path_id].getPhysicalNetworkLinkLatency()
-                                else:
-                                    logging.error(f"Physical network link error, expexted PhysicalNetworkLink, got {env.physical_network_links[path_id]}")
-
-                        break
-                    else:
-                        deployed_onto_devices.pop()
-                        deployment_times.pop()
-                else:
-                    logging.debug(f"Impossible to deploy on {device_id}, testing next closest device")
-
-        if (not deployment_success) or (tentatives == MAX_TENTATIVES) or len(deployed_onto_devices)!=self.application_to_place.num_procs :
-            deployed_onto_devices = list()
-
-        if len(deployed_onto_devices) !=0:
-            logging.debug(f"application id : {self.application_to_place.id} , {self.application_to_place.num_procs} processus deployed on {deployed_onto_devices}")
-        else:
-            logging.debug(f"application id : {self.application_to_place.id} , {self.application_to_place.num_procs} processus not deployed")
-
-        if deployed_onto_devices:
             for i in range(len(deployed_onto_devices)):
                 Deploy_Proc("Deployment Proc", self.queue, self.application_to_place, deployed_onto_devices, i, event_time=int((self.get_time()+deployment_times[i])/10)*10, last=(i+1==len(deployed_onto_devices))).add_to_queue()
         else:
             prev_time, prev_value = env.count_rejected_application[-1]
 
+            logging.info(f"Placement Module : application id : {self.application_to_place.id} , {self.application_to_place.num_procs} processus not deployed")
+
             if env.current_time == prev_time:
                 env.count_rejected_application[-1][1] += 1
             else:
-                env.count_rejected_application.append((env.current_time, prev_value+1))
+                env.count_rejected_application.append([env.current_time, prev_value+1])
 
+            # We could ask for a retry after 15 mins
+
+            logging.info(f"Placement set back to future time, from {self.get_time()} to {int((self.get_time()+15*60*1000)/10)*10}")
+            Placement("Placement",self.queue, self.application_to_place, self.deployment_starting_point, event_time=int((self.get_time()+15*60*1000)/10)*10).add_to_queue()
 
         return deployment_times, deployed_onto_devices
 
-class Deploy(Event):
-
-    def __init__(self, event_name, queue, app, deployed_onto_devices, event_time=None):
-        super().__init__(event_name, queue, event_time)
-        self.application_to_deploy = app
-        self.devices_destinations = deployed_onto_devices
-
-    def process(self, env):
-
-        operational_latency = 0
-
-        logging.info(f"Deploying application id : {self.application_to_deploy.id} , {self.application_to_deploy.num_procs} processus on {self.devices_destinations}")
-
-        for i in range(self.application_to_deploy.num_procs):
-
-            device_id = self.devices_destinations[i]
-
-            logging.info(f"Deploying processus : {self.application_to_deploy.processus_list[i].id} device {device_id}")
-
-            allocation_request = {'cpu': self.application_to_deploy.processus_list[i].cpu_request,
-                                'gpu': self.application_to_deploy.processus_list[i].gpu_request,
-                                'mem': self.application_to_deploy.processus_list[i].mem_request,
-                                'disk': self.application_to_deploy.processus_list[i].disk_request}
-
-            env.getDeviceByID(device_id).allocateAllResources(self.time, allocation_request)
-
-            # deploy links
-            for j in range(i):
-                new_path = Path()
-                new_path.path_generation(env, device_id, self.devices_destinations[j])
-                for path_id in new_path.physical_links_path:
-                    if env.physical_network_links[path_id] is not None:
-                        env.physical_network_links[path_id].useBandwidth(self.application_to_deploy.proc_links[i-1][j])
-                        operational_latency += env.physical_network_links[path_id].getPhysicalNetworkLinkLatency()
-                    else:
-                        logging.error(f"Physical network link error, expexted PhysicalNetworkLink, got {env.physical_network_links[path_id]}")
-
-        self.application_to_deploy.setDeploymentInfo(self.devices_destinations)
-
-        Undeploy("Release", self.queue, self.application_to_deploy, event_time=int(self.get_time()+self.application_to_deploy.duration)).add_to_queue()
-
-        return True
 
 class Deploy_Proc(Event):
 
@@ -286,12 +239,12 @@ class Deploy_Proc(Event):
 
     def process(self, env):
 
-        logging.info(f"Deploying processus : {self.proc_to_deploy.id} on {self.device_destination_id}")
+        logging.debug(f"Deploying processus : {self.proc_to_deploy.id} on {self.device_destination_id}")
 
-        allocation_request = {'cpu': self.proc_to_deploy.cpu_request,
-                            'gpu': self.proc_to_deploy.gpu_request,
-                            'mem': self.proc_to_deploy.mem_request,
-                            'disk': self.proc_to_deploy.disk_request}
+        allocation_request = {'cpu': self.proc_to_deploy.resource_request['cpu'],
+                            'gpu': self.proc_to_deploy.resource_request['gpu'],
+                            'mem': self.proc_to_deploy.resource_request['mem'],
+                            'disk': self.proc_to_deploy.resource_request['disk']}
 
         env.getDeviceByID(self.device_destination_id).allocateAllResources(self.time, allocation_request)
 
@@ -351,7 +304,7 @@ class Undeploy(Event):
 
             logging.debug(f"Undeploying processus : {process.id} device {device_id}")
 
-            release_request = {'cpu': process.cpu_request, 'gpu': process.gpu_request, 'mem': process.mem_request, 'disk': process.disk_request}
+            release_request = {'cpu': process.resource_request['cpu'], 'gpu': process.resource_request['gpu'], 'mem': process.resource_request['mem'], 'disk': process.resource_request['disk']}
 
             env.getDeviceByID(device_id).releaseAllResources(self.time, release_request)
 

@@ -11,7 +11,7 @@ class Visualizer():
 
     def visualize_environment(self, env):
 
-        data = env.getDeviceByID(3).resource_usage_history['cpu']
+        data = env.getDeviceByID(12).resource_usage_history['cpu']
 
         x,y = zip(*data)
 

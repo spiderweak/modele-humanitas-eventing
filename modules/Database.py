@@ -1,9 +1,10 @@
 import sqlite3
 import random
-from modules.Device import Device
+from modules.resource.Device import Device
 
 from modules.Environment import Environment
 
+import json
 class Database():
     def __init__(self, database_address) -> None:
         """
@@ -32,7 +33,7 @@ class Database():
         cur.execute("CREATE TABLE device(id, x, y, z, cpu_limit, gpu_limit, mem_limit, disk_limit, cpu_usage, gpu_usage, mem_usage, disk_usage)")
         # Need to find a way to store the routing table
 
-    def populate_db(self, devices):
+    def populate_db(self, devices, device_template = None):
         """
         Populates the database with randomly generated devices.
         Positions are provided in input.
@@ -47,13 +48,19 @@ class Database():
         con = sqlite3.connect(self.database_address)
         cur = con.cursor()
         data = list()
-        for i in range(len(devices)):
-            new_device_cpu = random.choice([2,4,8])
-            new_device_gpu = random.choice([4,8,12,16])
-            new_device_mem = random.choice([4,8,16,24,32]) * 1024
-            new_device_disk = random.choice([50, 100, 125, 250, 500]) * 1024
-            #device(id, x, y, z, cpu_limit, gpu_limit, mem_limit, disk_limit, cpu_usage, gpu_usage, mem_usage, disk_usage)
-            data.append((i, devices[i][0],devices[i][1],0, new_device_cpu, new_device_gpu, new_device_mem, new_device_disk, 0, 0, 0, 0))
+        if device_template:
+            with open(device_template) as devices_template_file:
+                devices_data = json.load(devices_template_file)
+                for device in devices_data:
+                    data.append((device['id'], device['x'], device['y'], device['z'], device['resource']['cpu'], device['resource']['gpu'], device['resource']['mem'], device['resource']['disk'], 0, 0, 0, 0))
+        else:
+            for i in range(len(devices)):
+                new_device_cpu = random.choice([2,4,8])
+                new_device_gpu = random.choice([4,8,12,16])
+                new_device_mem = random.choice([4,8,16,24,32]) * 1024
+                new_device_disk = random.choice([50, 100, 125, 250, 500]) * 1024
+                #device(id, x, y, z, cpu_limit, gpu_limit, mem_limit, disk_limit, cpu_usage, gpu_usage, mem_usage, disk_usage)
+                data.append((i, devices[i][0],devices[i][1],0, new_device_cpu, new_device_gpu, new_device_mem, new_device_disk, 0, 0, 0, 0))
 
         cur.executemany("INSERT INTO device VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", data)
 

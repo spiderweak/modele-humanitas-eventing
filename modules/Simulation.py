@@ -4,14 +4,16 @@ import random
 import logging
 
 import time
+import datetime
+import os
 
 import numpy as np
 
 from tqdm import tqdm
 
-from modules.Application import Application
+from modules.resource.Application import Application
 from modules.EventQueue import EventQueue
-from modules.Event import (Event, Placement, Deploy, FinalReport)
+from modules.Event import (Event, Placement, Deploy_Proc, Sync, FinalReport)
 from modules.Visualization import Visualizer
 
 from modules.ResourceManagement import custom_distance
@@ -32,7 +34,14 @@ class Simulation(object):
 
         time.sleep(1)
 
-        for i in range(self.__env.config.number_of_applications):
+        date_string = datetime.datetime.now().isoformat(timespec='minutes').replace(":","-")
+
+        # Exporting devices list
+        print("Generating dataset and exporting data")
+        os.makedirs(f"data/{date_string}")
+        env.export_devices(filename=f"data/{date_string}/devices.json")
+
+        for i in tqdm(range(self.__env.config.number_of_applications)):
             # Generating 1 random application
             application = Application()
             application.randomAppInit()
@@ -44,7 +53,11 @@ class Simulation(object):
             device_id = random.choice(range(len(self.__env.devices)))
 
             # Creating a placement event
-            Placement("Placement",self.__queue, application, device_id, event_time=arrival_times[i]).add_to_queue()
+            p = Placement("Placement",self.__queue, application, device_id, event_time=arrival_times[i])
+            p.export(filename=f"data/{date_string}/placement.json")
+            p.add_to_queue()
+
+
 
         # Final reporting event
 

@@ -8,6 +8,8 @@ import matplotlib.pyplot as plt
 
 from modules.Database import Database
 from modules.ResourceManagement import custom_distance
+
+import json
 class Config():
     def __init__(self, options, env) -> None:
         """
@@ -29,7 +31,11 @@ class Config():
             Integer representation of the parsed log level
         log_filename : `str`
             LogFile name
-        database : `Database`
+        devices_template_filename : `str`
+            Device Template Filename
+        application_template_filename : `str`
+            Application Template Filename
+        database_file : `Database`
             Custom SQLite database object for reading and archival
         number_of_applications : `int`
             Number of application to test
@@ -46,6 +52,8 @@ class Config():
         config_file_not_found = False
 
         database_filename = 'db.sqlite'
+        self.devices_template_filename = "devices.json"
+        self.application_template_filename = "application.json"
 
         self.database_file = Database(database_filename)
 
@@ -125,6 +133,17 @@ class Config():
             except TypeError:
                 logging.error("Configuration File Not Found, default solution is using existing database")
 
+        # Template files
+        try:
+            self.devices_template_filename = self.parsed_yaml['template_files']['devices']
+        except KeyError as e:
+            logging.error(f"No entry in configuration file for {e}, default solution uses 'devices.json' in the project's root")
+
+        try:
+            self.application_template_filename = self.parsed_yaml['template_files']['applications']
+        except KeyError as e:
+            logging.error(f"No entry in configuration file for {e}, default solution uses 'applications.json' in the project's root")
+
         # Number of simulated applications to deploy
         try:
             self.number_of_applications = int(self.parsed_yaml['application_number'])
@@ -162,9 +181,6 @@ class Config():
         except (KeyError,TypeError) as e:
             logging.error(f"Default simulation value {self.app_duration} used for entry {e}")
 
-
-
-
         # Database interation
         try:
             if not os.path.isfile(database_filename):
@@ -172,7 +188,7 @@ class Config():
                 devices = dict()
                 self.generate_and_plot_devices_positions(devices)
                 self.database_file.create_db()
-                self.database_file.populate_db(devices)
+                self.database_file.populate_db(devices, self.devices_template_filename)
         except KeyError as e:
             logging.error(f"No entry in configuration file for {e}, default solution uses existing database even if 'scratchdevicedb' parameter was given ")
 
@@ -194,15 +210,23 @@ class Config():
         devices : `dict`
             Coords dictionary
         """
+
         n_devices = self.number_of_devices # Number of devices
 
-        for dev_id in range(n_devices):
+        try:
+            with open(self.devices_template_filename) as devices_template_file:
+                devices_data = json.load(devices_template_file)
+                for device in devices_data:
+                    devices[device['id']] = [device['x'],device['y'],device['z']]
+        except FileNotFoundError:
+            for dev_id in range(n_devices):
             # Processing device position, random x, y, z fixed to between various values (z=0 for now)
-            x = round(random.random() * (self._3D_space['x_max'] - self._3D_space['x_min']) + self._3D_space['x_min'],2)
-            y = round(random.random() * (self._3D_space['y_max'] - self._3D_space['y_min']) + self._3D_space['y_min'],2)
-            z = round(random.random() * (self._3D_space['z_max'] - self._3D_space['z_min']) + self._3D_space['z_min'],2)
+                x = round(random.random() * (self._3D_space['x_max'] - self._3D_space['x_min']) + self._3D_space['x_min'],2)
+                y = round(random.random() * (self._3D_space['y_max'] - self._3D_space['y_min']) + self._3D_space['y_min'],2)
+                z = round(random.random() * (self._3D_space['z_max'] - self._3D_space['z_min']) + self._3D_space['z_min'],2)
 
-            devices[dev_id] = [x,y,z]
+                devices[dev_id] = [x,y,z]
+
 
 
         # We'll try our hand on plotting everything in a graph
