@@ -1,6 +1,7 @@
 import logging
 from modules.resource.Path import Path
 from modules.Environment import Environment
+import json
 
 MAX_TENTATIVES = 2000
 
@@ -52,6 +53,28 @@ class Placement(Event):
         super().__init__(event_name, queue, event_time)
         self.application_to_place = app
         self.deployment_starting_point = device_id
+
+    def __json__(self):
+        return {
+            "placement_time" : self.get_time(),
+            "requesting_device" : self.deployment_starting_point,
+            "application" : self.application_to_place
+        }
+
+
+    def export(self, filename="placement.json"):
+        try:
+            with open(filename) as file:
+                data = json.load(file)
+        except FileNotFoundError:
+            data = []
+
+        json_string = json.dumps(self, default=lambda o: o.__json__(), indent=4)
+        data.append(json.loads(json_string))
+
+        with open(filename, 'w') as file:
+            file.write(json.dumps(data, default=lambda o: o.__json__(), indent=4))
+
 
     # Let's define how to deploy an application on the system.
     def deployable_proc(self, proc, device):
@@ -192,7 +215,7 @@ class Placement(Event):
             if env.current_time == prev_time:
                 env.count_rejected_application[-1][1] += 1
             else:
-                env.count_rejected_application.append((env.current_time, prev_value+1))
+                env.count_rejected_application.append([env.current_time, prev_value+1])
 
             # We could ask for a retry after 15 mins
 
