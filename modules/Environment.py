@@ -4,6 +4,7 @@ from modules.CustomExceptions import NoRouteToHost
 from modules.ResourceManagement import custom_distance
 
 import logging
+import json
 from tqdm import tqdm
 
 class Environment(object):
@@ -37,7 +38,7 @@ class Environment(object):
         self.applications = []
         self.devices = []
         self.physical_network_links = [0]
-        self.count_rejected_application=[(0,0)]
+        self.count_rejected_application=[[0,0]]
 
 
     def setConfig(self, config):
@@ -177,3 +178,9 @@ class Environment(object):
                         changes = True
                         progress_bar.update()
                         device_i.addToRoutingTable(device_j.id, min_nh, min_array)
+
+
+    def export_devices(self, filename = "devices.json"):
+        json_string = json.dumps(self.devices, default=lambda o: o.__json__(), indent=4)
+        with open(filename, 'w') as file:
+            file.write(json_string)
