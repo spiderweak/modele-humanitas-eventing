@@ -94,6 +94,23 @@ class Device:
         self.proc = list()
 
 
+    def __json__(self):
+        """
+        Returns the Device signature as a json string to be parsed by a json exporter
+
+        Returns:
+        -------
+            `dict`
+        """
+
+        return {
+            "device_id" : self.id,
+            "device_position" : self.position,
+            "resource_limit" : self.resource_limit,
+            "routing_table" : self.routing_table
+        }
+
+
     def setDeviceID(self, id):
         """
         Used to set a device's ID by hand if necessary
