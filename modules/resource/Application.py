@@ -88,6 +88,30 @@ class Application:
         self.deployment_info = dict()
 
 
+    def __json__(self):
+        """
+        Returns the Application signature as a json string to be parsed by a json exporter
+
+        Returns:
+        -------
+            `dict`
+        """
+
+        proc_links = []
+        for row in self.proc_links:
+            proc_row = []
+            for row_value in row:
+                proc_row.append(row_value)
+            proc_links.append(proc_row)
+
+        return {
+            "app_id" : self.id,
+            "duration" : self.duration,
+            "proc_list" : self.processus_list,
+            "proc_links" : proc_links
+        }
+
+
     def setAppID(self, id):
         """
         Used to set an application's ID by hand if necessary
