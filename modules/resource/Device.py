@@ -16,9 +16,8 @@ class Device:
     Each value is set twice, the maximal value as #_limit and current_use as #_usage
     Additionally, each device has a form of routing table, the routing table stores the next_hop value and distance from the device to each other device in the network
 
-
     Attributes:
-    ----------
+    -----------
     id : `int`
         Device ID
     position : `dict`
@@ -54,10 +53,13 @@ class Device:
         Assigns id then increment for next generation
 
         Args:
+        -----
             None
 
         Returns:
-            result : int, Device ID
+        --------
+        result : `int`
+            Device ID
         """
         result = cls.id
         cls.id +=1
@@ -99,7 +101,7 @@ class Device:
         Returns the Device signature as a json string to be parsed by a json exporter
 
         Returns:
-        -------
+        --------
             `dict`
         """
 
@@ -117,9 +119,12 @@ class Device:
         This will reinitialize the device's routing table to {self.id:(self.id,0)}
 
         Args:
-            id : int, new device ID
+        -----
+        id : `int`
+            New device ID
 
         Returns:
+        --------
             None
         """
         self.id = id
@@ -131,7 +136,7 @@ class Device:
         Returns device ID
 
         Returns:
-        -------
+        --------
         id : `int`
             device ID
         """
@@ -143,7 +148,7 @@ class Device:
         Sets device position in a 3D space
 
         Args:
-        ----
+        -----
         position : `dict`
             Positions dictionary
         """
@@ -156,7 +161,7 @@ class Device:
         Sets Device Resource (CPU, GPU, Mem, Disk) Limit
 
         Args:
-        ----
+        -----
         resource : `str`
             resource name
         resource_limit : `float`
@@ -172,7 +177,7 @@ class Device:
         Sets Previous values to zero for safety
 
         Args:
-        ----
+        -----
         resources : `dict`
             dictionary of all device resources
         """
@@ -189,19 +194,20 @@ class Device:
         allocate a given amount of Device Resource
 
         Args:
-        ----
+        -----
         t : `int`
             current time value
         resource_name : `str`
             Name for the allocated resource
-        resource : float
+        resource : `float`
             value for the quantity of Resource requested
-        force : bool
+        force : `bool`
             Forces allocation at previous moment in time (might cause discrepencies), defaults to False
-        overconsume : bool
+        overconsume : `bool`
             Allow for allocation over Resource limit, defaults to False
 
         Returns:
+        --------
             retrofitting_coefficient : value to propagate to remaining processus execution to slow/fasten processus time
         """
 
@@ -282,7 +288,7 @@ class Device:
         Reminder - routing table element are : {destination:(next_hop, distance)}
 
         Args:
-        ----
+        -----
         destination_id : `int`
             Device ID of the destination point
         next_hop_id : `int`
@@ -291,6 +297,7 @@ class Device:
             distance from device (self) to destination (destination_id), when passing through device (next_hop_id), distance is arbitrary, can be actual distance, number of hops, ...
 
         Returns:
+        --------
             None
         """
         # First we check if the destination is already in the table
@@ -310,16 +317,19 @@ class Device:
         Returns the values associated to the route from the device to the destination
 
         Args:
-        ----
-            destination_id : int, Device ID of the destination point
+        -----
+        destination_id : `int`
+            Device ID of the destination point
 
         Returns:
-        -------
-            (next_hop, distance) : (int, float), next hop in the routing table to reach destination, distance from host to destination
+        --------
+        (next_hop, distance) : (`int`, `float`)
+            next hop in the routing table to reach destination, distance from host to destination
 
         Raises:
-        ------
-            NoRouteToHost: If destination is not in routing table
+        -------
+        NoRouteToHost : `KeyError`
+            If destination is not in routing table
         """
         # We check if the destination is known
         try:
