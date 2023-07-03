@@ -13,14 +13,14 @@ def custom_distance(A,B):
     If A and B are not of the same size, distance is calculated among the first values up to min(len(A),len(B))
 
     Args:
-    ----
+    -----
     A : `list`
         List of coords for point A
     B : `list`
         List of coords for point B
 
     Returns:
-    -------
+    --------
     distance : `int`
         Distance (as coverage) between A and B.
     """
