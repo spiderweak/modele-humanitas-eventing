@@ -11,27 +11,30 @@ class Database():
         Initializes the database with database_address (string, for now path to sqlite file)
 
         Args:
-        ----
+        -----
         database_address : `str`
             path to sqlite file
 
         Attributes:
-        ----------
+        -----------
         database_address : `str`
             path to sqlite file
         """
 
         self.database_address = database_address
 
+
     def create_db(self):
         """
         Creates an empty device table to store device features (CPU, GPU, Mem, Disk...)
         The module uses SQLite for now but will be migrated to network connected database further in the project (MariaDB, MySQL, ProstgreSQL)
         """
+
         con = sqlite3.connect(self.database_address)
         cur = con.cursor()
         cur.execute("CREATE TABLE device(id, x, y, z, cpu_limit, gpu_limit, mem_limit, disk_limit, cpu_usage, gpu_usage, mem_usage, disk_usage)")
         # Need to find a way to store the routing table
+
 
     def populate_db(self, devices, device_template = None):
         """
@@ -40,10 +43,13 @@ class Database():
         Untested with existing table, will probably need to create an update function.
 
         Args:
-            devices: list([int,int]), devices coordinates in a 2d space, will need to be updated for 3D support
+        -----
+        devices: <List> [`int`,`int`]
+            devices coordinates in a 2d space, will need to be updated for 3D support
 
         Returns:
-            None
+        --------
+        None
         """
         con = sqlite3.connect(self.database_address)
         cur = con.cursor()
@@ -73,10 +79,13 @@ class Database():
         Function will need to be updated to fit needs when handling inputs/outputs.
 
         Args:
-            devices_list: list(Device), list of devices objects, devices will be replaced if already in the list, unreferenced devices will be set as None in the list.
+        -----
+        devices_list : <List> `Device`
+            list of Devices objects, devices will be replaced if already in the list, unreferenced devices will be set as None in the list.
 
         Returns:
-            None
+        --------
+        None
         """
 
         con = sqlite3.connect(self.database_address)
