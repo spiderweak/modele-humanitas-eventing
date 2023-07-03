@@ -108,10 +108,12 @@ def simulate_deployments(env):
     Simulates 200 successive application deployments.
 
     Args:
-        env : environment
+    -----
+    env : `Environment`
 
     Returns:
-        None
+    --------
+    None
     """
     testings = 200
 
