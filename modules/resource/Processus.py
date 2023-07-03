@@ -12,10 +12,13 @@ class Processus:
         Assigns id then increment for next generation
 
         Args:
-            None
+        -----
+        None
 
         Returns:
-            result : int, Processus ID
+        --------
+        result : `int`
+            Processus ID
         """
         result = cls.id
         cls.id +=1
@@ -29,10 +32,12 @@ class Processus:
         Initializes the processus values with zeros
 
         Args:
-            None
+        -----
+        None
 
         Returns:
-            None
+        --------
+        None
         """
 
         self.id = Processus._generate_id()
@@ -87,7 +92,7 @@ class Processus:
         Returns the Processus signature as a json string to be parsed by a json exporter
 
         Returns:
-        -------
+        --------
             `dict`
         """
 
@@ -102,10 +107,13 @@ class Processus:
         Used to set a processus's ID by hand if necessary
 
         Args:
-            id : int, new processus ID
+        -----
+        id : `int`
+            New processus ID
 
         Returns:
-            None
+        --------
+        None
         """
         self.id = id
 
@@ -115,10 +123,13 @@ class Processus:
         Used to get a processus's ID
 
         Args:
-            None
+        -----
+        None
 
         Returns:
-            id : int, processus ID
+        --------
+        id : `int`
+            Processus ID
         """
         return self.id
 
@@ -128,11 +139,11 @@ class Processus:
         Sets Processus Resource (CPU, GPU, Mem, Disk) Request
 
         Args:
-        ----
+        -----
         resource : `str`
-            resource name
+            Resource name
         resource_request : `float`
-            quantity of a given resource to request from device.
+            Quantity of a given resource to request from device.
         """
         self.resource_request[resource] = resource_request
 
@@ -144,7 +155,7 @@ class Processus:
         Removes previous values for safety
 
         Args:
-        ----
+        -----
         resources : `dict`
             dictionary of all resources to request
         """
@@ -163,10 +174,12 @@ class Processus:
             Random Disk space between 10 and 100 GigaBytes
 
         Args:
-            None
+        -----
+        None
 
         Returns:
-            None
+        --------
+        None
         """
 
         self.setProcessusResourceRequest('cpu', random.choice([0.5,1,2,3,4]))
@@ -180,10 +193,13 @@ class Processus:
         Parser to load application characteristics from yaml file, usually called from the app configuration.
 
         Args:
-            processus_yaml : dictionary from yaml file content.
+        -----
+        processus_yaml : `dict`
+            dictionary from yaml file content.
 
         Returns:
-            None
+        --------
+        None
         """
         processus_content = processus_yaml['Processus']
 
