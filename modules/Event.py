@@ -186,14 +186,14 @@ class Placement(Event):
                     matching[proc_id] = deployed
                     matching_latency[proc_id] = deployment_latency
                 else:
-                    max_proc_deployed = max([self.application_to_place.getAppProcByID(proc) for proc,dev in matching.items() if dev == deployed])
-                    if self.application_to_place.getAppProcByID(proc_id) < max_proc_deployed:
-                        max_proc_deployed_id = max_proc_deployed.getProcessusID()
-                        to_match.append(max_proc_deployed_id)
+                    min_proc_deployed = min([self.application_to_place.getAppProcByID(proc) for proc,dev in matching.items() if dev == deployed])
+                    if self.application_to_place.getAppProcByID(proc_id) > min_proc_deployed:
+                        min_proc_deployed_id = min_proc_deployed.getProcessusID()
+                        to_match.append(min_proc_deployed_id)
                         matching[proc_id] = deployed
                         matching_latency[proc_id] = deployment_latency
-                        matching.pop(max_proc_deployed_id, None)
-                        matching_latency.pop(max_proc_deployed_id, None)
+                        matching.pop(min_proc_deployed_id, None)
+                        matching_latency.pop(min_proc_deployed_id, None)
                     else:
                         to_match.append(proc_id)
 
