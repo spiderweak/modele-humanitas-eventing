@@ -47,8 +47,17 @@ class Placement(Event):
 
     def __init__(self, event_name, queue, app, device_id, event_time=None):
         """
-            app : Application, application to place
-            device : Device, first device to try placement, \"Placement Request Receptor\" device
+        Args:
+        -----
+        event_name : `str`
+        queue : `EventQueue`
+            EventQueue to reference the Event in
+        app : `Application`
+            Application to place
+        device_id : `Device` Identifier
+            First device to try placement from, \"Placement Request Receptor\" device
+        event_time : `int`
+            Event Time reference in the Queue
         """
         super().__init__(event_name, queue, event_time)
         self.application_to_place = app
@@ -82,11 +91,14 @@ class Placement(Event):
         Checks if a given process can be deployed onto a device.
 
         Args:
-            proc : Processus
-            device : Device
+        -----
+        proc : `Processus`
+        device : `Device`
 
         Returns:
-            Boolean, True if deployable, else False
+        --------
+        Boolean
+            True if deployable, else False
         """
 
         for resource in proc.resource_request:
@@ -100,12 +112,16 @@ class Placement(Event):
         Checks if a given bandwidth can be reserved along a given path.
 
         Args:
-            env : Environment
-            path : Path
-            bandwidth_needed : Bandwidth to allocate on the Path
+        -----
+        env : `Environment`
+        path : `Path`
+        bandwidth_needed : `float`
+            Bandwidth to allocate on the Path
 
         Returns:
-            Boolean, True if bandwidth can be reserved, else False
+        --------
+        `Boolean`
+            True if bandwidth can be reserved, else False
         """
         return bandwidth_needed <= path.minBandwidthAvailableonPath(env)
 
@@ -115,12 +131,18 @@ class Placement(Event):
         Checks if a newly deployed processus can be linked to already deployed processus in a given app by checking the link quality on all Paths between the newly deployed processus and already deployed ones.
 
         Args:
-            env : Environment
-            deployed_app_list : list of devices on which deployment is proposed
-            proc_links : Application.proc_links, len(Application.num_procs)*len(Application.num_procs) matrix indicating necessary bandwidth on each virtual link between application processus members
+        -----
+        env : `Environment`
+            Environment
+        deployed_app_list : <List> `Devices`
+            List of devices on which deployment is proposed
+        proc_links : `Application.proc_links`
+            len(Application.num_procs)*len(Application.num_procs) matrix indicating necessary bandwidth on each virtual link between application processus members
 
         Returns:
-            Boolean, True if all the interconnexions are possible with given bandwidths, False if at least one is impossible.
+        --------
+        `Boolean`
+            True if all the interconnexions are possible with given bandwidths, False if at least one is impossible.
         """
         new_device_id = deployed_app_list[-1]
         for i in range(len(deployed_app_list)):
@@ -138,6 +160,7 @@ class Placement(Event):
         # Application will be deployed on device if possible, else the deployment will be tried on closest devices until all devices are explored
 
         Args:
+        -----
             env : Environment
         """
 
