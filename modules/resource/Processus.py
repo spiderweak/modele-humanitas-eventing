@@ -82,6 +82,21 @@ class Processus:
         return other.__lt__(self)
 
 
+    def __json__(self):
+        """
+        Returns the Processus signature as a json string to be parsed by a json exporter
+
+        Returns:
+        -------
+            `dict`
+        """
+
+        return {
+            "proc_id" : self.id,
+            "proc_resource_request" : self.resource_request
+        }
+
+
     def setProcessusID(self, id):
         """
         Used to set a processus's ID by hand if necessary
