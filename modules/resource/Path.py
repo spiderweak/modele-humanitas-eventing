@@ -18,10 +18,12 @@ class Path:
         Initialises lists to empty values.
 
         Args:
-            None
+        -----
+        None
 
         Returns:
-            None
+        --------
+        None
         """
         self.source_id = -1
         self.destination_id = -1
@@ -37,10 +39,13 @@ class Path:
         Sets the ID associated with the source device
 
         Args:
-            device_source_id : int, device source ID
+        -----
+        device_source_id : `int`
+            Device source ID
 
         Returns:
-            None
+        --------
+        None
         """
         self.source_id = device_source_id
 
@@ -49,10 +54,13 @@ class Path:
         Sets the ID associated with the destination device
 
         Args:
-            device_destination_id : int, device destination ID
+        -----
+        device_destination_id : `int`
+            Device destination ID
 
         Returns:
-            None
+        --------
+        None
         """
         self.destination_id = device_destination_id
 
@@ -61,12 +69,16 @@ class Path:
         Generates both the list of devices on the path from source to destination and the list of links on this same path.
 
         Args:
-            env : Environment
-            device_source_id : int, device source ID
-            device_destination_id : int, device destination ID
+        -----
+        env : `Environment`
+        device_source_id : `int`
+            Device source ID
+        device_destination_id : `int`
+            Device destination ID
 
         Returns:
-            None
+        --------
+        None
         """
         # get Route from source to destination
 
@@ -97,10 +109,13 @@ class Path:
         Sets the ID associated with the destination device
 
         Args:
-            env: Environment
+        -----
+        env: `Environment`
 
         Returns:
-            min_bandwidth_available : float, minimum value for all the available network resources (bandwidth) on the path. Used to determine maximal allocation value.
+        --------
+        min_bandwidth_available : `float`
+            Minimum value for all the available network resources (bandwidth) on the path. Used to determine maximal allocation value.
         """
         min_bandwidth_available = min(env.physical_network_links[path_id].availableBandwidth() for path_id in self.physical_links_path)
         return min_bandwidth_available
