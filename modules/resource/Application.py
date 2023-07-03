@@ -29,9 +29,9 @@ class Application:
         Application duration (in chuncks of 10ms)
     num_procs : `int`
         Number of processus in application
-    processus_list : <List>`Processus`
+    processus_list : <List> `Processus`
         List of `Processus` application members
-    proc_links : <Matrix>`int`
+    proc_links : <Matrix> `int`
         Integer value corresponding to bandwidth request over virtual links
     deployment_info : `dict`
         Dictionary linking `Processus` and `Device` IDs
@@ -93,7 +93,7 @@ class Application:
         Returns the Application signature as a json string to be parsed by a json exporter
 
         Returns:
-        -------
+        --------
             `dict`
         """
 
@@ -130,7 +130,7 @@ class Application:
         Random initialization of the application
 
         Args:
-        ----
+        -----
         num_procs : `int`
             Number of processus to consider
         num_proc_random : `bool`
@@ -185,8 +185,8 @@ class Application:
         Default value is 30 minutes
 
         Args:
-        ----
-        duration: `int`
+        -----
+        duration : `int`
             Application duration in tens of milliseconds
         """
 
@@ -198,7 +198,7 @@ class Application:
         Parser to load application characteristics from yaml file.
 
         Args:
-        ----
+        -----
         app_yaml : `dict`
             dictionary from yaml file content parsing
         """
@@ -228,8 +228,8 @@ class Application:
         Creates a dictionary matching `Processus` and `Device` ID
 
         Args:
-        ----
-        deployed_onto_device : list of `int`
+        -----
+        deployed_onto_device : <List> `int`
             List of devices IDs that reference processus hosts
         """
 
