@@ -12,7 +12,7 @@ class Environment(object):
     The ``Environment`` class mostly serves as a structure for storing information about the environment (configuration, device info, application info, network link...)
 
     Attributes:
-    ----------
+    -----------
     current_time: `int`
         The date and time of the current event.
     config: `Config`
@@ -46,7 +46,7 @@ class Environment(object):
         Sets the configuration based on a given instanciated `Config` class.
 
         Args:
-        ----
+        -----
         config: `Config`
             Environment configuration generated in the `Config` module
         """
@@ -63,7 +63,7 @@ class Environment(object):
         `Device` IDs are supposed to be unique by construction.
 
         Args:
-        ----
+        -----
         dev_id: `int`
             device identifier
         """
