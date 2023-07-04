@@ -75,20 +75,6 @@ class Placement(Event):
         }
 
 
-    def export(self, filename="placement.json"):
-        try:
-            with open(filename) as file:
-                data = json.load(file)
-        except FileNotFoundError:
-            data = []
-
-        json_string = json.dumps(self, default=lambda o: o.__json__(), indent=4)
-        data.append(json.loads(json_string))
-
-        with open(filename, 'w') as file:
-            file.write(json.dumps(data, default=lambda o: o.__json__(), indent=4))
-
-
     # Let's define how to deploy an application on the system.
     def deployable_proc(self, proc, device):
         """

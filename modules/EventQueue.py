@@ -1,4 +1,5 @@
 from queue import PriorityQueue
+import json
 
 class EventQueue(object):
     # Why not inherit EventQueue directly from PriorityQueue?
@@ -25,3 +26,16 @@ class EventQueue(object):
     # pop an element based on Priority time
     def pop(self):
         return self.__queue.get()
+
+
+    def export(self, filename="placement.json"):
+        json_string = json.dumps(self, default=lambda o: o.__json__(), indent=4)
+        with open(filename, 'w') as file:
+            file.write(json_string)
+
+    def __json__(self):
+        json_data = []
+        for event in self.__queue.queue:
+            json_data.append(event[2].__json__())
+        print(json_data)
+        return json_data

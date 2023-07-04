@@ -53,11 +53,9 @@ class Simulation(object):
             device_id = random.choice(range(len(self.__env.devices)))
 
             # Creating a placement event
-            p = Placement("Placement",self.__queue, application, device_id, event_time=arrival_times[i])
-            p.export(filename=f"data/{date_string}/placement.json")
-            p.add_to_queue()
+            Placement("Placement",self.__queue, application, device_id, event_time=arrival_times[i]).add_to_queue()
 
-
+        self.__queue.export(filename=f"data/{date_string}/placement.json")
 
         # Final reporting event
 
