@@ -10,14 +10,17 @@ class EventQueue(object):
 
         self.env = env
 
+
     # check if the queue is empty
     def is_empty(self):
         return self.__queue.empty()
+
 
     # add an element in the queue
     def put(self, event):
         self.__queue.put((event.time, self.__index, event))
         self.__index += 1
+
 
     # pop an element based on Priority time
     def pop(self):

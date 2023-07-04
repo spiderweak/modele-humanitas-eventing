@@ -158,6 +158,7 @@ class PhysicalNetworkLink:
         else:
             return False
 
+
     def freeBandwidth(self, free_bandwidth_request):
         """
         Free a part of the Physical Link's bandwidth based on free bandwidth request (in kBytes/s)
@@ -173,6 +174,7 @@ class PhysicalNetworkLink:
         None
         """
         self.bandwidth_use = max(self.bandwidth_use-free_bandwidth_request, 0)
+
 
     def checkPhysicalLink(self, device_1_id, device_2_id):
         """

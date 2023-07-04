@@ -9,6 +9,7 @@ class Visualizer():
     def __init__(self):
         pass
 
+
     def visualize_environment(self, env):
 
         data = env.getDeviceByID(12).resource_usage_history['cpu']

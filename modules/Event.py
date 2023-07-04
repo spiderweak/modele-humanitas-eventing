@@ -29,14 +29,17 @@ class Event():
     def add_to_queue(self):
         self.queue.put(self)
 
+
     def get_event(self):
         """Gets the first event in the event list"""
         event = self.queue.get()
         return event
 
+
     def get_name(self):
         """ returns event name"""
         return self.name
+
 
     def get_time(self):
         """ returns event time"""
@@ -62,6 +65,7 @@ class Placement(Event):
         super().__init__(event_name, queue, event_time)
         self.application_to_place = app
         self.deployment_starting_point = device_id
+
 
     def __json__(self):
         return {
@@ -260,6 +264,7 @@ class Deploy_Proc(Event):
         self.app = app
         self.synchronization_time = synchronization_time
 
+
     def process(self, env):
 
         logging.debug(f"Deploying processus : {self.proc_to_deploy.id} on {self.device_destination_id}")
@@ -277,17 +282,21 @@ class Deploy_Proc(Event):
 
         return True
 
+
 class Fit(Event):
+
     def __init__(self, event_name, queue, event_time=None):
         super().__init__(event_name, queue, event_time)
         raise NotImplementedError('Process not implemented')
 
 
 class Sync(Event):
+
     def __init__(self, event_name, queue, app, deployed_onto_devices, event_time=None):
         super().__init__(event_name, queue, event_time)
         self.app = app
         self.devices_destinations = deployed_onto_devices
+
 
     def process(self, env):
         operational_latency = 0
@@ -348,16 +357,43 @@ class Undeploy(Event):
 
 
 class RegularCheck(Event):
+
     def __init__(self, event_name, queue, event_time=None):
         super().__init__(event_name, queue, event_time)
         raise NotImplementedError('Process not implemented')
 
 
 class FinalReport(Event):
+
     def __init__(self, event_name, queue, event_time=None):
         super().__init__(event_name, queue, event_time)
+
 
     def process(self, env):
         for device in env.devices:
             device.reportOnValue(self.get_time())
 
+
+class TaskRepositionning(Event):
+
+    def __init__(self, event_name, queue, app, device_id, event_time=None):
+        """
+        Args:
+        -----
+        event_name : `str`
+        queue : `EventQueue`
+            EventQueue to reference the Event in
+        app : `Application`
+            Application to place
+        device_id : `Device` Identifier
+            First device to try placement from, \"Placement Request Receptor\" device
+        event_time : `int`
+            Event Time reference in the Queue
+        """
+        super().__init__(event_name, queue, event_time)
+        self.app_to_place = app
+        self.deployment_starting_point = device_id
+
+        # Select Proc ID for placement
+
+        # Decide on Repositioning with Placement, Fix previous positions ?

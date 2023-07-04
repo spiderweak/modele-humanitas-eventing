@@ -73,6 +73,7 @@ class Database():
         con.commit()
         con.close()
 
+
     def dump_from_db(self, env):
         """
         Dumps the database's content in the devices_list list to work with the remaining parts of the script.
