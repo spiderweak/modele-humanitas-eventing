@@ -37,5 +37,4 @@ class EventQueue(object):
         json_data = []
         for event in self.__queue.queue:
             json_data.append(event[2].__json__())
-        print(json_data)
         return json_data
