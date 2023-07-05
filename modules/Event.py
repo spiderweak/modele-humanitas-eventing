@@ -3,7 +3,7 @@ from modules.resource.Path import Path
 from modules.Environment import Environment
 import json
 
-MAX_TENTATIVES = 2000
+MAX_TENTATIVES = 5
 
 class Event():
     """An event with event_number occurs at a specific time ``event_time`` and involves a specific
@@ -29,42 +29,39 @@ class Event():
     def add_to_queue(self):
         self.queue.put(self)
 
-
     def get_event(self):
         """Gets the first event in the event list"""
         event = self.queue.get()
         return event
 
-
     def get_name(self):
         """ returns event name"""
         return self.name
-
 
     def get_time(self):
         """ returns event time"""
         return self.time
 
 
+    def set_time(self, event_time=None):
+        self.time = event_time
+        if event_time is None:
+            self.time = self.queue.env.current_time
+        elif event_time < self.queue.env.current_time:
+            self.time = self.queue.env.current_time
+
+
 class Placement(Event):
 
     def __init__(self, event_name, queue, app, device_id, event_time=None):
         """
-        Args:
-        -----
-        event_name : `str`
-        queue : `EventQueue`
-            EventQueue to reference the Event in
-        app : `Application`
-            Application to place
-        device_id : `Device` Identifier
-            First device to try placement from, \"Placement Request Receptor\" device
-        event_time : `int`
-            Event Time reference in the Queue
+            app : Application, application to place
+            device : Device, first device to try placement, \"Placement Request Receptor\" device
         """
         super().__init__(event_name, queue, event_time)
         self.application_to_place = app
         self.deployment_starting_point = device_id
+        self.tentatives = 1
 
 
     def __json__(self):
@@ -75,20 +72,27 @@ class Placement(Event):
         }
 
 
+    def retry(self, event_time):
+        if self.tentatives < MAX_TENTATIVES:
+            self.tentatives +=1
+            self.set_time(event_time=event_time)
+            self.add_to_queue()
+            logging.info(f"Placement set back to future time, from {self.get_time()} to {int((self.get_time()+15*60*1000)/10)*10}")
+        else:
+            logging.info(f"{MAX_TENTATIVES} failures on placing app, dropping the placement")
+
+
     # Let's define how to deploy an application on the system.
     def deployable_proc(self, proc, device):
         """
         Checks if a given process can be deployed onto a device.
 
         Args:
-        -----
-        proc : `Processus`
-        device : `Device`
+            proc : Processus
+            device : Device
 
         Returns:
-        --------
-        Boolean
-            True if deployable, else False
+            Boolean, True if deployable, else False
         """
 
         for resource in proc.resource_request:
@@ -102,16 +106,12 @@ class Placement(Event):
         Checks if a given bandwidth can be reserved along a given path.
 
         Args:
-        -----
-        env : `Environment`
-        path : `Path`
-        bandwidth_needed : `float`
-            Bandwidth to allocate on the Path
+            env : Environment
+            path : Path
+            bandwidth_needed : Bandwidth to allocate on the Path
 
         Returns:
-        --------
-        `Boolean`
-            True if bandwidth can be reserved, else False
+            Boolean, True if bandwidth can be reserved, else False
         """
         return bandwidth_needed <= path.minBandwidthAvailableonPath(env)
 
@@ -121,18 +121,12 @@ class Placement(Event):
         Checks if a newly deployed processus can be linked to already deployed processus in a given app by checking the link quality on all Paths between the newly deployed processus and already deployed ones.
 
         Args:
-        -----
-        env : `Environment`
-            Environment
-        deployed_app_list : <List> `Devices`
-            List of devices on which deployment is proposed
-        proc_links : `Application.proc_links`
-            len(Application.num_procs)*len(Application.num_procs) matrix indicating necessary bandwidth on each virtual link between application processus members
+            env : Environment
+            deployed_app_list : list of devices on which deployment is proposed
+            proc_links : Application.proc_links, len(Application.num_procs)*len(Application.num_procs) matrix indicating necessary bandwidth on each virtual link between application processus members
 
         Returns:
-        --------
-        `Boolean`
-            True if all the interconnexions are possible with given bandwidths, False if at least one is impossible.
+            Boolean, True if all the interconnexions are possible with given bandwidths, False if at least one is impossible.
         """
         new_device_id = deployed_app_list[-1]
         for i in range(len(deployed_app_list)):
@@ -150,7 +144,6 @@ class Placement(Event):
         # Application will be deployed on device if possible, else the deployment will be tried on closest devices until all devices are explored
 
         Args:
-        -----
             env : Environment
         """
 
@@ -233,7 +226,7 @@ class Placement(Event):
             # We could ask for a retry after 15 mins
 
             logging.info(f"Placement set back to future time, from {self.get_time()} to {int((self.get_time()+15*60*1000)/10)*10}")
-            Placement("Placement",self.queue, self.application_to_place, self.deployment_starting_point, event_time=int((self.get_time()+15*60*1000)/10)*10).add_to_queue()
+            self.retry(event_time=int((self.get_time()+15*60*1000)/10)*10)
 
         return deployment_times, deployed_onto_devices
 
@@ -249,7 +242,6 @@ class Deploy_Proc(Event):
         self.last_proc = last
         self.app = app
         self.synchronization_time = synchronization_time
-
 
     def process(self, env):
 
@@ -268,21 +260,17 @@ class Deploy_Proc(Event):
 
         return True
 
-
 class Fit(Event):
-
     def __init__(self, event_name, queue, event_time=None):
         super().__init__(event_name, queue, event_time)
         raise NotImplementedError('Process not implemented')
 
 
 class Sync(Event):
-
     def __init__(self, event_name, queue, app, deployed_onto_devices, event_time=None):
         super().__init__(event_name, queue, event_time)
         self.app = app
         self.devices_destinations = deployed_onto_devices
-
 
     def process(self, env):
         operational_latency = 0
@@ -343,43 +331,16 @@ class Undeploy(Event):
 
 
 class RegularCheck(Event):
-
     def __init__(self, event_name, queue, event_time=None):
         super().__init__(event_name, queue, event_time)
         raise NotImplementedError('Process not implemented')
 
 
 class FinalReport(Event):
-
     def __init__(self, event_name, queue, event_time=None):
         super().__init__(event_name, queue, event_time)
-
 
     def process(self, env):
         for device in env.devices:
             device.reportOnValue(self.get_time())
 
-
-class TaskRepositionning(Event):
-
-    def __init__(self, event_name, queue, app, device_id, event_time=None):
-        """
-        Args:
-        -----
-        event_name : `str`
-        queue : `EventQueue`
-            EventQueue to reference the Event in
-        app : `Application`
-            Application to place
-        device_id : `Device` Identifier
-            First device to try placement from, \"Placement Request Receptor\" device
-        event_time : `int`
-            Event Time reference in the Queue
-        """
-        super().__init__(event_name, queue, event_time)
-        self.app_to_place = app
-        self.deployment_starting_point = device_id
-
-        # Select Proc ID for placement
-
-        # Decide on Repositioning with Placement, Fix previous positions ?
