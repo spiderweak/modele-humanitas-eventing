@@ -274,5 +274,8 @@ class Config():
         ax.set_title(f'Undirected Graph of Devices with Edge Distance < {self.wifi_range}')
 
         # Saves the graph in a file
-        os.makedirs("fig") # Will need to rework that, but creates a fig folder to host figures
+        try:
+            os.makedirs("fig") # Will need to rework that, but creates a fig folder to host figures
+        except FileExistsError:
+            pass
         plt.savefig("fig/graph.png")
