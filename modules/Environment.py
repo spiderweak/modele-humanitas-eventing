@@ -1,5 +1,7 @@
 from modules.resource.PhysicalNetworkLink import PhysicalNetworkLink
+from modules.resource.Application import Application
 from modules.CustomExceptions import NoRouteToHost
+
 
 from modules.ResourceManagement import custom_distance
 
@@ -39,6 +41,9 @@ class Environment(object):
         self.devices = []
         self.physical_network_links = [0]
         self.count_rejected_application=[[0,0]]
+
+        self.TIME_PERIOD = 24 * 60 * 60 * 100
+
 
 
     def setConfig(self, config):
@@ -99,6 +104,16 @@ class Environment(object):
         """
         self.applications = [application for application in self.applications if application.id != app_id]
 
+    def generateApplicationList(self):
+        for i in tqdm(range(self.config.number_of_applications)):
+            # Generating 1 random application
+            application = Application()
+            application.randomAppInit()
+            application.setAppID(i)
+            if self.config.app_duration != 0:
+                application.setAppDuration(self.config.app_duration)
+
+            self.applications.append(application)
 
     # Let's try to code a routing table
     def generate_routing_table(self):
@@ -182,5 +197,10 @@ class Environment(object):
 
     def export_devices(self, filename = "devices.json"):
         json_string = json.dumps(self.devices, default=lambda o: o.__json__(), indent=4)
+        with open(filename, 'w') as file:
+            file.write(json_string)
+
+    def  export_applications(self, filename = "applications.json"):
+        json_string = json.dumps(self.applications, default=lambda o: o.__json__(), indent=4)
         with open(filename, 'w') as file:
             file.write(json_string)
