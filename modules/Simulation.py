@@ -34,7 +34,7 @@ class Simulation(object):
 
         time.sleep(1)
 
-        date_string = datetime.datetime.now().isoformat(timespec='minutes').replace(":","-")
+        date_string = datetime.datetime.now().isoformat(timespec='minutes').replace(":","-")[:-1]+"0"
 
         # Exporting devices list
         print("Generating dataset and exporting data")
