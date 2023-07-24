@@ -132,6 +132,8 @@ class Config():
                     not_all_checked = False
             except TypeError:
                 logging.error("Configuration File Not Found, default solution is using existing database")
+            except AttributeError:
+                not_all_checked = False
 
         # Template files
         try:
