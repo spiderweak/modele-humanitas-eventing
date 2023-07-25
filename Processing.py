@@ -63,7 +63,6 @@ def main():
     environment.importDevices() # Conflict between importDevices and setConfig, will need to fix this at one point
 
     environment.importApplications()
-    environment.export_applications("applications2.json")
 
     logging.info("Running complete simulation")
     simulation = Simulation(environment)
