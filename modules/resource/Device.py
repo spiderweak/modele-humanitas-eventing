@@ -66,32 +66,43 @@ class Device:
         return result
 
 
-    def __init__(self) -> None:
+    def __init__(self, data=dict()) -> None:
         """
         Initializes the device with basic values
         Assigns ID, initial position, resource values, routing table and resource limits
         """
+
         # ID setting
         self.id = Device._generate_id()
 
         # Device Position in the area considered, initialized to {'x':0, 'y':0, 'z':0}
-        self.position = {'x':0, 'y':0, 'z':0}
+        self.position = dict()
 
         # Maximal limit for each device feature
-        self.resource_limit = {'cpu' : 2, 'gpu' : 2, 'mem' : 4 * 1024, 'disk' : 250 * 1024}
+        self.resource_limit = dict()
 
         # Current usage for each device feature
-        self.current_resource_usage = {'cpu' : 0, 'gpu' : 0, 'mem' : 0, 'disk' : 0}
+        self.current_resource_usage = dict()
 
         # Theorical usage for each device feature
-        self.theorical_resource_usage = {'cpu' : 0, 'gpu' : 0, 'mem' : 0, 'disk' : 0}
+        self.theorical_resource_usage = dict()
 
         # Resource usage history
-        self.resource_usage_history = {'cpu' : [(0,0)], 'gpu' : [(0,0)], 'mem' : [(0,0)], 'disk' : [(0,0)]}
+        self.resource_usage_history = dict()
 
         # Routing table, dict {destination:(next_hop, distance)}
         ## Initialized to {self.id:(self.id,0)} as route to self is considered as distance 0
-        self.routing_table = {self.id:(self.id,0)}
+        self.routing_table = dict()
+
+        if data:
+            self.initFromDict(data)
+        else:
+            self.position = {'x':0, 'y':0, 'z':0}
+            self.resource_limit = {'cpu' : 2, 'gpu' : 2, 'mem' : 4 * 1024, 'disk' : 250 * 1024}
+            self.current_resource_usage = {'cpu' : 0, 'gpu' : 0, 'mem' : 0, 'disk' : 0}
+            self.theorical_resource_usage = {'cpu' : 0, 'gpu' : 0, 'mem' : 0, 'disk' : 0}
+            self.resource_usage_history = {'cpu' : [(0,0)], 'gpu' : [(0,0)], 'mem' : [(0,0)], 'disk' : [(0,0)]}
+            self.routing_table = {self.id:(self.id,0)}
 
         self.proc = list()
 
@@ -343,3 +354,18 @@ class Device:
             # If not, we return placeholder values (device_id = -1 and distance = 1000)
             # We might change this to raise and error such as "no route to host"
             #return (-1, 1000)
+
+    def initFromDict(self, data):
+        self.setDeviceID(data['device_id'])
+
+        self.setDevicePosition(data['device_position'])
+
+        self.setAllResourceLimit(data['resource_limit'])
+
+        for key in self.resource_limit:
+            self.current_resource_usage[key] = 0
+            self.theorical_resource_usage[key] = 0
+            self.resource_usage_history[key] = [(0,0)]
+
+        self.routing_table = None
+        self.routing_table = data['routing_table']
