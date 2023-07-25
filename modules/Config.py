@@ -201,6 +201,9 @@ class Config():
         except Exception as e:
             raise e
 
+        self.devices_file = options.devices
+        self.applications_file = options.applications
+        self.arrivals_file = options.arrivals
 
     def generate_and_plot_devices_positions(self, devices):
         """
