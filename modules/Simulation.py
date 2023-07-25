@@ -18,6 +18,8 @@ from modules.Visualization import Visualizer
 
 from modules.ResourceManagement import custom_distance
 
+import json
+
 TIME_PERIOD = 24 * 60 * 60 * 100
 
 class Simulation(object):
@@ -30,6 +32,9 @@ class Simulation(object):
         # Deploying X applictions
         #arrival_times = [int(time) for time in np.random.uniform(0, TIME_PERIOD, env.config.number_of_applications)]
 
+
+    def initSimulation(self):
+
         arrival_times = [int(time) for time in np.cumsum(np.random.poisson(1/(self.__env.config.number_of_applications/TIME_PERIOD), self.__env.config.number_of_applications))]
 
         time.sleep(1)
@@ -39,7 +44,7 @@ class Simulation(object):
         # Exporting devices list
         print("Generating dataset and exporting data")
         os.makedirs(f"data/{date_string}")
-        env.export_devices(filename=f"data/{date_string}/devices.json")
+        self.__env.export_devices(filename=f"data/{date_string}/devices.json")
 
         for i in tqdm(range(self.__env.config.number_of_applications)):
             # Generating 1 random application
@@ -97,3 +102,19 @@ class Simulation(object):
         visu.final_results(self.__env)
 
         logging.info("\n***************\nEND OF SIMULATION\n***************")
+
+
+    def importQueueItems(self):
+        try:
+            with open(self.__env.config.arrivals_file) as file:
+                arrivals_list = json.load(file)
+        except FileNotFoundError:
+            raise FileNotFoundError("Please add placements list in argument, default value is placements.json in current directory")
+
+        for item in arrivals_list:
+            application = self.__env.getApplicationByID(item["application"])
+            device_id = item["requesting_device"]
+            arrival_time = item["placement_time"]
+            Placement("Placement",self.__queue, application, device_id, event_time=arrival_time).add_to_queue()
+
+        FinalReport("Final Report", self.__queue, event_time=TIME_PERIOD).add_to_queue()
