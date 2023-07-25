@@ -44,7 +44,11 @@ def main():
     config = Config(options, environment)
 
     environment.setConfig(config)
-    environment.generate_routing_table()
+
+    environment.generateDeviceList()
+    environment.generateDevicesLinks()
+    environment.plotDeviceNetwork()
+    environment.generateRoutingTable()
 
     # Exporting devices list
     print("Generating dataset and exporting data")
@@ -57,7 +61,7 @@ def main():
     except FileExistsError:
         pass
 
-    environment.export_devices(filename=f"{ROOT}/data/{date_string}/devices.json")
+    environment.exportDevices(filename=f"{ROOT}/data/{date_string}/devices.json")
 
     # Export figure to {ROOT}/data/{date_string}/devices.png
     logging.debug(f"{datetime.datetime.now().isoformat(timespec='minutes')}:Exporting figure to {ROOT}/data/{date_string}/devices.png")

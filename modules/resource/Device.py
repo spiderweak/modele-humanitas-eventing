@@ -360,7 +360,10 @@ class Device:
 
         self.setDevicePosition(data['device_position'])
 
-        self.setAllResourceLimit(data['resource_limit'])
+        try:
+            self.setAllResourceLimit(data['resource_limit'])
+        except KeyError:
+            self.setAllResourceLimit({'cpu' : 2, 'gpu' : 2, 'mem' : 4 * 1024, 'disk' : 250 * 1024})
 
         for key in self.resource_limit:
             self.current_resource_usage[key] = 0
@@ -368,4 +371,7 @@ class Device:
             self.resource_usage_history[key] = [(0,0)]
 
         self.routing_table = None
-        self.routing_table = data['routing_table']
+        try:
+            self.routing_table = data['routing_table']
+        except KeyError:
+            self.routing_table = {self.id:(self.id,0)}

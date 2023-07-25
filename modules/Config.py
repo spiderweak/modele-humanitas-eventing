@@ -6,7 +6,6 @@ import random
 import networkx as nx
 import matplotlib.pyplot as plt
 
-from modules.Database import Database
 from modules.ResourceManagement import custom_distance
 
 import json
@@ -35,8 +34,6 @@ class Config():
             Device Template Filename
         application_template_filename : `str`
             Application Template Filename
-        database_file : `Database`
-            Custom SQLite database object for reading and archival
         number_of_applications : `int`
             Number of application to test
         number_of_devices : `int`
@@ -51,11 +48,8 @@ class Config():
 
         config_file_not_found = False
 
-        database_filename = 'db.sqlite'
         self.devices_template_filename = "devices.json"
         self.application_template_filename = "application.json"
-
-        self.database_file = Database(database_filename)
 
         self.number_of_applications = 500
         self.number_of_devices = 40

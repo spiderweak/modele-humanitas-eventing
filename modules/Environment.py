@@ -9,6 +9,10 @@ from modules.ResourceManagement import custom_distance
 import logging
 import json
 from tqdm import tqdm
+import random
+import networkx as nx
+import os
+import matplotlib.pyplot as plt
 
 class Environment(object):
     """
@@ -40,6 +44,7 @@ class Environment(object):
 
         self.applications = []
         self.devices = []
+        self.devices_links = []
         self.physical_network_links = [0]
         self.count_rejected_application=[[0,0]]
 
@@ -117,7 +122,7 @@ class Environment(object):
             self.applications.append(application)
 
     # Let's try to code a routing table
-    def generate_routing_table(self):
+    def generateRoutingTable(self):
         """
         Generates a routing table on each device in `self.devices`
         The function first lists the neighboring device, then iterate on the list to build a routing table based on shortest distance among links
@@ -196,15 +201,19 @@ class Environment(object):
                         device_i.addToRoutingTable(device_j.id, min_nh, min_array)
 
 
-    def export_devices(self, filename = "devices.json"):
-        json_string = json.dumps(self.devices, default=lambda o: o.__json__(), indent=4)
+    def exportDevices(self, filename = "devices.json"):
+        output_string = {"devices" : self.devices, "links" : self.devices_links}
+        json_string = json.dumps(output_string, default=lambda o: o.__json__(), indent=4)
+
         with open(filename, 'w') as file:
             file.write(json_string)
 
-    def export_applications(self, filename = "applications.json"):
+
+    def exportApplications(self, filename = "applications.json"):
         json_string = json.dumps(self.applications, default=lambda o: o.__json__(), indent=4)
         with open(filename, 'w') as file:
             file.write(json_string)
+
 
     def importDevices(self):
         try:
@@ -227,3 +236,92 @@ class Environment(object):
 
         for application in applications_list:
             self.applications.append(Application(data=application))
+
+
+    def generateDeviceList(self):
+        with open(self.config.devices_template_filename) as file:
+            json_data = json.load(file)
+
+        for device in json_data['devices']:
+            self.devices.append(Device(data=device))
+
+    """
+        Might be useful:
+
+        n_devices = self.number_of_devices # Number of devices
+
+        try:
+            with open(self.devices_template_filename) as devices_template_file:
+                devices_data = json.load(devices_template_file)
+                for device in devices_data:
+                    devices[device['id']] = [device['x'],device['y'],device['z']]
+        except FileNotFoundError:
+            for dev_id in range(n_devices):
+            # Processing device position, random x, y, z fixed to between various values (z=0 for now)
+                x = round(random.random() * (self._3D_space['x_max'] - self._3D_space['x_min']) + self._3D_space['x_min'],2)
+                y = round(random.random() * (self._3D_space['y_max'] - self._3D_space['y_min']) + self._3D_space['y_min'],2)
+                z = round(random.random() * (self._3D_space['z_max'] - self._3D_space['z_min']) + self._3D_space['z_min'],2)
+
+                devices[dev_id] = [x,y,z]
+
+    """
+
+
+    def generateDevicesLinks(self):
+        with open(self.config.devices_template_filename) as file:
+            json_data = json.load(file)
+
+        for link in json_data['links']:
+            self.devices_links.append(link)
+
+
+    def plotDeviceNetwork(self):
+        # We'll try our hand on plotting everything in a graph
+
+        # Creating a graph
+        G = nx.Graph()
+
+        position_list = []
+        # We add the nodes, our devices, to our graph
+        for device in self.devices:
+            position = [device.position['x'], device.position['y'], device.position['z']]
+            G.add_node(device.id, pos=position)
+            position_list.append(position)
+
+        # We add the edges, to our graph, which correspond to wifi reachability
+
+        for link in self.devices_links:
+            G.add_edge(link['source'], link['target'])
+        # Let's try plotting the network
+
+        # We alread have the coords, but let's process it again just to be sure
+        x_coords, y_coords, z_coords = zip(*position_list)
+
+        #  We create a 3D scatter plot again
+        fig = plt.figure(figsize=(10, 10))
+        ax = fig.add_subplot(projection = '3d')
+
+        # Lets trace the graph by hand
+        ## Placing the nodes
+        ax.scatter(x_coords, y_coords, z_coords, c='b')
+        ## Placing the edges by hand
+        for i, j in G.edges():
+            device_i = self.getDeviceByID(i)
+            device_j = self.getDeviceByID(j)
+            ax.plot([device_i.position['x'], device_j.position['x']],
+                    [device_i.position['y'], device_j.position['y']],
+                    [device_i.position['z'], device_j.position['z']], c='lightgray')
+
+        # Set the labels
+        ax.set_xlabel('X')
+        ax.set_ylabel('Y')
+
+        # Title
+        ax.set_title(f'Undirected Graph of Devices and links')
+
+        # Saves the graph in a file
+        try:
+            os.makedirs("fig") # Will need to rework that, but creates a fig folder to host figures
+        except FileExistsError:
+            pass
+        plt.savefig("fig/graph.png")
