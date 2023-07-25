@@ -1,5 +1,6 @@
 from modules.resource.PhysicalNetworkLink import PhysicalNetworkLink
 from modules.resource.Application import Application
+from modules.resource.Device import Device
 from modules.CustomExceptions import NoRouteToHost
 
 
@@ -200,7 +201,29 @@ class Environment(object):
         with open(filename, 'w') as file:
             file.write(json_string)
 
-    def  export_applications(self, filename = "applications.json"):
+    def export_applications(self, filename = "applications.json"):
         json_string = json.dumps(self.applications, default=lambda o: o.__json__(), indent=4)
         with open(filename, 'w') as file:
             file.write(json_string)
+
+    def importDevices(self):
+        try:
+            with open(self.config.devices_file) as file:
+                devices_list = json.load(file)
+        except FileNotFoundError:
+            raise FileNotFoundError("Please add devices list in argument, default value is devices.json in current directory")
+
+        for device in devices_list:
+            self.devices.append(Device(data=device))
+
+    def importApplications(self):
+        try:
+            with open(self.config.applications_file) as file:
+                applications_list = json.load(file)
+        except FileNotFoundError:
+            raise FileNotFoundError("Please add application list in argument, default value is applications.json in current directory")
+        except json.decoder.JSONDecodeError:
+            pass
+
+        for application in applications_list:
+            self.applications.append(Application(data=application))
