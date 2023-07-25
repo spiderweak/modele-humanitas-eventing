@@ -25,7 +25,7 @@ class Processus:
         return result
 
 
-    def __init__(self) -> None:
+    def __init__(self, data = dict()) -> None:
         """
         A processus is a sub-part of an application
         A processus is defined as a values corresponding to resource requests
@@ -42,12 +42,18 @@ class Processus:
 
         self.id = Processus._generate_id()
 
-        # A process requests ressources among the 4 resources defined : CPU, GPU, Memory and Disk
-        self.resource_request = {'cpu' : 0, 'gpu' : 0, 'mem' : 0, 'disk' : 0}
-
-        self.resource_allocation = {'cpu' : 0, 'gpu' : 0, 'mem' : 0, 'disk' : 0}
-
+        self.resource_request = dict()
+        self.resource_allocation = dict()
         self.app_id = -1
+
+        if data:
+            self.initFromDict(data)
+
+        else:
+            # A process requests ressources among the 4 resources defined : CPU, GPU, Memory and Disk
+            self.resource_request = {'cpu' : 0, 'gpu' : 0, 'mem' : 0, 'disk' : 0}
+            self.resource_allocation = {'cpu' : 0, 'gpu' : 0, 'mem' : 0, 'disk' : 0}
+            self.app_id = -1
 
 
     def __add__(self, other):
@@ -207,3 +213,14 @@ class Processus:
         self.setProcessusResourceRequest('gpu', processus_content['gpu'])
         self.setProcessusResourceRequest('mem', processus_content['memory'])
         self.setProcessusResourceRequest('disk', processus_content['disk'])
+
+
+    def initFromDict(self, data):
+
+        self.setProcessusID(data["proc_id"])
+
+        self.setAllResourceRequest(data["proc_resource_request"])
+
+        self.resource_allocation = dict()
+        for key in self.resource_request:
+            self.resource_allocation[key] = 0

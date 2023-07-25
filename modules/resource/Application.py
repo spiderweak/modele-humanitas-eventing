@@ -58,7 +58,7 @@ class Application:
         return result
 
 
-    def __init__(self, num_procs = 1) -> None:
+    def __init__(self, data = dict(), num_procs = 1) -> None:
         """
         Args:
         -----
@@ -76,16 +76,20 @@ class Application:
 
         # Initializes the list of processus
         self.processus_list = list()
-        for _ in range(num_procs):
-            # Generate a new (non-initialized) processus
-            new_processus = Processus()
-            # Adds the new processus to the list
-            self.processus_list.append(new_processus)
 
         # Initializes the processus links matrix to 0
         self.proc_links = np.zeros((num_procs, num_procs))
 
         self.deployment_info = dict()
+
+        if data:
+            self.initFromDict(data)
+        else:
+            for _ in range(num_procs):
+                # Generate a new (non-initialized) processus
+                new_processus = Processus()
+                # Adds the new processus to the list
+                self.processus_list.append(new_processus)
 
 
     def __json__(self):
@@ -246,3 +250,14 @@ class Application:
             if proc.getProcessusID() == id:
                 return proc
         raise KeyError("Proc not found")
+
+
+    def initFromDict(self, data):
+        self.setAppID(data['app_id'])
+
+        self.setAppDuration(data['duration'])
+
+        for proc in data["proc_list"]:
+            self.processus_list.append(Processus(data=proc))
+
+        self.proc_links = data["proc_links"]
