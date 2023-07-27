@@ -60,7 +60,8 @@ def main():
     config = Config(options, environment)
 
     environment.setConfig(config)
-    environment.importDevices() # Conflict between importDevices and setConfig, will need to fix this at one point
+
+    environment.importDevices()
 
     environment.importApplications()
 
