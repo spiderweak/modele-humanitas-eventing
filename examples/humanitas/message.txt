@@ -1,0 +1,1460 @@
+{
+  "links": [
+    {
+      "source": "BS0",
+      "target": "BS8",
+      "weight": 0.163182428219434,
+      "id": "Link0"
+    },
+    {
+      "source": "BS1",
+      "target": "BS8",
+      "weight": 0.15646906792134635,
+      "id": "Link1"
+    },
+    {
+      "source": "BS2",
+      "target": "BS8",
+      "weight": 0.15673471998912455,
+      "id": "Link2"
+    },
+    {
+      "source": "BS3",
+      "target": "BS8",
+      "weight": 0.15673471998912455,
+      "id": "Link3"
+    },
+    {
+      "source": "BS4",
+      "target": "BS8",
+      "weight": 0.1521704671542764,
+      "id": "Link4"
+    },
+    {
+      "source": "BS6",
+      "target": "BS8",
+      "weight": 0.16506853485773504,
+      "id": "Link5"
+    },
+    {
+      "source": "BS7",
+      "target": "BS8",
+      "weight": 0.1521704671542764,
+      "id": "Link6"
+    },
+    {
+      "source": "BS9",
+      "target": "BS8",
+      "weight": 0.15607227400438606,
+      "id": "Link7"
+    },
+    {
+      "source": "UE0",
+      "target": "BS0",
+      "weight": 0.0,
+      "id": "Link8"
+    },
+    {
+      "source": "UE1",
+      "target": "BS0",
+      "weight": 0.0,
+      "id": "Link9"
+    },
+    {
+      "source": "UE2",
+      "target": "BS0",
+      "weight": 0.0,
+      "id": "Link10"
+    },
+    {
+      "source": "UE3",
+      "target": "BS0",
+      "weight": 0.0,
+      "id": "Link11"
+    },
+    {
+      "source": "UE4",
+      "target": "BS0",
+      "weight": 0.0,
+      "id": "Link12"
+    },
+    {
+      "source": "UE5",
+      "target": "BS0",
+      "weight": 0.0,
+      "id": "Link13"
+    },
+    {
+      "source": "UE6",
+      "target": "BS0",
+      "weight": 0.0,
+      "id": "Link14"
+    },
+    {
+      "source": "UE7",
+      "target": "BS0",
+      "weight": 0.0,
+      "id": "Link15"
+    },
+    {
+      "source": "UE8",
+      "target": "BS0",
+      "weight": 0.0,
+      "id": "Link16"
+    },
+    {
+      "source": "UE9",
+      "target": "BS0",
+      "weight": 0.0,
+      "id": "Link17"
+    },
+    {
+      "source": "UE10",
+      "target": "BS0",
+      "weight": 0.0,
+      "id": "Link18"
+    },
+    {
+      "source": "UE11",
+      "target": "BS1",
+      "weight": 0.0,
+      "id": "Link19"
+    },
+    {
+      "source": "UE12",
+      "target": "BS1",
+      "weight": 0.0,
+      "id": "Link20"
+    },
+    {
+      "source": "UE13",
+      "target": "BS1",
+      "weight": 0.0,
+      "id": "Link21"
+    },
+    {
+      "source": "UE14",
+      "target": "BS1",
+      "weight": 0.0,
+      "id": "Link22"
+    },
+    {
+      "source": "UE15",
+      "target": "BS1",
+      "weight": 0.0,
+      "id": "Link23"
+    },
+    {
+      "source": "UE16",
+      "target": "BS1",
+      "weight": 0.0,
+      "id": "Link24"
+    },
+    {
+      "source": "UE17",
+      "target": "BS1",
+      "weight": 0.0,
+      "id": "Link25"
+    },
+    {
+      "source": "UE18",
+      "target": "BS2",
+      "weight": 0.0,
+      "id": "Link26"
+    },
+    {
+      "source": "UE19",
+      "target": "BS2",
+      "weight": 0.0,
+      "id": "Link27"
+    },
+    {
+      "source": "UE20",
+      "target": "BS2",
+      "weight": 0.0,
+      "id": "Link28"
+    },
+    {
+      "source": "UE21",
+      "target": "BS2",
+      "weight": 0.0,
+      "id": "Link29"
+    },
+    {
+      "source": "UE22",
+      "target": "BS2",
+      "weight": 0.0,
+      "id": "Link30"
+    },
+    {
+      "source": "UE23",
+      "target": "BS2",
+      "weight": 0.0,
+      "id": "Link31"
+    },
+    {
+      "source": "UE24",
+      "target": "BS2",
+      "weight": 0.0,
+      "id": "Link32"
+    },
+    {
+      "source": "UE25",
+      "target": "BS3",
+      "weight": 0.0,
+      "id": "Link33"
+    },
+    {
+      "source": "UE26",
+      "target": "BS3",
+      "weight": 0.0,
+      "id": "Link34"
+    },
+    {
+      "source": "UE27",
+      "target": "BS3",
+      "weight": 0.0,
+      "id": "Link35"
+    },
+    {
+      "source": "UE28",
+      "target": "BS3",
+      "weight": 0.0,
+      "id": "Link36"
+    },
+    {
+      "source": "UE29",
+      "target": "BS3",
+      "weight": 0.0,
+      "id": "Link37"
+    },
+    {
+      "source": "UE30",
+      "target": "BS3",
+      "weight": 0.0,
+      "id": "Link38"
+    },
+    {
+      "source": "UE31",
+      "target": "BS3",
+      "weight": 0.0,
+      "id": "Link39"
+    },
+    {
+      "source": "UE32",
+      "target": "BS4",
+      "weight": 0.0,
+      "id": "Link40"
+    },
+    {
+      "source": "UE33",
+      "target": "BS4",
+      "weight": 0.0,
+      "id": "Link41"
+    },
+    {
+      "source": "UE34",
+      "target": "BS4",
+      "weight": 0.0,
+      "id": "Link42"
+    },
+    {
+      "source": "UE35",
+      "target": "BS4",
+      "weight": 0.0,
+      "id": "Link43"
+    },
+    {
+      "source": "UE36",
+      "target": "BS4",
+      "weight": 0.0,
+      "id": "Link44"
+    },
+    {
+      "source": "UE37",
+      "target": "BS4",
+      "weight": 0.0,
+      "id": "Link45"
+    },
+    {
+      "source": "UE45",
+      "target": "BS6",
+      "weight": 0.0,
+      "id": "Link46"
+    },
+    {
+      "source": "UE46",
+      "target": "BS6",
+      "weight": 0.0,
+      "id": "Link47"
+    },
+    {
+      "source": "UE47",
+      "target": "BS6",
+      "weight": 0.0,
+      "id": "Link48"
+    },
+    {
+      "source": "UE48",
+      "target": "BS6",
+      "weight": 0.0,
+      "id": "Link49"
+    },
+    {
+      "source": "UE49",
+      "target": "BS6",
+      "weight": 0.0,
+      "id": "Link50"
+    },
+    {
+      "source": "UE50",
+      "target": "BS6",
+      "weight": 0.0,
+      "id": "Link51"
+    },
+    {
+      "source": "UE51",
+      "target": "BS6",
+      "weight": 0.0,
+      "id": "Link52"
+    },
+    {
+      "source": "UE52",
+      "target": "BS6",
+      "weight": 0.0,
+      "id": "Link53"
+    },
+    {
+      "source": "UE53",
+      "target": "BS6",
+      "weight": 0.0,
+      "id": "Link54"
+    },
+    {
+      "source": "UE54",
+      "target": "BS6",
+      "weight": 0.0,
+      "id": "Link55"
+    },
+    {
+      "source": "UE55",
+      "target": "BS6",
+      "weight": 0.0,
+      "id": "Link56"
+    },
+    {
+      "source": "UE56",
+      "target": "BS6",
+      "weight": 0.0,
+      "id": "Link57"
+    },
+    {
+      "source": "UE57",
+      "target": "BS6",
+      "weight": 0.0,
+      "id": "Link58"
+    },
+    {
+      "source": "UE58",
+      "target": "BS6",
+      "weight": 0.0,
+      "id": "Link59"
+    },
+    {
+      "source": "UE59",
+      "target": "BS6",
+      "weight": 0.0,
+      "id": "Link60"
+    },
+    {
+      "source": "UE60",
+      "target": "BS6",
+      "weight": 0.0,
+      "id": "Link61"
+    },
+    {
+      "source": "UE61",
+      "target": "BS6",
+      "weight": 0.0,
+      "id": "Link62"
+    },
+    {
+      "source": "UE62",
+      "target": "BS6",
+      "weight": 0.0,
+      "id": "Link63"
+    },
+    {
+      "source": "UE63",
+      "target": "BS6",
+      "weight": 0.0,
+      "id": "Link64"
+    },
+    {
+      "source": "UE64",
+      "target": "BS7",
+      "weight": 0.0,
+      "id": "Link65"
+    },
+    {
+      "source": "UE65",
+      "target": "BS7",
+      "weight": 0.0,
+      "id": "Link66"
+    },
+    {
+      "source": "UE66",
+      "target": "BS7",
+      "weight": 0.0,
+      "id": "Link67"
+    },
+    {
+      "source": "UE67",
+      "target": "BS7",
+      "weight": 0.0,
+      "id": "Link68"
+    },
+    {
+      "source": "UE68",
+      "target": "BS7",
+      "weight": 0.0,
+      "id": "Link69"
+    },
+    {
+      "source": "UE69",
+      "target": "BS7",
+      "weight": 0.0,
+      "id": "Link70"
+    },
+    {
+      "source": "UE70",
+      "target": "BS8",
+      "weight": 0.0,
+      "id": "Link71"
+    },
+    {
+      "source": "UE71",
+      "target": "BS8",
+      "weight": 0.0,
+      "id": "Link72"
+    },
+    {
+      "source": "UE72",
+      "target": "BS8",
+      "weight": 0.0,
+      "id": "Link73"
+    },
+    {
+      "source": "UE73",
+      "target": "BS8",
+      "weight": 0.0,
+      "id": "Link74"
+    },
+    {
+      "source": "UE74",
+      "target": "BS8",
+      "weight": 0.0,
+      "id": "Link75"
+    },
+    {
+      "source": "UE75",
+      "target": "BS8",
+      "weight": 0.0,
+      "id": "Link76"
+    },
+    {
+      "source": "UE76",
+      "target": "BS8",
+      "weight": 0.0,
+      "id": "Link77"
+    },
+    {
+      "source": "UE77",
+      "target": "BS8",
+      "weight": 0.0,
+      "id": "Link78"
+    },
+    {
+      "source": "UE78",
+      "target": "BS8",
+      "weight": 0.0,
+      "id": "Link79"
+    },
+    {
+      "source": "UE79",
+      "target": "BS8",
+      "weight": 0.0,
+      "id": "Link80"
+    },
+    {
+      "source": "UE80",
+      "target": "BS8",
+      "weight": 0.0,
+      "id": "Link81"
+    },
+    {
+      "source": "UE81",
+      "target": "BS8",
+      "weight": 0.0,
+      "id": "Link82"
+    },
+    {
+      "source": "UE82",
+      "target": "BS8",
+      "weight": 0.0,
+      "id": "Link83"
+    },
+    {
+      "source": "UE83",
+      "target": "BS8",
+      "weight": 0.0,
+      "id": "Link84"
+    },
+    {
+      "source": "UE84",
+      "target": "BS8",
+      "weight": 0.0,
+      "id": "Link85"
+    },
+    {
+      "source": "UE85",
+      "target": "BS9",
+      "weight": 0.0,
+      "id": "Link86"
+    },
+    {
+      "source": "UE86",
+      "target": "BS9",
+      "weight": 0.0,
+      "id": "Link87"
+    },
+    {
+      "source": "UE87",
+      "target": "BS9",
+      "weight": 0.0,
+      "id": "Link88"
+    },
+    {
+      "source": "UE88",
+      "target": "BS9",
+      "weight": 0.0,
+      "id": "Link89"
+    },
+    {
+      "source": "UE89",
+      "target": "BS9",
+      "weight": 0.0,
+      "id": "Link90"
+    },
+    {
+      "source": "UE90",
+      "target": "BS9",
+      "weight": 0.0,
+      "id": "Link91"
+    },
+    {
+      "source": "UE91",
+      "target": "BS9",
+      "weight": 0.0,
+      "id": "Link92"
+    },
+    {
+      "source": "UE92",
+      "target": "BS9",
+      "weight": 0.0,
+      "id": "Link93"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "UE0",
+      "latitude": 48.578,
+      "longitude": 11.739,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE1",
+      "latitude": 47.9,
+      "longitude": 11.934,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE2",
+      "latitude": 48.105,
+      "longitude": 11.15,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE3",
+      "latitude": 48.53,
+      "longitude": 11.415,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE4",
+      "latitude": 47.902,
+      "longitude": 11.484,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE5",
+      "latitude": 48.319,
+      "longitude": 11.969,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE6",
+      "latitude": 48.567,
+      "longitude": 11.928,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE7",
+      "latitude": 48.211,
+      "longitude": 11.332,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE8",
+      "latitude": 47.967,
+      "longitude": 12.132,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE9",
+      "latitude": 48.529,
+      "longitude": 11.017,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE10",
+      "latitude": 48.148,
+      "longitude": 11.249,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE11",
+      "latitude": 48.284,
+      "longitude": 11.564,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE12",
+      "latitude": 47.835,
+      "longitude": 11.399,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE13",
+      "latitude": 48.405,
+      "longitude": 11.925,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE14",
+      "latitude": 48.309,
+      "longitude": 11.66,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE15",
+      "latitude": 48.214,
+      "longitude": 12.226,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE16",
+      "latitude": 47.956,
+      "longitude": 12.123,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE17",
+      "latitude": 48.465,
+      "longitude": 11.526,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE18",
+      "latitude": 47.931,
+      "longitude": 11.404,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE19",
+      "latitude": 47.763,
+      "longitude": 12.105,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE20",
+      "latitude": 47.819,
+      "longitude": 11.729,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE21",
+      "latitude": 47.876,
+      "longitude": 12.121,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE22",
+      "latitude": 48.046,
+      "longitude": 11.865,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE23",
+      "latitude": 47.829,
+      "longitude": 11.56,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE24",
+      "latitude": 48.264,
+      "longitude": 11.849,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE25",
+      "latitude": 48.518,
+      "longitude": 11.444,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE26",
+      "latitude": 48.575,
+      "longitude": 11.357,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE27",
+      "latitude": 47.93,
+      "longitude": 12.042,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE28",
+      "latitude": 48.02,
+      "longitude": 11.938,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE29",
+      "latitude": 48.465,
+      "longitude": 11.216,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE30",
+      "latitude": 47.71,
+      "longitude": 11.719,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE31",
+      "latitude": 48.487,
+      "longitude": 10.914,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE32",
+      "latitude": 48.312,
+      "longitude": 11.666,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE33",
+      "latitude": 48.076,
+      "longitude": 12.233,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE34",
+      "latitude": 48.362,
+      "longitude": 11.092,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE35",
+      "latitude": 48.219,
+      "longitude": 11.787,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE36",
+      "latitude": 47.796,
+      "longitude": 11.116,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE37",
+      "latitude": 48.193,
+      "longitude": 11.218,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE38",
+      "latitude": 47.751,
+      "longitude": 11.495,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE39",
+      "latitude": 48.48,
+      "longitude": 11.952,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE40",
+      "latitude": 48.454,
+      "longitude": 11.124,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE41",
+      "latitude": 47.749,
+      "longitude": 11.3,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE42",
+      "latitude": 48.212,
+      "longitude": 11.949,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE43",
+      "latitude": 47.81,
+      "longitude": 11.1,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE44",
+      "latitude": 48.115,
+      "longitude": 12.025,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE45",
+      "latitude": 47.696,
+      "longitude": 11.355,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE46",
+      "latitude": 48.357,
+      "longitude": 11.909,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE47",
+      "latitude": 48.475,
+      "longitude": 12.23,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE48",
+      "latitude": 48.553,
+      "longitude": 11.382,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE49",
+      "latitude": 48.032,
+      "longitude": 11.994,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE50",
+      "latitude": 47.9,
+      "longitude": 12.074,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE51",
+      "latitude": 48.452,
+      "longitude": 11.755,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE52",
+      "latitude": 47.755,
+      "longitude": 11.794,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE53",
+      "latitude": 48.152,
+      "longitude": 11.408,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE54",
+      "latitude": 47.948,
+      "longitude": 11.824,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE55",
+      "latitude": 48.276,
+      "longitude": 11.689,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE56",
+      "latitude": 47.706,
+      "longitude": 12.015,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE57",
+      "latitude": 47.969,
+      "longitude": 12.075,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE58",
+      "latitude": 48.353,
+      "longitude": 12.205,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE59",
+      "latitude": 47.864,
+      "longitude": 11.683,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE60",
+      "latitude": 48.549,
+      "longitude": 11.921,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE61",
+      "latitude": 48.189,
+      "longitude": 11.429,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE62",
+      "latitude": 48.074,
+      "longitude": 12.133,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE63",
+      "latitude": 48.578,
+      "longitude": 11.085,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE64",
+      "latitude": 48.164,
+      "longitude": 11.226,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE65",
+      "latitude": 48.365,
+      "longitude": 11.521,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE66",
+      "latitude": 47.826,
+      "longitude": 11.813,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE67",
+      "latitude": 47.733,
+      "longitude": 11.592,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE68",
+      "latitude": 47.839,
+      "longitude": 12.037,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE69",
+      "latitude": 47.713,
+      "longitude": 10.925,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE70",
+      "latitude": 47.914,
+      "longitude": 11.502,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE71",
+      "latitude": 48.119,
+      "longitude": 11.706,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE72",
+      "latitude": 48.402,
+      "longitude": 11.613,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE73",
+      "latitude": 48.354,
+      "longitude": 11.481,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE74",
+      "latitude": 47.859,
+      "longitude": 11.905,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE75",
+      "latitude": 47.798,
+      "longitude": 11.882,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE76",
+      "latitude": 48.053,
+      "longitude": 12.101,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE77",
+      "latitude": 48.041,
+      "longitude": 12.071,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE78",
+      "latitude": 48.477,
+      "longitude": 12.144,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE79",
+      "latitude": 48.424,
+      "longitude": 11.18,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE80",
+      "latitude": 48.003,
+      "longitude": 11.845,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE81",
+      "latitude": 47.851,
+      "longitude": 12.195,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE82",
+      "latitude": 48.069,
+      "longitude": 10.994,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE83",
+      "latitude": 48.451,
+      "longitude": 11.331,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE84",
+      "latitude": 47.696,
+      "longitude": 11.728,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE85",
+      "latitude": 47.922,
+      "longitude": 11.859,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE86",
+      "latitude": 47.704,
+      "longitude": 11.777,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE87",
+      "latitude": 48.466,
+      "longitude": 11.833,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE88",
+      "latitude": 48.207,
+      "longitude": 11.99,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE89",
+      "latitude": 48.382,
+      "longitude": 12.018,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE90",
+      "latitude": 48.081,
+      "longitude": 11.168,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE91",
+      "latitude": 47.752,
+      "longitude": 12.179,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE92",
+      "latitude": 48.159,
+      "longitude": 11.164,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE93",
+      "latitude": 47.894,
+      "longitude": 11.256,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE94",
+      "latitude": 48.498,
+      "longitude": 11.266,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE95",
+      "latitude": 47.763,
+      "longitude": 12.06,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE96",
+      "latitude": 48.511,
+      "longitude": 12.153,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE97",
+      "latitude": 47.972,
+      "longitude": 11.344,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE98",
+      "latitude": 48.042,
+      "longitude": 11.645,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "UE99",
+      "latitude": 47.878,
+      "longitude": 11.18,
+      "altitude": 0,
+      "pstat": 1,
+      "load": 5
+    },
+    {
+      "id": "BS0",
+      "latitude": 48.468,
+      "longitude": 11.74,
+      "altitude": 50,
+      "pstat": 1,
+      "GW": 0,
+      "model": "CellTower"
+    },
+    {
+      "id": "BS1",
+      "latitude": 48.435,
+      "longitude": 11.482,
+      "altitude": 50,
+      "pstat": 1,
+      "GW": 0,
+      "model": "CellTower"
+    },
+    {
+      "id": "BS2",
+      "latitude": 48.446,
+      "longitude": 11.689,
+      "altitude": 50,
+      "pstat": 1,
+      "GW": 0,
+      "model": "CellTower"
+    },
+    {
+      "id": "BS3",
+      "latitude": 48.316,
+      "longitude": 11.073,
+      "altitude": 50,
+      "pstat": 1,
+      "GW": 0,
+      "model": "CellTower"
+    },
+    {
+      "id": "BS4",
+      "latitude": 47.787,
+      "longitude": 11.915,
+      "altitude": 50,
+      "pstat": 1,
+      "GW": 0,
+      "model": "CellTower"
+    },
+    {
+      "id": "BS5",
+      "latitude": 48.21,
+      "longitude": 11.887,
+      "altitude": 20050,
+      "pstat": 1,
+      "GW": 0,
+      "model": "HAP"
+    },
+    {
+      "id": "BS6",
+      "latitude": 48.117,
+      "longitude": 11.054,
+      "altitude": 50,
+      "pstat": 1,
+      "GW": 0,
+      "model": "CellTower"
+    },
+    {
+      "id": "BS7",
+      "latitude": 48.214,
+      "longitude": 11.904,
+      "altitude": 50,
+      "pstat": 1,
+      "GW": 0,
+      "model": "CellTower"
+    },
+    {
+      "id": "BS8",
+      "latitude": 48.517,
+      "longitude": 11.459,
+      "altitude": 50,
+      "pstat": 1,
+      "GW": 1,
+      "model": "CellTower"
+    },
+    {
+      "id": "BS9",
+      "latitude": 47.92,
+      "longitude": 11.106,
+      "altitude": 50,
+      "pstat": 1,
+      "GW": 0,
+      "model": "CellTower"
+    }
+  ]
+}
