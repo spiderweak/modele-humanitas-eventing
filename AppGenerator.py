@@ -55,7 +55,7 @@ def main():
     except FileExistsError:
         pass
 
-    environment.export_applications(filename=f"{ROOT}/data/{date_string}/applications.json")
+    environment.exportApplications(filename=f"{ROOT}/data/{date_string}/applications.json")
 
 
 if __name__ == '__main__':
