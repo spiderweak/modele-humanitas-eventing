@@ -117,8 +117,8 @@ class Device:
         """
 
         return {
-            "device_id" : self.id,
-            "device_position" : self.position,
+            "id" : self.id,
+            "position" : self.position,
             "resource_limit" : self.resource_limit,
             "routing_table" : self.routing_table
         }
@@ -356,9 +356,9 @@ class Device:
             #return (-1, 1000)
 
     def initFromDict(self, data):
-        self.setDeviceID(data['device_id'])
+        self.setDeviceID(data['id'])
 
-        self.setDevicePosition(data['device_position'])
+        self.setDevicePosition(data['position'])
 
         try:
             self.setAllResourceLimit(data['resource_limit'])
@@ -370,7 +370,6 @@ class Device:
             self.theorical_resource_usage[key] = 0
             self.resource_usage_history[key] = [(0,0)]
 
-        self.routing_table = None
         try:
             self.routing_table = data['routing_table']
         except KeyError:
