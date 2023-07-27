@@ -1,7 +1,7 @@
 from modules.resource.PhysicalNetworkLink import PhysicalNetworkLink
 from modules.resource.Application import Application
 from modules.resource.Device import Device
-from modules.CustomExceptions import NoRouteToHost
+from modules.CustomExceptions import (NoRouteToHost, DeviceNotFoundError)
 
 
 from modules.ResourceManagement import custom_distance
@@ -79,8 +79,9 @@ class Environment(object):
             device identifier
         """
         for device in self.devices:
-            if device.id == dev_id:
+            if device.id == int(dev_id):
                 return device
+        raise DeviceNotFoundError
 
 
     def addDevice(self, device):
@@ -130,26 +131,6 @@ class Environment(object):
         """
 
         number_of_devices = len(self.getDevices())
-
-        self.physical_network_links = [0] * number_of_devices * number_of_devices
-
-        for device_1 in self.getDevices():
-            device_1_id = device_1.getDeviceID()
-            for device_2 in self.getDevices():
-                device_2_id = device_2.getDeviceID()
-                distance = custom_distance(device_1.position.values(),device_2.position.values())
-                new_physical_network_link_id = device_1_id*number_of_devices + device_2_id
-                if distance < self.config.wifi_range:
-                    device_1.addToRoutingTable(device_2_id, device_2_id, distance)
-                    device_2.addToRoutingTable(device_1_id, device_1_id, distance)
-                    new_physical_network_link = PhysicalNetworkLink(device_1_id, device_2_id)
-                    new_physical_network_link.setLinkID(new_physical_network_link_id)
-                    if device_1_id == device_2_id:
-                        new_physical_network_link.setPhysicalNetworkLinkLatency(0)
-                    self.physical_network_links[new_physical_network_link_id] = new_physical_network_link
-                else:
-                    new_physical_network_link = PhysicalNetworkLink()
-                    self.physical_network_links[new_physical_network_link_id] = None
 
         ## We iterate on the matrix:
 
@@ -222,7 +203,7 @@ class Environment(object):
         except FileNotFoundError:
             raise FileNotFoundError("Please add devices list in argument, default value is devices.json in current directory")
 
-        for device in devices_list:
+        for device in devices_list['devices']:
             self.devices.append(Device(data=device))
 
     def importApplications(self):
@@ -242,37 +223,70 @@ class Environment(object):
         with open(self.config.devices_template_filename) as file:
             json_data = json.load(file)
 
-        for device in json_data['devices']:
-            self.devices.append(Device(data=device))
-
-    """
-        Might be useful:
-
-        n_devices = self.number_of_devices # Number of devices
-
         try:
-            with open(self.devices_template_filename) as devices_template_file:
-                devices_data = json.load(devices_template_file)
-                for device in devices_data:
-                    devices[device['id']] = [device['x'],device['y'],device['z']]
-        except FileNotFoundError:
-            for dev_id in range(n_devices):
-            # Processing device position, random x, y, z fixed to between various values (z=0 for now)
-                x = round(random.random() * (self._3D_space['x_max'] - self._3D_space['x_min']) + self._3D_space['x_min'],2)
-                y = round(random.random() * (self._3D_space['y_max'] - self._3D_space['y_min']) + self._3D_space['y_min'],2)
-                z = round(random.random() * (self._3D_space['z_max'] - self._3D_space['z_min']) + self._3D_space['z_min'],2)
-
-                devices[dev_id] = [x,y,z]
-
-    """
+            for device in json_data['devices']:
+                self.devices.append(Device(data=device))
+        except KeyError:
+            n_devices = self.config.number_of_devices # Number of devices
+            try:
+                with open(self.config.devices_template_filename) as devices_template_file:
+                    devices_data = json.load(devices_template_file)
+                    for device_data in devices_data['devices']:
+                        device = {}
+                        device['id'] = device_data['id']
+                        device['position'] = dict()
+                        device['position']['x'] = device['x']
+                        device['position']['y'] = device['y']
+                        device['position']['z'] = device['z']
+                        device['resource'] = {"cpu": 8, "gpu": 8, "mem": 8192, "disk": 1024000}
+            except FileNotFoundError:
+                for dev_id in range(n_devices):
+                # Processing device position, random x, y, z fixed to between various values (z=0 for now)
+                    device = {}
+                    device['id'] = device_data['id']
+                    device['position'] = dict()
+                    device['position']['x'] = round(random.random() * (self.config._3D_space['x_max'] - self.config._3D_space['x_min']) + self.config._3D_space['x_min'],2)
+                    device['position']['y'] = round(random.random() * (self.config._3D_space['y_max'] - self.config._3D_space['y_min']) + self.config._3D_space['y_min'],2)
+                    device['position']['z'] = round(random.random() * (self.config._3D_space['z_max'] - self.config._3D_space['z_min']) + self.config._3D_space['z_min'],2)
+                    device['resource'] = {"cpu": 8, "gpu": 8, "mem": 8192, "disk": 1024000}
 
 
     def generateDevicesLinks(self):
         with open(self.config.devices_template_filename) as file:
             json_data = json.load(file)
+        try :
+            for link in json_data['links']:
+                self.devices_links.append(link)
+                source_device = self.getDeviceByID(link['source'])
+                target_device = self.getDeviceByID(link['target'])
+                source_device.addToRoutingTable(target_device.id, target_device.id,link['weight'])
+                target_device.addToRoutingTable(source_device.id, source_device.id,link['weight'])
+        except KeyError:
 
-        for link in json_data['links']:
-            self.devices_links.append(link)
+            number_of_devices = len(self.getDevices())
+
+            self.physical_network_links = [0] * number_of_devices * number_of_devices
+
+            for device_1 in self.getDevices():
+                device_1_id = device_1.getDeviceID()
+                for device_2 in self.getDevices():
+                    device_2_id = device_2.getDeviceID()
+                    distance = custom_distance(device_1.position.values(),device_2.position.values())
+                    new_physical_network_link_id = device_1_id*number_of_devices + device_2_id
+                    if distance < self.config.wifi_range:
+                        device_1.addToRoutingTable(device_2_id, device_2_id, distance)
+                        device_2.addToRoutingTable(device_1_id, device_1_id, distance)
+                        new_physical_network_link = PhysicalNetworkLink(device_1_id, device_2_id)
+                        new_physical_network_link.setLinkID(new_physical_network_link_id)
+                        if device_1_id == device_2_id:
+                            new_physical_network_link.setPhysicalNetworkLinkLatency(0)
+                        self.physical_network_links[new_physical_network_link_id] = new_physical_network_link
+                        link = {"source": device_1_id, "target": device_2_id, "weight": distance, "id": new_physical_network_link_id}
+                        self.devices_links.append(link)
+                    else:
+                        new_physical_network_link = PhysicalNetworkLink()
+                        self.physical_network_links[new_physical_network_link_id] = None
+
 
 
     def plotDeviceNetwork(self):
