@@ -37,7 +37,7 @@ The step-by-step execution consists in running the following commands successive
    python Archiver.py
 
 DeviceGenerator
----------------
+^^^^^^^^^^^^^^^
 
 The **DeviceGenerator** program takes into account the information from the config.yaml device files, mostly from *template_files/devices* and *device_number* to generate a graph of devices.
 
@@ -47,7 +47,7 @@ Based on the device positions from either files or another random device placeme
 
 
 AppGenerator
-------------
+^^^^^^^^^^^^
 
 The **AppGenerator** program takes into account the information from the config.yaml applications files, mostly from *template_files/application* and *application_number* to generate applications characteristics.
 
@@ -56,7 +56,7 @@ An Application` is defined as a List of Processus that will request resources fr
 The **AppGenerator** store an export for all generated application under *latest/applications.json*. Defaults to generating 5000 applications.
 
 PlacementGenerator
-------------------
+^^^^^^^^^^^^^^^^^^
 
 The simulator revolves around processing a queue of Application Placement Requests, that simulate application arrivals based on the studied scenario, such as resource requests from other programs, from on-site hardware or from users.
 
@@ -65,7 +65,7 @@ The **PlacementGenerator** program generates a queue of *Placement* events, each
 These informations are then exported to a JSON file, in order to be loaded by the Processing algorithm.
 
 Processing
-----------
+^^^^^^^^^^
 
 The **Processing** algorithm is the core of the Simulator. The Processing unit loads the information from all previous programs through the importer functions, then process the simulation queue and export the data to a results.csv file.
 
@@ -75,12 +75,13 @@ TODO::
 For now, the Processing unit places devices thanks to Bi-partite graphs, but its processing unit will be enhanced to allow other placement algorithms for comparisons with the state of the art.
 
 Archiver
---------
+^^^^^^^^
 
 The **Archiver** module saves all exports to a dedicated folder for further processing and/or other uses.
 
 It extracts data stored in the *latest* folder and saves it to a dated folder, default value for the date is *today* but it is usually used by Airflow as follow::
+
    date_string = datetime.datetime.now().isoformat(timespec='minutes').replace(":","-")[:-1]+"0"
    python Archiver.py --date=data/{date_string}
 
-Thus in our case the written files usually go to *data/YYYY-MM-DDTHH-mm*
+Thus in our case the written files usually go to *data/YYYY-MM-DDTHH-m0*
