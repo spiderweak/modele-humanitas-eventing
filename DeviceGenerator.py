@@ -9,7 +9,7 @@ It then generates a Routing Table for shortest single path between each devices 
 Finally, information is exported to an output folder, defaults to *latest/devices.json*
 
 
-Usage:
+Usage::
 
     python3 DeviceGenerator.py
 
