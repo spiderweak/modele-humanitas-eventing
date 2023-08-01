@@ -1,6 +1,13 @@
 #!/usr/bin/env python3
 """
-Does a complete deployment test on 200 applications over 40 devices
+The DeviceGenerator Module generates a list of devices based on the information in the config file : Number of devices, their positions, their resources, etc.
+
+Links are established either using proximity, extrapolating from possible Wi-Fi connectivity between devices, or from the information provided in the input files.
+
+It then generates a Routing Table for shortest single path between each devices based on the links between them.
+
+Finally, information is exported to an output folder, defaults to *latest/devices.json*
+
 
 Usage:
 
@@ -24,6 +31,10 @@ logger = logging.getLogger(__name__)
 ROOT = "."
 
 def parse_args():
+    """
+        Parses the arguments from the configuration, and generates a --help subcommand to assist user
+    """
+
     parser = argparse.ArgumentParser(description='Process the processing algorithm\'s input')
     parser.add_argument('--config',
                         help='Configuration file',
@@ -31,14 +42,14 @@ def parse_args():
     parser.add_argument('--output',
                         help='output file',
                         default='latest/devices.json')
-    parser.add_argument('--scratchdevicedb',
-                        help='Boolean, default to False, archives device database before runnning',
-                        default=False)
     options = parser.parse_args()
 
     return options
 
 def main():
+    """
+        Runs the core loop for the program, loads the configuration after a call to the argument parser, generates the devices, output to destination file, logs all operations
+    """
 
     options = parse_args()
 
