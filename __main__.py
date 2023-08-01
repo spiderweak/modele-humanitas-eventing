@@ -39,9 +39,6 @@ def parse_args():
     parser.add_argument('--simulate',
                         help='Boolean, default to False, run simulator if true',
                         default=True)
-    parser.add_argument('--scratchdevicedb',
-                        help='Boolean, default to False, archives device database before runnning',
-                        default=False)
     options = parser.parse_args()
 
     return options
@@ -55,12 +52,21 @@ def main():
     config = Config(options, environment)
 
     environment.setConfig(config)
+
+    environment.generateDeviceList()
+    environment.generateDevicesLinks()
+    environment.plotDeviceNetwork()
     environment.generateRoutingTable()
+
+    environment.generateApplicationList()
 
     if options.simulate:
 
         logging.info("Running complete simulation")
         simulation = Simulation(environment)
+
+        simulation.initSimulation()
+
         simulation.simulate()
 
     else:

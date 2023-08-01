@@ -39,13 +39,6 @@ class Simulation(object):
 
         time.sleep(1)
 
-        date_string = datetime.datetime.now().isoformat(timespec='minutes').replace(":","-")[:-1]+"0"
-
-        # Exporting devices list
-        print("Generating dataset and exporting data")
-        os.makedirs(f"data/{date_string}")
-        self.__env.export_devices(filename=f"data/{date_string}/devices.json")
-
         for i in tqdm(range(self.__env.config.number_of_applications)):
             # Generating 1 random application
             application = Application()
@@ -60,7 +53,6 @@ class Simulation(object):
             # Creating a placement event
             Placement("Placement",self.__queue, application, device_id, event_time=arrival_times[i]).add_to_queue()
 
-        self.__queue.export(filename=f"data/{date_string}/placement.json")
 
         # Final reporting event
 
