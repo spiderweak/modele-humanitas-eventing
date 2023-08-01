@@ -63,3 +63,24 @@ The simulator revolves around processing a queue of Application Placement Reques
 The **PlacementGenerator** program generates a queue of *Placement* events, each event has a event_time, application id and device requester id associated.
 
 These informations are then exported to a JSON file, in order to be loaded by the Processing algorithm.
+
+Processing
+----------
+
+The **Processing** algorithm is the core of the Simulator. The Processing unit loads the information from all previous programs through the importer functions, then process the simulation queue and export the data to a results.csv file.
+
+TODO::
+   The Processing unit is actually made of a simulation processing unit and a Visualisation exporter. It would be better to split the program in two, considering that the exporter slow the complete execution of the program.
+
+For now, the Processing unit places devices thanks to Bi-partite graphs, but its processing unit will be enhanced to allow other placement algorithms for comparisons with the state of the art.
+
+Archiver
+--------
+
+The **Archiver** module saves all exports to a dedicated folder for further processing and/or other uses.
+
+It extracts data stored in the *latest* folder and saves it to a dated folder, default value for the date is *today* but it is usually used by Airflow as follow::
+   date_string = datetime.datetime.now().isoformat(timespec='minutes').replace(":","-")[:-1]+"0"
+   python Archiver.py --date=data/{date_string}
+
+Thus in our case the written files usually go to *data/YYYY-MM-DDTHH-mm*
