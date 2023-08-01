@@ -1,4 +1,4 @@
-loglevel : info
+loglevel : debug
 
 logfile : log.txt
 
@@ -6,8 +6,8 @@ database_url:
     device: db.sqlite
 
 template_files:
-    applications: examples/perso/applications.json
-    devices: examples/perso/devices.json
+    applications: examples/humanitas/applications.json
+    devices: examples/humanitas/devices.json
 
 device_positionning:
     x_min: 0
@@ -19,7 +19,7 @@ device_positionning:
 
 application_number : 5000
 
-device_number : 200
+device_number : 109
 
 wifi_range : 6
 
