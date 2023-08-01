@@ -1,5 +1,5 @@
 import json
-
+import random
 
 with open("message.txt") as file:
     json_data = json.load(file)
@@ -29,6 +29,14 @@ for node in json_data['nodes']:
     device_list.append(device)
     id +=1
 
+    # Lets add in some resources
+
+    if random.getrandbits(1):
+        #NDC
+        device['resource'] = {"cpu": 16, "gpu": 0, "mem": 32768, "disk": 1024000}
+    else:
+        # Nvidia Orin Nano
+        device['resource'] = {"cpu": 8, "gpu": 8, "mem": 8192, "disk": 1024000}
 
 output_data = {"devices" : device_list, "links" : json_data['links']}
 json_string = json.dumps(output_data, indent=4)
