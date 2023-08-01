@@ -32,6 +32,9 @@ def parse_args():
     parser.add_argument('--config',
                         help='Configuration file',
                         default='config.yaml')
+    parser.add_argument('--output',
+                        help='output file',
+                        default='latest/placements.json')
     options = parser.parse_args()
 
     return options
@@ -65,15 +68,14 @@ def main():
 
     print("Exporting data")
 
-    logging.debug(f"{datetime.datetime.now().isoformat(timespec='minutes')}:Exporting data to {ROOT}/data/{date_string}/placements.json")
 
-    try :
-        os.makedirs(f"{ROOT}/data/{date_string}")
-    except FileExistsError:
-        pass
+    logging.debug(f"{datetime.datetime.now().isoformat(timespec='minutes')}:Exporting data to {options.output}")
+    os.makedirs(os.path.dirname(options.output), exist_ok=True)
+
+    environment.exportApplications(filename=f"{options.output}")
 
     json_string = json.dumps(placement_list, indent=4)
-    with open(f"{ROOT}/data/{date_string}/placements.json", 'w') as file:
+    with open(f"{options.output}", 'w') as file:
         file.write(json_string)
 
 if __name__ == '__main__':

@@ -28,6 +28,9 @@ def parse_args():
     parser.add_argument('--config',
                         help='Configuration file',
                         default='config.yaml')
+    parser.add_argument('--output',
+                        help='output file',
+                        default='latest/devices.json')
     parser.add_argument('--scratchdevicedb',
                         help='Boolean, default to False, archives device database before runnning',
                         default=False)
@@ -52,20 +55,19 @@ def main():
 
     # Exporting devices list
     print("Generating dataset and exporting data")
-    logging.info(f"{datetime.datetime.now().isoformat(timespec='minutes')}:Generating dataset and exporting data")
+
+    logging.debug(f"{datetime.datetime.now().isoformat(timespec='minutes')}:Exporting data to {options.output}")
+    os.makedirs(os.path.dirname(options.output), exist_ok=True)
+
+    environment.exportDevices(filename=f"{options.output}")
+
     date_string = datetime.datetime.now().isoformat(timespec='minutes').replace(":","-")[:-1]+"0"
-    logging.debug(f"{datetime.datetime.now().isoformat(timespec='minutes')}:Exporting data to {ROOT}data/{date_string}/devices.json")
-
-    try :
-        os.makedirs(f"{ROOT}/data/{date_string}")
-    except FileExistsError:
-        pass
-
-    environment.exportDevices(filename=f"{ROOT}/data/{date_string}/devices.json")
 
     # Export figure to {ROOT}/data/{date_string}/devices.png
     logging.debug(f"{datetime.datetime.now().isoformat(timespec='minutes')}:Exporting figure to {ROOT}/data/{date_string}/devices.png")
+    os.makedirs(os.path.dirname(f"{ROOT}/data/{date_string}/devices.png"), exist_ok=True)
     shutil.copyfile(f"{ROOT}/fig/graph.png", f"{ROOT}/data/{date_string}/devices.png")
+    shutil.copyfile(f"{ROOT}/fig/graph.png", f"{ROOT}/latest/devices.png")
 
 if __name__ == '__main__':
     logger.info("MAIN")

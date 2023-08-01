@@ -28,6 +28,9 @@ def parse_args():
     parser.add_argument('--config',
                         help='Configuration file',
                         default='config.yaml')
+    parser.add_argument('--output',
+                        help='output file',
+                        default='latest/applications.json')
     options = parser.parse_args()
 
     return options
@@ -44,18 +47,10 @@ def main():
 
     environment.generateApplicationList()
 
-    # Exporting applications list
-    print("Generating application dataset and exporting data")
-    date_string = datetime.datetime.now().isoformat(timespec='minutes').replace(":","-")[:-1]+"0"
-    logging.info(f"{datetime.datetime.now().isoformat(timespec='minutes')}:Generating application dataset and exporting data")
+    logging.debug(f"{datetime.datetime.now().isoformat(timespec='minutes')}:Exporting data to {options.output}")
+    os.makedirs(os.path.dirname(options.output), exist_ok=True)
 
-    logging.debug(f"{datetime.datetime.now().isoformat(timespec='minutes')}:Exporting data to {ROOT}/data/{date_string}/applications.json")
-    try :
-        os.makedirs(f"{ROOT}/data/{date_string}")
-    except FileExistsError:
-        pass
-
-    environment.exportApplications(filename=f"{ROOT}/data/{date_string}/applications.json")
+    environment.exportApplications(filename=f"{options.output}")
 
 
 if __name__ == '__main__':

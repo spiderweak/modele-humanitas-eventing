@@ -4,42 +4,33 @@ Does a complete deployment test on 200 applications over 40 devices
 
 Usage:
 
-    python3 Processing.py
+    python3 DeviceGenerator.py
+
 """
 
 from modules.Config import Config
-
-from modules.resource.Application import Application
 from modules.resource.Device import Device
-from modules.resource.PhysicalNetworkLink import PhysicalNetworkLink
-from modules.resource.Processus import Processus
-from modules.resource.Path import Path
-from modules.EventQueue import EventQueue
 from modules.Environment import Environment
-from modules.Event import (Event, Placement, Deploy_Proc, Sync)
-
-
-from modules.Simulation import Simulation
 
 import argparse
-import yaml
-import random
+import os
+import datetime
 
 import logging
-import datetime
 import shutil
 
 logger = logging.getLogger(__name__)
 
+ROOT = "."
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Process the processing algorithm\'s input')
     parser.add_argument('--config',
                         help='Configuration file',
                         default='config.yaml')
-    parser.add_argument('--simulate',
-                        help='Boolean, default to False, run simulator if true',
-                        default=True)
+    parser.add_argument('--date',
+                        help='Date Folder Name',
+                        default='today/')
     parser.add_argument('--devices',
                         help='JSON file containing device list',
                         default="latest/devices.json")
@@ -49,8 +40,8 @@ def parse_args():
     parser.add_argument('--arrivals',
                         help='JSON file containing application arrivals list',
                         default="latest/placements.json")
-    parser.add_argument('--output',
-                        help='output file',
+    parser.add_argument('--results',
+                        help='results file',
                         default='latest/results.csv')
     options = parser.parse_args()
 
@@ -60,26 +51,13 @@ def main():
 
     options = parse_args()
 
-    environment = Environment()
-
-    config = Config(options, environment)
-
-    environment.setConfig(config)
-
-    environment.importDevices()
-
-    environment.importApplications()
-
-    logging.info("Running complete simulation")
-    simulation = Simulation(environment)
-
-    simulation.importQueueItems()
-
-    simulation.simulate()
-
-    logging.debug(f"{datetime.datetime.now().isoformat(timespec='minutes')}:Exporting data to {options.output}")
-    shutil.copyfile(f"results.csv", f"{options.output}")
-
+    # Export figure to {ROOT}/data/{date_string}/devices.png
+    logging.debug(f"{datetime.datetime.now().isoformat(timespec='minutes')}:Exporting data to {options.date}/ folder")
+    os.makedirs(os.path.dirname(options.date), exist_ok=True)
+    shutil.copyfile(f"{options.devices}", f"{options.date}/devices.json")
+    shutil.copyfile(f"{options.applications}", f"{options.date}/applications.json")
+    shutil.copyfile(f"{options.arrivals}", f"{options.date}/placements.json")
+    shutil.copyfile(f"{options.results}", f"{options.date}/results.csv")
 
 if __name__ == '__main__':
     logger.info("MAIN")
