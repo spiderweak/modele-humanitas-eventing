@@ -55,7 +55,7 @@ def main():
     config = Config(options, environment)
 
     environment.setConfig(config)
-    environment.generate_routing_table()
+    environment.generateRoutingTable()
 
     if options.simulate:
 
