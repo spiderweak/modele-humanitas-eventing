@@ -42,7 +42,7 @@ def parse_args():
                         default="latest/placements.json")
     parser.add_argument('--results',
                         help='results file',
-                        default='latest/results.csv')
+                        default='latest/results.json')
     options = parser.parse_args()
 
     return options
@@ -57,7 +57,7 @@ def main():
     shutil.copyfile(f"{options.devices}", f"{options.date}/devices.json")
     shutil.copyfile(f"{options.applications}", f"{options.date}/applications.json")
     shutil.copyfile(f"{options.arrivals}", f"{options.date}/placements.json")
-    shutil.copyfile(f"{options.results}", f"{options.date}/results.csv")
+    shutil.copyfile(f"{options.results}", f"{options.date}/results.json")
 
 if __name__ == '__main__':
     logger.info("MAIN")

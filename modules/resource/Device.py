@@ -120,6 +120,7 @@ class Device:
             "id" : self.id,
             "position" : self.position,
             "resource_limit" : self.resource_limit,
+            "resource_usage_history" : self.resource_usage_history,
             "routing_table" : self.routing_table
         }
 

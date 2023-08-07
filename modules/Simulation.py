@@ -88,11 +88,6 @@ class Simulation(object):
 
         time.sleep(1)
 
-        visu = Visualizer()
-
-        visu.visualize_environment(self.__env)
-        visu.final_results(self.__env)
-
         logging.info("\n***************\nEND OF SIMULATION\n***************")
 
 

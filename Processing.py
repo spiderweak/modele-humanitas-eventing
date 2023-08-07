@@ -17,13 +17,14 @@ from modules.resource.Path import Path
 from modules.EventQueue import EventQueue
 from modules.Environment import Environment
 from modules.Event import (Event, Placement, Deploy_Proc, Sync)
-
+from modules.Visualization import Visualizer
 
 from modules.Simulation import Simulation
 
 import argparse
 import yaml
 import random
+import os
 
 import logging
 import datetime
@@ -51,7 +52,7 @@ def parse_args():
                         default="latest/placements.json")
     parser.add_argument('--output',
                         help='output file',
-                        default='latest/results.csv')
+                        default='latest/results.json')
     options = parser.parse_args()
 
     return options
@@ -77,8 +78,21 @@ def main():
 
     simulation.simulate()
 
+    # Exporting devices list
+    print("Generating dataset and exporting data")
+
     logging.debug(f"{datetime.datetime.now().isoformat(timespec='minutes')}:Exporting data to {options.output}")
-    shutil.copyfile(f"results.csv", f"{options.output}")
+    os.makedirs(os.path.dirname(options.output), exist_ok=True)
+
+    environment.exportDevices(filename=f"{options.output}")
+
+    #visu = Visualizer()
+
+    #visu.visualize_environment(self.__env)
+    #visu.final_results(self.__env)
+
+    #logging.debug(f"{datetime.datetime.now().isoformat(timespec='minutes')}:Exporting data to {options.output}")
+    #shutil.copyfile(f"results.csv", f"{options.output}")
 
 
 if __name__ == '__main__':
