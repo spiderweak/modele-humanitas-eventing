@@ -6,8 +6,8 @@ database_url:
     device: db.sqlite
 
 template_files:
-    applications: examples/humanitas/applications.json
-    devices: examples/humanitas/devices.json
+    applications: examples/perso/applications.json
+    devices: examples/perso/devices.json
 
 device_positionning:
     x_min: 0
@@ -19,7 +19,7 @@ device_positionning:
 
 application_number : 5000
 
-device_number : 109
+device_number : 200
 
 wifi_range : 6
 

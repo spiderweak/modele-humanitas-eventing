@@ -26,11 +26,7 @@ class Visualizer():
         plt.savefig("fig/results.png")
 
 
-    def final_results(self, env):
-
-        #times = [time for time,_ in env.count_rejected_application]
-        #values = [value for _,value in env.count_rejected_application]
-
+    def apps_visualiser(self, env):
         times, values = zip(*env.count_rejected_application)
 
         plt.clf()
@@ -40,7 +36,32 @@ class Visualizer():
         plt.xlabel("Time (in s)")
         plt.ylabel("Number of Rejected Applications")
 
-        plt.savefig("fig/apps.png")
+        plt.savefig("latest/rejected.png")
+
+        times, values = zip(*env.count_accepted_application)
+
+        plt.clf()
+        # Set the labels
+        plt.plot(times, values)
+        plt.title("Accepted Applications Over Time")
+        plt.xlabel("Time (in s)")
+        plt.ylabel("Number of Accepted Applications")
+
+        plt.savefig("latest/accepted.png")
+
+        times, values = zip(*env.count_tentatives)
+
+        plt.clf()
+        # Set the labels
+        plt.plot(times, values)
+        plt.title("Counting Tentatives with success Time")
+        plt.xlabel("Time (in s)")
+        plt.ylabel("Number of Tentatives with success")
+
+        plt.savefig("latest/tentatives_with_success.png")
+
+
+    def final_results(self, env):
 
         cpu_data = dict()
         cpu_limit_data = dict()

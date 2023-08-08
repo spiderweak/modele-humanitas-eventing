@@ -205,6 +205,9 @@ class Placement(Event):
 
         if deployment_success:
 
+            prev_time, prev_value = env.count_accepted_application[-1]
+            _, prev_tentative = env.count_tentatives[-1]
+
             for proc_id in self.application_to_place.getAppProcsIDs():
                 deployed_onto_devices.append(matching[proc_id])
                 deployment_times.append(matching_latency[proc_id])
@@ -213,6 +216,14 @@ class Placement(Event):
 
             for i in range(len(deployed_onto_devices)):
                 Deploy_Proc("Deployment Proc", self.queue, self.application_to_place, deployed_onto_devices, i, event_time=int((self.get_time()+deployment_times[i])/10)*10, last=(i+1==len(deployed_onto_devices))).add_to_queue()
+
+            if env.current_time == prev_time:
+                env.count_accepted_application[-1][1] += 1
+                env.count_tentatives[-1][1] += self.tentatives
+            else:
+                env.count_accepted_application.append([env.current_time, prev_value+1])
+                env.count_tentatives.append([env.current_time, prev_tentative+self.tentatives])
+
         else:
             prev_time, prev_value = env.count_rejected_application[-1]
 

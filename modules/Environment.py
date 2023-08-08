@@ -47,6 +47,8 @@ class Environment(object):
         self.devices_links = []
         self.physical_network_links = [0]
         self.count_rejected_application=[[0,0]]
+        self.count_accepted_application=[[0,0]]
+        self.count_tentatives=[[0,0]]
 
         self.TIME_PERIOD = 24 * 60 * 60 * 100
 
@@ -329,7 +331,7 @@ class Environment(object):
         # Set the labels
         ax.set_xlabel('X')
         ax.set_ylabel('Y')
-
+        ax.set_zlim(0, 50)
         # Title
         ax.set_title(f'Undirected Graph of Devices and links')
 

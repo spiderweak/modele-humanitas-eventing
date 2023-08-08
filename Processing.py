@@ -86,7 +86,9 @@ def main():
 
     environment.exportDevices(filename=f"{options.output}")
 
-    #visu = Visualizer()
+    visu = Visualizer()
+
+    visu.apps_visualiser(environment)
 
     #visu.visualize_environment(self.__env)
     #visu.final_results(self.__env)
