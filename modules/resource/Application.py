@@ -1,7 +1,10 @@
 """
 Application module, defines the Application Class
 
-Usage:
+usage:
+
+    from Application import Application
+    app = Application()
 
 """
 import numpy as np
