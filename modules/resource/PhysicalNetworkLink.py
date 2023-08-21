@@ -34,7 +34,7 @@ class PhysicalNetworkLink:
         return result
 
 
-    def __init__(self, device_1_id=-1, device_2_id=-1) -> None:
+    def __init__(self, device_1_id=-1, device_2_id=-1, size = -1, latency = 10) -> None:
         """
         Initializes the device with basic values
         Assigns ID, initial position, resource values, routing table and resource limits
@@ -52,8 +52,11 @@ class PhysicalNetworkLink:
         self.device_1_id = device_1_id
         self.device_2_id = device_2_id
 
+        if size > 0:
+            self.setLinkID(device_1_id*size + device_2_id)
+
         self.bandwidth = 1000 * 1024 # Bandwidth in KB/s
-        self.latency = 10 # Additionnal Latency, defined when creating the link, needs to be defined as a distance function
+        self.latency = latency # Additionnal Latency, defined when creating the link, needs to be defined as a distance function
         self.bandwidth_use = 0
 
 
@@ -71,6 +74,13 @@ class PhysicalNetworkLink:
         None
         """
         self.id = id
+
+
+    def getOrigin(self):
+        return self.device_1_id
+
+    def getDestination(self):
+        return self.device_2_id
 
 
     def setPhysicalNetworkLinkBandwidth(self, bandwidth):
@@ -182,8 +192,8 @@ class PhysicalNetworkLink:
 
         Args:
         -----
-        free_bandwidth_request : `float`
-            Necessary bandwidth to free (in kBytes/s)
+        device_1_id : `int`
+        device_2_id : 'int'
 
         Returns:
         --------

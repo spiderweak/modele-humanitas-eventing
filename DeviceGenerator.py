@@ -60,7 +60,7 @@ def main():
     environment.setConfig(config)
 
     environment.generateDeviceList()
-    environment.generateDevicesLinks()
+    environment.importLinks()
     environment.plotDeviceNetwork()
     environment.generateRoutingTable()
 
