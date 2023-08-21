@@ -42,6 +42,7 @@ class Environment(object):
         self.config = None
 
         self.applications = []
+        self.currenty_deployed_apps = []
         self.devices = []
         self.devices_links = []
         self.physical_network = PhysicalNetwork()
@@ -353,11 +354,14 @@ class Environment(object):
         plt.savefig("fig/graph.png")
 
 
-        
+    def extractDevicesResources(self):
+        pass
 
+    def extractCurrentyDeployedAppData(self):
+        pass
 
     def extractValues(self):
 
-
         self.physical_network.extractNetworkMatrix()
+        self.extractDevicesResources()
 
