@@ -1,0 +1,2 @@
+class Cluster:
+    raise NotImplementedError
