@@ -354,15 +354,15 @@ class Environment(object):
         plt.savefig("fig/graph.png")
 
 
-    def extractDevicesResources(self, resources = ['cpu', 'gpu', 'disk', 'memory'], filename = "devices_data.json"):
+    def extractDevicesResources(self, resources = ['cpu', 'gpu', 'mem', 'disk'], filename = "devices_data.json"):
         extracted_data = dict()
         for resource in resources:
-            extracted_data[resource] = np.empty(self.devices.shape)
+            extracted_data[resource] = np.empty(len(self.devices))
             for device in self.devices:
                 extracted_data[resource][device.getDeviceID()] = device.resource_limit[resource]
 
         if filename:
-            json_string = json.dumps(extracted_data, default=lambda o: o.__json__(), indent=4)
+            json_string = json.dumps(extracted_data, default=lambda o: list(o), indent=4)
             with open(filename, 'w') as file:
                 file.write(json_string)
 

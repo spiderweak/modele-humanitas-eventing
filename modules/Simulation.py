@@ -79,6 +79,9 @@ class Simulation(object):
 
             progress_bar.update(event_time-previous_time)
 
+            if event_time != previous_time:
+                self.__env.extractDevicesResources()
+
             self.__env.current_time = event_time
 
             process_event = current_event.process(self.__env)
