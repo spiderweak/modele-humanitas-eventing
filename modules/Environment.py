@@ -365,6 +365,7 @@ class Environment(object):
             json_string = json.dumps(extracted_data, default=lambda o: o.__json__(), indent=4)
             with open(filename, 'w') as file:
                 file.write(json_string)
+
         return extracted_data
 
 
