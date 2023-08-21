@@ -207,6 +207,7 @@ class Environment(object):
         for device in devices_list['devices']:
             self.devices.append(Device(data=device))
 
+
     def importApplications(self):
         try:
             with open(self.config.applications_file) as file:
@@ -260,14 +261,13 @@ class Environment(object):
                             device_1.addToRoutingTable(device_2_id, device_2_id, distance)
                             device_2.addToRoutingTable(device_1_id, device_1_id, distance)
 
-                            new_physical_network_link = PhysicalNetworkLink(device_1_id, device_1_id, size=number_of_devices, latency=distance)
+                            new_physical_network_link = PhysicalNetworkLink(device_1_id, device_2_id, size=number_of_devices, latency=distance)
                             if device_1_id == device_2_id:
                                 new_physical_network_link.setPhysicalNetworkLinkLatency(0)
                             self.physical_network.addLink(new_physical_network_link)
                             link = {"source": device_1_id, "target": device_2_id, "weight": distance, "id": new_physical_network_link.id}
                             self.devices_links.append(link)
 
-        print(self.physical_network.extractNetworkMatrix())
 
     def generateDeviceList(self):
         with open(self.config.devices_template_filename) as file:
@@ -351,3 +351,13 @@ class Environment(object):
         except FileExistsError:
             pass
         plt.savefig("fig/graph.png")
+
+
+        
+
+
+    def extractValues(self):
+
+
+        self.physical_network.extractNetworkMatrix()
+

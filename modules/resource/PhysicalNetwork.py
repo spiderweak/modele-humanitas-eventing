@@ -75,7 +75,21 @@ class PhysicalNetwork:
         """
         raise NotImplementedError
 
-    def extractNetworkMatrix(self):
+    def extractNetworkMatrix(self, filename = None):
+        export_arr = np.empty(self.links.shape, dtype=int)
+
+        for index, link in np.ndenumerate(self.links):
+            if link is None:
+                export_arr[index] = 0
+            else:
+                export_arr[index] = 1
+
+        if filename:
+            np.savetxt(filename, export_arr, fmt='%d', delimiter=',')
+        return export_arr
+
+
+    def extractLatencyMatrix(self, filename = None):
         export_arr = np.empty(self.links.shape, dtype=int)
 
         for index, link in np.ndenumerate(self.links):
@@ -84,5 +98,34 @@ class PhysicalNetwork:
             else:
                 export_arr[index] = link.latency
 
-        np.savetxt('np.csv', export_arr, fmt='%.2f', delimiter=',')
+        if filename:
+            np.savetxt(filename, export_arr, fmt='%.2f', delimiter=',')
+        return export_arr
+
+
+    def extractBandwidthMatrix(self, filename = None):
+        export_arr = np.empty(self.links.shape, dtype=int)
+
+        for index, link in np.ndenumerate(self.links):
+            if link is None:
+                export_arr[index] = -1
+            else:
+                export_arr[index] = link.bandwidth
+
+        if filename:
+            np.savetxt(filename, export_arr, fmt='%.2f', delimiter=',')
+        return export_arr
+
+
+    def extractAvailableBandwidthMatrix(self, filename = None):
+        export_arr = np.empty(self.links.shape, dtype=int)
+
+        for index, link in np.ndenumerate(self.links):
+            if link is None:
+                export_arr[index] = -1
+            else:
+                export_arr[index] = link.bandwidth - link.bandwidth_use
+
+        if filename:
+            np.savetxt(filename, export_arr, fmt='%.2f', delimiter=',')
         return export_arr
