@@ -362,7 +362,7 @@ class Device:
         self.setDevicePosition(data['position'])
 
         try:
-            self.setAllResourceLimit(data['resource_limit'])
+            self.setAllResourceLimit(data['resource'])
         except KeyError:
             self.setAllResourceLimit({'cpu' : 2, 'gpu' : 2, 'mem' : 4 * 1024, 'disk' : 250 * 1024})
 
