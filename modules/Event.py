@@ -301,7 +301,7 @@ class Sync(Event):
 
         # Set Deployment info
         self.app.setDeploymentInfo(self.devices_destinations)
-        env.currenty_deployed_apps.append(self.app.id)
+        env.currenty_deployed_apps.append(self.app)
 
         # Run
         Undeploy("Release", self.queue, self.app, event_time=int(self.get_time()+self.app.duration)).add_to_queue()
@@ -338,7 +338,7 @@ class Undeploy(Event):
                     else:
                         logging.error(f"Physical network link error, expexted PhysicalNetworkLink, got {env.physical_network_links[path_id]}")
             """
-        env.currenty_deployed_apps.remove(self.application_to_undeploy.id)
+        env.currenty_deployed_apps.remove(self.application_to_undeploy)
         return True
 
 

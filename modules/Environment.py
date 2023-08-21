@@ -369,7 +369,23 @@ class Environment(object):
         return extracted_data
 
 
-    def extractCurrentyDeployedAppData(self):
+    def extractCurrentyDeployedAppData(self, resources = ['cpu', 'gpu', 'mem', 'disk'], filename = "apps_data.json"):
+        extracted_data = []
+        for app in self.currenty_deployed_apps:
+            app_data = dict()
+            for resource in resources:
+                app_data[resource] = []
+                for proc in app.processus_list:
+                    app_data[resource].append(proc.resource_request[resource])
+            extracted_data.append(app_data)
+
+        if filename:
+            json_string = json.dumps(extracted_data, indent=4)
+            with open(filename, 'w') as file:
+                file.write(json_string)
+
+        return extracted_data
+
         # Generate an array with length equal to number of apps currently deployed
         # Generate an array in this array with length equal to number of procs for each apps
         # Generate a dict with each resource (cpu, gpu, memory, disk) request for each proc for each app

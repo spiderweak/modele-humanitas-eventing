@@ -81,6 +81,7 @@ class Simulation(object):
 
             if event_time != previous_time:
                 self.__env.extractDevicesResources()
+                self.__env.extractCurrentyDeployedAppData()
 
             self.__env.current_time = event_time
 
