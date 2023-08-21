@@ -1,5 +1,5 @@
 class PlacementCalculation:
-    pass
+    raise NotImplementedError
 
 class SimplaDistancePlacement(PlacementCalculation):
 
