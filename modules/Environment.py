@@ -12,7 +12,7 @@ import random
 import networkx as nx
 import os
 import matplotlib.pyplot as plt
-
+import numpy as np
 class Environment(object):
     """
     The ``Environment`` class mostly serves as a structure for storing information about the environment (configuration, device info, application info, network link...)
@@ -354,10 +354,25 @@ class Environment(object):
         plt.savefig("fig/graph.png")
 
 
-    def extractDevicesResources(self):
-        pass
+    def extractDevicesResources(self, resources = ['cpu', 'gpu', 'disk', 'memory'], filename = "devices_data.json"):
+        extracted_data = dict()
+        for resource in resources:
+            extracted_data[resource] = np.empty(self.devices.shape)
+            for device in self.devices:
+                extracted_data[resource][device.getDeviceID()] = device.resource_limit[resource]
+
+        if filename:
+            json_string = json.dumps(extracted_data, default=lambda o: o.__json__(), indent=4)
+            with open(filename, 'w') as file:
+                file.write(json_string)
+        return extracted_data
+
 
     def extractCurrentyDeployedAppData(self):
+        # Generate an array with length equal to number of apps currently deployed
+        # Generate an array in this array with length equal to number of procs for each apps
+        # Generate a dict with each resource (cpu, gpu, memory, disk) request for each proc for each app
+        # return and export to csv
         pass
 
     def extractValues(self):
