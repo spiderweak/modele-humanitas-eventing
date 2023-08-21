@@ -90,7 +90,7 @@ class PhysicalNetwork:
 
 
     def extractLatencyMatrix(self, filename = None):
-        export_arr = np.empty(self.links.shape, dtype=int)
+        export_arr = np.empty(self.links.shape, dtype=float)
 
         for index, link in np.ndenumerate(self.links):
             if link is None:
@@ -104,7 +104,7 @@ class PhysicalNetwork:
 
 
     def extractBandwidthMatrix(self, filename = None):
-        export_arr = np.empty(self.links.shape, dtype=int)
+        export_arr = np.empty(self.links.shape, dtype=float)
 
         for index, link in np.ndenumerate(self.links):
             if link is None:
@@ -118,7 +118,7 @@ class PhysicalNetwork:
 
 
     def extractAvailableBandwidthMatrix(self, filename = None):
-        export_arr = np.empty(self.links.shape, dtype=int)
+        export_arr = np.empty(self.links.shape, dtype=float)
 
         for index, link in np.ndenumerate(self.links):
             if link is None:
