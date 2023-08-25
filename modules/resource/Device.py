@@ -5,6 +5,8 @@ Usage:
 
 """
 
+import logging
+
 from modules.CustomExceptions import NoRouteToHost
 
 from modules.ResourceManagement import fit_resource
@@ -362,8 +364,9 @@ class Device:
         self.setDevicePosition(data['position'])
 
         try:
-            self.setAllResourceLimit(data['resource'])
-        except KeyError:
+            self.setAllResourceLimit(data['resource_limit'])
+        except KeyError as ke:
+            logging.error(f"Error loading device resource data, setting values to default : {ke}")
             self.setAllResourceLimit({'cpu' : 2, 'gpu' : 2, 'mem' : 4 * 1024, 'disk' : 250 * 1024})
 
         for key in self.resource_limit:
@@ -373,5 +376,6 @@ class Device:
 
         try:
             self.routing_table = data['routing_table']
-        except KeyError:
+        except KeyError as ke:
+            logging.error(f"Error loading device routing table, setting values to default : {ke}")
             self.routing_table = {self.id:(self.id,0)}
