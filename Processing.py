@@ -41,6 +41,9 @@ def parse_args():
     parser.add_argument('--simulate',
                         help='Boolean, default to False, run simulator if true',
                         default=True)
+    parser.add_argument('--dry-run',
+                        help='Runs an empty simulation to export data',
+                        default=False)
     parser.add_argument('--devices',
                         help='JSON file containing device list',
                         default="latest/devices.json")

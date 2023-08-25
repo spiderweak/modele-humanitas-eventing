@@ -154,3 +154,8 @@ class Config():
             self.arrivals_file = options.arrivals
         except AttributeError:
             pass
+
+        try:
+            self.dry_run = options.dry_run
+        except KeyError:
+            self.dry_run = False

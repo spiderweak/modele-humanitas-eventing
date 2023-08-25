@@ -154,8 +154,13 @@ class Placement(Event):
         deployment_times = list()
         deployment_success = True
 
-
         logging.debug(f"Placement procedure from {self.deployment_starting_point}")
+
+        if env.config.dry_run:
+            self.application_to_place.setDeploymentInfo(deployed_onto_devices)
+            env.currenty_deployed_apps.append(self.application_to_place)
+            Undeploy("Release", self.queue, self.application_to_place, event_time=int(self.get_time()+self.application_to_place.duration)).add_to_queue()
+            return deployment_times, deployed_onto_devices
 
         device = env.getDeviceByID(self.deployment_starting_point)
         distance_from_device = {i: device.routing_table[i][1] for i in device.routing_table}
