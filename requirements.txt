@@ -7,3 +7,4 @@ pyyaml
 random
 scikit-learn
 tqdm
+pulp
