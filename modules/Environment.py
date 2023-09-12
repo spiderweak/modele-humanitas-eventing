@@ -294,7 +294,7 @@ class Environment(object):
                 for dev_id in range(n_devices):
                 # Processing device position, random x, y, z fixed to between various values (z=0 for now)
                     device = {}
-                    device['id'] = device_data['id']
+                    device['id'] = dev_id
                     device['position'] = dict()
                     device['position']['x'] = round(random.random() * (self.config._3D_space['x_max'] - self.config._3D_space['x_min']) + self.config._3D_space['x_min'],2)
                     device['position']['y'] = round(random.random() * (self.config._3D_space['y_max'] - self.config._3D_space['y_min']) + self.config._3D_space['y_min'],2)
@@ -390,7 +390,6 @@ class Environment(object):
         # Generate an array in this array with length equal to number of procs for each apps
         # Generate a dict with each resource (cpu, gpu, memory, disk) request for each proc for each app
         # return and export to csv
-        pass
 
     def extractValues(self):
 
