@@ -52,6 +52,8 @@ class Environment(object):
 
         self.TIME_PERIOD = 24 * 60 * 60 * 100
 
+        self.list_devices_data = None
+        self.list_currently_deployed_app_data = None
 
 
     def setConfig(self, config):
@@ -366,10 +368,12 @@ class Environment(object):
             with open(filename, 'w') as file:
                 file.write(json_string)
 
+        self.list_devices_data = extracted_data
+
         return extracted_data
 
 
-    def extractCurrentyDeployedAppData(self, resources = ['cpu', 'gpu', 'mem', 'disk'], filename = "apps_data.json"):
+    def extractCurrentlyDeployedAppData(self, resources = ['cpu', 'gpu', 'mem', 'disk'], filename = "apps_data.json"):
         extracted_data = []
         for app in self.currenty_deployed_apps:
             app_data = dict()
@@ -383,6 +387,8 @@ class Environment(object):
             json_string = json.dumps(extracted_data, indent=4)
             with open(filename, 'w') as file:
                 file.write(json_string)
+
+        self.list_currently_deployed_app_data = extracted_data
 
         return extracted_data
 

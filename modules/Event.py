@@ -1,6 +1,7 @@
 import logging
 from modules.resource.Path import Path
 from modules.Environment import Environment
+from modules.fullstateprocessing.FullStateProcessing import CeilingUnlimitedMigration
 import json
 
 MAX_TENTATIVES = 5
@@ -14,6 +15,7 @@ class Event():
         self.name = event_name
         self.queue = queue
         self.time = event_time
+        self.priority = 0
 
         if event_time is None:
             self.time = queue.env.current_time
@@ -23,16 +25,18 @@ class Event():
 
     def __lt__(self, other):
         """ Returns True if self.event_time < other.event_time"""
-        return self.time < other.time
+        return (self.time < other.time) or (self.time == other.time and self.priority < other.priority)
 
 
     def add_to_queue(self):
         self.queue.put(self)
 
+
     def get_event(self):
         """Gets the first event in the event list"""
         event = self.queue.get()
         return event
+
 
     def get_name(self):
         """ returns event name"""
@@ -62,6 +66,7 @@ class Placement(Event):
         self.application_to_place = app
         self.deployment_starting_point = device_id
         self.tentatives = 1
+        self.priority = 2
 
 
     def __json__(self):
@@ -258,6 +263,7 @@ class Deploy_Proc(Event):
         self.last_proc = last
         self.app = app
         self.synchronization_time = synchronization_time
+        self.priority = 3
 
     def process(self, env):
 
@@ -287,6 +293,7 @@ class Sync(Event):
         super().__init__(event_name, queue, event_time)
         self.app = app
         self.devices_destinations = deployed_onto_devices
+        self.priority = 4
 
     def process(self, env):
         operational_latency = 0
@@ -317,6 +324,7 @@ class Undeploy(Event):
     def __init__(self, event_name, queue, app, event_time=None):
         super().__init__(event_name, queue, event_time)
         self.application_to_undeploy = app
+        self.priority = 1
 
 
     def process(self, env):
@@ -353,9 +361,28 @@ class RegularCheck(Event):
         raise NotImplementedError('Process not implemented')
 
 
+class Organize(Event):
+    def __init__(self, event_name, queue, event_time=None):
+        super().__init__(event_name, queue, event_time)
+        self.priority = 5
+
+    def process(self, env):
+        instance = CeilingUnlimitedMigration()
+
+        env.extractDevicesResources()
+        env.extractCurrentlyDeployedAppData()
+
+        x = instance.processing(env.list_currently_deployed_app_data, env.list_devices_data)
+
+        raise NotImplementedError
+
+        return x
+
+
 class FinalReport(Event):
     def __init__(self, event_name, queue, event_time=None):
         super().__init__(event_name, queue, event_time)
+        self.priority = 0
 
     def process(self, env):
         for device in env.devices:

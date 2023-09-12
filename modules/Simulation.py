@@ -79,10 +79,6 @@ class Simulation(object):
 
             progress_bar.update(event_time-previous_time)
 
-            if event_time != previous_time:
-                self.__env.extractDevicesResources()
-                self.__env.extractCurrentyDeployedAppData()
-
             self.__env.current_time = event_time
 
             process_event = current_event.process(self.__env)
@@ -93,6 +89,40 @@ class Simulation(object):
         time.sleep(1)
 
         logging.info("\n***************\nEND OF SIMULATION\n***************")
+
+    def full_state_simulate(self):
+        # alt loop of the simulation
+
+        current_event = None
+
+        print("\nRunning The Event Queue")
+        progress_bar = tqdm(total=TIME_PERIOD)
+
+        previous_time=0
+
+        time.sleep(1)
+
+        while not isinstance(current_event,FinalReport):
+
+            event_time, event_index, current_event = self.__queue.pop()
+
+            progress_bar.update(event_time-previous_time)
+
+            self.__env.current_time = event_time
+
+            if event_time != previous_time:
+                self.__env.extractDevicesResources()
+                self.__env.extractCurrentlyDeployedAppData()
+
+            process_event = current_event.process(self.__env)
+            logging.debug("process_event: {}".format(process_event))
+
+            previous_time = event_time
+
+        time.sleep(1)
+
+        logging.info("\n***************\nEND OF SIMULATION\n***************")
+
 
 
     def importQueueItems(self):
