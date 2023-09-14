@@ -63,8 +63,10 @@ class Device:
         result : `int`
             Device ID
         """
+
         result = cls.id
         cls.id +=1
+
         return result
 
 
@@ -96,15 +98,10 @@ class Device:
         ## Initialized to {self.id:(self.id,0)} as route to self is considered as distance 0
         self.routing_table = dict()
 
-        if data:
+        try:
             self.initFromDict(data)
-        else:
-            self.position = {'x':0, 'y':0, 'z':0}
-            self.resource_limit = {'cpu' : 2, 'gpu' : 2, 'mem' : 4 * 1024, 'disk' : 250 * 1024}
-            self.current_resource_usage = {'cpu' : 0, 'gpu' : 0, 'mem' : 0, 'disk' : 0}
-            self.theorical_resource_usage = {'cpu' : 0, 'gpu' : 0, 'mem' : 0, 'disk' : 0}
-            self.resource_usage_history = {'cpu' : [(0,0)], 'gpu' : [(0,0)], 'mem' : [(0,0)], 'disk' : [(0,0)]}
-            self.routing_table = {self.id:(self.id,0)}
+        except:
+            raise NotImplementedError
 
         self.proc = list()
 
@@ -141,7 +138,9 @@ class Device:
         --------
             None
         """
+
         self.id = id
+
         self.routing_table = {self.id:(self.id,0)}
 
 
@@ -154,6 +153,7 @@ class Device:
         id : `int`
             device ID
         """
+
         return self.id
 
 
@@ -181,6 +181,7 @@ class Device:
         resource_limit : `float`
             quantity of a given resource to set as device maximal limit
         """
+
         self.resource_limit[resource] = resource_limit
 
 
@@ -195,6 +196,7 @@ class Device:
         resources : `dict`
             dictionary of all device resources
         """
+
         # Set all previous values to Zero
         for resource in self.resource_limit:
             self.setDeviceResourceLimit(resource, 0)
@@ -263,15 +265,69 @@ class Device:
 
 
     def allocateAllResources(self, t, resources, force = False, overconsume = False):
+        """
+        Allocate all resources based on calls to allocateDeviceResource
+
+        Warning: Does not propagate the retrofitting coefficient for now
+
+        Args:
+        -----
+        t : `int`
+            current time value
+        resources : `dict`
+            dictionary of all device resources
+        force : `bool`
+            Forces allocation at previous moment in time (might cause discrepencies), defaults to False
+        overconsume : `bool`
+            Allow for allocation over Resource limit, defaults to False
+
+        """
+
         for resource, resource_limit in resources.items():
             self.allocateDeviceResource(t, resource, resource_limit, force, overconsume)
 
 
     def releaseDeviceResource(self, t, resource_name, resource, force = False, overconsume = False):
+        """
+        Release resource allocation from Device, by allocating negative resource value with a call to allocateDeviceResource
+
+        Warning: Does not propagate the retrofitting coefficient for now
+
+        Args:
+        -----
+        t : `int`
+            current time value
+        resource_name : `str`
+            Name for the allocated resource
+        resource : `float`
+            value for the quantity of Resource requested
+        force : `bool`
+            Forces allocation at previous moment in time (might cause discrepencies), defaults to False
+        overconsume : `bool`
+            Allow for allocation over Resource limit, defaults to False
+        """
+
         self.allocateDeviceResource(t, resource_name, -resource, force, overconsume)
 
 
     def releaseAllResources(self, t, resources, force = False, overconsume = False):
+        """
+        Release all resources based on calls to releaseDeviceResource
+
+        Warning: Does not propagate the retrofitting coefficient for now
+
+        Args:
+        -----
+        t : `int`
+            current time value
+        resources : `dict`
+            dictionary of all device resources
+        force : `bool`
+            Forces allocation at previous moment in time (might cause discrepencies), defaults to False
+        overconsume : `bool`
+            Allow for allocation over Resource limit, defaults to False
+        """
+
         for resource, resource_limit in resources.items():
             self.releaseDeviceResource(t, resource, resource_limit, force, overconsume)
 
@@ -359,9 +415,17 @@ class Device:
             #return (-1, 1000)
 
     def initFromDict(self, data):
-        self.setDeviceID(data['id'])
+        try:
+            self.setDeviceID(data['id'])
+        except KeyError as ke:
+            logging.error(f"Error loading device resource data, setting values to default : {ke}")
 
-        self.setDevicePosition(data['position'])
+        try:
+            self.setDevicePosition(data['position'])
+        except KeyError as ke:
+            logging.error(f"Error loading device resource data, setting values to default : {ke}")
+            self.position = {'x':0, 'y':0, 'z':0}
+
 
         try:
             self.setAllResourceLimit(data['resource_limit'])
