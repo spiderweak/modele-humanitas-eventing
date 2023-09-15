@@ -309,6 +309,7 @@ class Application:
         -----
         data : `dict`
             Dictionary containing data to initialize the Application object with. Should contain keys:
+
             - 'app_id': (`int`) The ID for the application.
             - 'duration': (`int`) The duration for the application.
             - 'proc_list': (`List[Dict]`) List of dictionaries representing processus objects.
