@@ -9,7 +9,7 @@ usage:
 """
 import numpy as np
 import random
-from typing import List, Dict, Union, Any
+from typing import List, Dict, Union
 
 from modules.resource.Processus import Processus
 
@@ -90,7 +90,7 @@ class Application:
         # Initializes the processus links matrix to 0
         self.proc_links: np.ndarray = np.zeros((num_procs, num_procs))
 
-        self.deployment_info: Dict[Processus, Any] = {}
+        self.deployment_info: Dict[Processus, int] = {}
 
         if data:
             self.initFromDict(data)
