@@ -2,6 +2,7 @@
 Application module, defines the Application Class
 
 usage:
+
     from Application import Application
     app = Application()
 
@@ -17,24 +18,27 @@ TIME_PERIOD = 8640000 #24 * 60 * 60 * 100
 
 class Application:
     """
-    An application is defined as a graph of processus (array of arrays, potentially a networkx graph in the future).
+    An application is defined as a graph of processus
 
-    It is initialized with empty data by default, usually populated with  a list of processus, a matrix of processus links, and device deployment information.
+    (array of array, for now, might be a networkx graph)
+
+    Initialized to empty data
+
 
     Attributes:
     -----------
-    id : int
-        The ID of the application, generated automatically during initialization.
-    duration : int
-        The duration of the application in chunks of 10 ms.
-    num_procs : int
-        The number of processus in the application.
-    processus_list : List[Processus]
-        A list of Processus objects representing the individual processus in the application.
-    proc_links : np.ndarray
-        A matrix representing the bandwidth request over virtual links between processus.
-    deployment_info : dict
-        A dictionary linking Processus objects to Device IDs.
+    id: int
+        Application ID
+    duration: int
+        Application duration (in chuncks of 10ms)
+    num_procs: int
+        Number of processus in application
+    processus_list: List[Processus]
+        List of `Processus` application members
+    proc_links: List[List[int]]
+        Integer value corresponding to bandwidth request over virtual links
+    deployment_info: Dict
+        Dictionary linking `Processus` and `Device` IDs
     """
 
     next_id = 0
@@ -44,12 +48,12 @@ class Application:
     def _generate_id(cls):
         """
         Class method for ID generation.
-        Generates a unique ID for a new Application object.
+
         Assigns ID then increments for next generation.
 
         Returns:
         --------
-        result : int
+        result : `int`
             Application ID
         """
 
@@ -60,7 +64,7 @@ class Application:
 
     def __init__(self, data: Union[Dict, None] = None, num_procs: int = 1) -> None:
         """
-        Initializes a new Application object with the given data dictionary and number of processus.
+        Initializes a new Application instance.
 
         Args:
         -----
@@ -72,7 +76,6 @@ class Application:
             The number of processus in the application.
             Defaults to 1.
         """
-
         self.id: int = Application._generate_id()
 
         # Application duration
