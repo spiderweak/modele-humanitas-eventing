@@ -26,17 +26,17 @@ class Application:
 
     Attributes:
     -----------
-    id : int
+    id : `int`
         The ID of the application, generated automatically during initialization.
-    duration : int
+    duration : `int`
         The duration of the application in chunks of 10 ms.
-    num_procs : int
+    num_procs : `int`
         The number of processus in the application.
-    processus_list : List[Processus]
+    processus_list : `List[Processus]`
         A list of Processus objects representing the individual processus in the application.
-    proc_links : np.ndarray
+    proc_links : `np.ndarray`
         A matrix representing the bandwidth request over virtual links between processus.
-    deployment_info : dict
+    deployment_info : `dict`
         A dictionary linking Processus objects to Device IDs.
     """
 
@@ -52,7 +52,7 @@ class Application:
 
         Returns:
         --------
-        result : int
+        result : `int`
             Application ID
         """
 
@@ -67,11 +67,11 @@ class Application:
 
         Args:
         -----
-        data : dict, optional
+        data : `dict`, optional
             A dictionary containing initial data for the application.
             If provided, the application will be initialized with the values from this dictionary.
             Defaults to None.
-        num_procs : int, optional
+        num_procs : `int`, optional
             The number of processus in the application.
             Defaults to 1.
         """
@@ -109,7 +109,7 @@ class Application:
 
         Returns:
         --------
-        str
+        `str`
             A JSON string representing the Application object.
         """
 
@@ -136,7 +136,7 @@ class Application:
 
         Args:
         -----
-        id : int
+        id : `int`
             New application ID
         """
 
@@ -148,9 +148,9 @@ class Application:
 
         Parameters
         ----------
-        num_procs : int, optional
+        num_procs : `int`, optional
             Number of processus to consider, by default 3
-        num_proc_random : bool, optional
+        num_proc_random : `bool`, optional
             If True, the number of processus deployed is randomly chosen between 1 and num_procs, by default True
         """
 
@@ -191,7 +191,7 @@ class Application:
 
         Parameters
         ----------
-        duration : int
+        duration : `int`
             Application duration in milliseconds, by default 1800000 (30 minutes)
         """
 
@@ -204,7 +204,7 @@ class Application:
 
         Args:
         -----
-        app_yaml : dict
+        app_yaml : `dict`
             Dictionary derived from YAML file content parsing
         """
 
@@ -246,7 +246,7 @@ class Application:
 
         Args:
         -----
-        deployed_onto_device : List[int]
+        deployed_onto_device : `List[int]`
             List of device IDs that reference processus hosts.
 
         Raises:
@@ -268,7 +268,7 @@ class Application:
 
         Returns:
         --------
-        List[int]
+        `List[int]`
             A list containing the IDs of all processus in the application.
         """
 
@@ -281,12 +281,12 @@ class Application:
 
         Args:
         -----
-        id : int
+        id : `int`
             The ID of the processus to retrieve.
 
         Returns:
         --------
-        Processus
+        `Processus`
             The processus with the specified ID.
 
         Raises:
@@ -307,12 +307,12 @@ class Application:
 
         Args:
         -----
-        data : Dict
+        data : `dict`
             Dictionary containing data to initialize the Application object with. Should contain keys:
-            - 'app_id': (int) The ID for the application.
-            - 'duration': (int) The duration for the application.
-            - 'proc_list': (List[Dict]) List of dictionaries representing processus objects.
-            - 'proc_links': (List[List[int]]) Matrix representing the processus links.
+            - 'app_id': (`int`) The ID for the application.
+            - 'duration': (`int`) The duration for the application.
+            - 'proc_list': (`List[Dict]`) List of dictionaries representing processus objects.
+            - 'proc_links': (`List[List[int]]`) Matrix representing the processus links.
 
         Returns:
         --------
