@@ -1,13 +1,16 @@
 """
 Application module, defines the Application Class
 
-usage:
-    from Application import Application
+Usage:
+    from modules.resources.Application import Application
     app = Application()
 
 """
 import numpy as np
 import random
+
+import json
+
 from typing import List, Dict, Union
 
 from modules.resource.Processus import Processus
@@ -99,15 +102,15 @@ class Application:
                 self.processus_list.append(new_processus)
 
 
-    def __json__(self) -> Dict:
+    def __json__(self) -> str:
         """
-        Returns the Application signature as a JSON serializable dictionary
+        Returns a JSON string that represents the Application object.
         to be parsed by a JSON exporter.
 
         Returns:
         --------
-        dict
-            A dictionary representing the Application object.
+        str
+            A JSON string representing the Application object.
         """
 
         # Ensuring all values in the proc_links are integers for JSON serialization
@@ -117,12 +120,14 @@ class Application:
         proc_list_serialized = [proc.__json__() for proc in self.processus_list]
 
 
-        return {
+        data_dict = {
             "app_id" : self.id,
             "duration" : self.duration,
             "proc_list" : proc_list_serialized,
             "proc_links" : proc_links
         }
+
+        return json.dumps(data_dict, indent=4)
 
 
     def setAppID(self, id: int) -> None:
