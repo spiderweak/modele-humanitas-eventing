@@ -13,7 +13,7 @@ from typing import List, Dict, Union
 from modules.resource.Processus import Processus
 
 # Number of group of 10 ms
-TIME_PERIOD = 8640000 #24 * 60 * 60 * 100
+TIME_PERIOD = 8640000 # 24 * 60 * 60 * 100
 
 class Application:
     """
