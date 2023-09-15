@@ -106,3 +106,4 @@ class SimplaDistancePlacement(PlacementCalculation):
             self.retry(event_time=int((self.get_time()+15*60*1000)/10)*10)
 
         return deployment_times, deployed_onto_devices
+

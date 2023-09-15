@@ -6,6 +6,7 @@ Usage:
 """
 
 import logging
+from typing import List, Dict, Union
 
 from modules.CustomExceptions import NoRouteToHost
 
@@ -70,7 +71,7 @@ class Device:
         return result
 
 
-    def __init__(self, data=dict()) -> None:
+    def __init__(self, data: dict) -> None:
         """
         Initializes the device with basic values
         Assigns ID, initial position, resource values, routing table and resource limits
@@ -106,7 +107,7 @@ class Device:
         self.proc = list()
 
 
-    def __json__(self):
+    def __json__(self) -> dict:
         """
         Returns the Device signature as a json string to be parsed by a json exporter
 
@@ -124,7 +125,7 @@ class Device:
         }
 
 
-    def setDeviceID(self, id):
+    def setDeviceID(self, id: int) -> None:
         """
         Used to set a device's ID by hand if necessary
         This will reinitialize the device's routing table to {self.id:(self.id,0)}
@@ -157,7 +158,7 @@ class Device:
         return self.id
 
 
-    def setDevicePosition(self, position):
+    def setDevicePosition(self, position: dict):
         """
         Sets device position in a 3D space
 
@@ -170,7 +171,7 @@ class Device:
         self.position = position
 
 
-    def setDeviceResourceLimit(self, resource, resource_limit):
+    def setDeviceResourceLimit(self, resource: str, resource_limit: float):
         """
         Sets Device Resource (CPU, GPU, Mem, Disk) Limit
 
@@ -185,7 +186,7 @@ class Device:
         self.resource_limit[resource] = resource_limit
 
 
-    def setAllResourceLimit(self, resources):
+    def setAllResourceLimit(self, resources: dict):
         """
         Sets All Device Resource (CPU, GPU, Mem, Disk) Limit
 
@@ -205,7 +206,7 @@ class Device:
             self.setDeviceResourceLimit(resource, resource_limit)
 
 
-    def allocateDeviceResource(self, t, resource_name, resource, force = False, overconsume = False):
+    def allocateDeviceResource(self, t: int, resource_name: str, resource: float, force = False, overconsume = False) -> float:
         """
         allocate a given amount of Device Resource
 

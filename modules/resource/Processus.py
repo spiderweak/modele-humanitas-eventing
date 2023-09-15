@@ -124,7 +124,7 @@ class Processus:
         self.id = id
 
 
-    def getProcessusID(self):
+    def getProcessusID(self) -> int:
         """
         Used to get a processus's ID
 
