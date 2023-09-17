@@ -3,9 +3,14 @@ Device module, defines the Device Class
 
 Usage:
 
+    from modules.resources.Device import Device
+    dev = Device()
 """
 
 import logging
+
+import json
+
 from typing import List, Dict, Union
 
 from modules.CustomExceptions import NoRouteToHost
@@ -32,8 +37,8 @@ class Device:
     current_resource_usage : `dict`
         Current usage for each device feature
         defaults : {'cpu' : 0, 'gpu' : 0, 'mem' : 0, 'disk' : 0}
-    theorical_resource_usage : `dict`
-        Theorical usage for each device feature
+    theoretical_resource_usage : `dict`
+        Theoretical usage for each device feature
         defaults : {'cpu' : 0, 'gpu' : 0, 'mem' : 0, 'disk' : 0}
     resource_usage_history : `dict`
         Resource usage changes history
@@ -46,7 +51,7 @@ class Device:
     """
 
     # Devices have a given id
-    id = 0
+    next_id = 0
 
 
     @classmethod
@@ -65,9 +70,8 @@ class Device:
             Device ID
         """
 
-        result = cls.id
-        cls.id +=1
-
+        result = cls.next_id
+        cls.next_id +=1
         return result
 
 
@@ -89,8 +93,8 @@ class Device:
         # Current usage for each device feature
         self.current_resource_usage = dict()
 
-        # Theorical usage for each device feature
-        self.theorical_resource_usage = dict()
+        # Theoretical usage for each device feature
+        self.theoretical_resource_usage = dict()
 
         # Resource usage history
         self.resource_usage_history = dict()
@@ -101,28 +105,32 @@ class Device:
 
         try:
             self.initFromDict(data)
-        except:
-            raise NotImplementedError
+        except Exception as e:
+            raise RuntimeError(f"Failed to initialize from dict: {e}") from e
+
 
         self.proc = list()
 
 
-    def __json__(self) -> dict:
+    def __json__(self) -> str:
         """
-        Returns the Device signature as a json string to be parsed by a json exporter
+        Returns a JSON string that represents the Device object.
 
         Returns:
         --------
-            `dict`
+        str
+            A JSON string representing the Device object.
         """
 
-        return {
+        data_dict = {
             "id" : self.id,
             "position" : self.position,
             "resource_limit" : self.resource_limit,
             "resource_usage_history" : self.resource_usage_history,
             "routing_table" : self.routing_table
         }
+
+        return json.dumps(data_dict, indent=4)
 
 
     def setDeviceID(self, id: int) -> None:
@@ -233,23 +241,23 @@ class Device:
         if previous_time <= t or force:
 
             try:
-                retrofiting_coefficient = self.current_resource_usage[resource_name] / self.theorical_resource_usage[resource_name]
+                retrofiting_coefficient = self.current_resource_usage[resource_name] / self.theoretical_resource_usage[resource_name]
             except ZeroDivisionError:
                 retrofiting_coefficient = 1
 
 
-            self.theorical_resource_usage[resource_name] += resource
+            self.theoretical_resource_usage[resource_name] += resource
 
-            if self.theorical_resource_usage[resource_name] < 0:
-                self.theorical_resource_usage[resource_name] = 0
+            if self.theoretical_resource_usage[resource_name] < 0:
+                self.theoretical_resource_usage[resource_name] = 0
 
             if overconsume:
-                self.current_resource_usage[resource_name] = self.theorical_resource_usage[resource_name]
+                self.current_resource_usage[resource_name] = self.theoretical_resource_usage[resource_name]
             else:
-                if self.theorical_resource_usage[resource_name] <= self.resource_limit[resource_name]:
-                    self.current_resource_usage[resource_name] = self.theorical_resource_usage[resource_name]
+                if self.theoretical_resource_usage[resource_name] <= self.resource_limit[resource_name]:
+                    self.current_resource_usage[resource_name] = self.theoretical_resource_usage[resource_name]
                 else:
-                    retrofiting_coefficient = fit_resource(self.theorical_resource_usage[resource_name], self.resource_limit[resource_name])
+                    retrofiting_coefficient = fit_resource(self.theoretical_resource_usage[resource_name], self.resource_limit[resource_name])
                     self.current_resource_usage[resource_name] = self.resource_limit[resource_name]
 
             if previous_value != self.current_resource_usage[resource_name]:
@@ -416,6 +424,7 @@ class Device:
             #return (-1, 1000)
 
     def initFromDict(self, data):
+
         try:
             self.setDeviceID(data['id'])
         except KeyError as ke:
@@ -425,18 +434,17 @@ class Device:
             self.setDevicePosition(data['position'])
         except KeyError as ke:
             logging.error(f"Error loading device resource data, setting values to default : {ke}")
-            self.position = {'x':0, 'y':0, 'z':0}
-
+            self.position = {'x': 0, 'y': 0, 'z': 0}
 
         try:
             self.setAllResourceLimit(data['resource_limit'])
         except KeyError as ke:
             logging.error(f"Error loading device resource data, setting values to default : {ke}")
-            self.setAllResourceLimit({'cpu' : 2, 'gpu' : 2, 'mem' : 4 * 1024, 'disk' : 250 * 1024})
+            self.setAllResourceLimit({'cpu': 2, 'gpu': 2, 'mem': 4 * 1024, 'disk': 250 * 1024})
 
         for key in self.resource_limit:
             self.current_resource_usage[key] = 0
-            self.theorical_resource_usage[key] = 0
+            self.theoretical_resource_usage[key] = 0
             self.resource_usage_history[key] = [(0,0)]
 
         try:
