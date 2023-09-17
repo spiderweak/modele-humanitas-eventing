@@ -8,3 +8,5 @@ log.txt
 data/
 latest/
 today/
+env/
+*.json
