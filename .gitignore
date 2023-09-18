@@ -10,3 +10,6 @@ latest/
 today/
 env/
 *.json
+*.sh
+output
+input

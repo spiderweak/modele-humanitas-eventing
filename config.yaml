@@ -6,8 +6,8 @@ database_url:
     device: db.sqlite
 
 template_files:
-    applications: examples/perso/applications.json
-    devices: examples/perso/devices.json
+    applications: example/tests/applications/applications.json
+    devices: example/tests/devices/15-fancy_star.json
 
 device_positionning:
     x_min: 0
