@@ -244,12 +244,19 @@ class Environment(object):
                 self.devices_links.append(link)
                 source_device = self.getDeviceByID(link['source'])
                 target_device = self.getDeviceByID(link['target'])
-                source_device.addToRoutingTable(target_device.id, target_device.id,link['weight'])
+                try:
+                    source_device.addToRoutingTable(target_device.id, target_device.id,link['weight'])
+                except KeyError as ke:
+                    distance = custom_distance(source_device.position.values(),target_device.position.values())
+                    source_device.addToRoutingTable(target_device.id, target_device.id,distance)
                 # target_device.addToRoutingTable(source_device.id, source_device.id,link['weight'])
 
                 new_physical_network_link = PhysicalNetworkLink(source_device.id, target_device.id, size=number_of_devices)
-                if link['id'] != new_physical_network_link.id:
-                    new_physical_network_link.setLinkID(link['id'])
+                try:
+                    if link['id'] != new_physical_network_link.id:
+                        new_physical_network_link.setLinkID(link['id'])
+                except KeyError as ke:
+                    pass
                 self.physical_network.addLink(new_physical_network_link)
 
         except KeyError as ke:

@@ -2,7 +2,6 @@ import yaml
 import logging
 import datetime
 import os
-import random
 import networkx as nx
 import matplotlib.pyplot as plt
 
@@ -157,5 +156,5 @@ class Config():
 
         try:
             self.dry_run = options.dry_run
-        except KeyError:
+        except (KeyError, AttributeError):
             self.dry_run = False
