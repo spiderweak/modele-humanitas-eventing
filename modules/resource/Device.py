@@ -8,7 +8,7 @@ Usage:
 """
 
 import logging
-
+import random
 import json
 
 from typing import List, Dict, Union
@@ -112,7 +112,7 @@ class Device:
         self.proc = list()
 
 
-    def __json__(self) -> str:
+    def __json__(self) -> dict:
         """
         Returns a JSON string that represents the Device object.
 
@@ -122,15 +122,13 @@ class Device:
             A JSON string representing the Device object.
         """
 
-        data_dict = {
+        return {
             "id" : self.id,
             "position" : self.position,
             "resource_limit" : self.resource_limit,
             "resource_usage_history" : self.resource_usage_history,
             "routing_table" : self.routing_table
         }
-
-        return json.dumps(data_dict, indent=4)
 
 
     def setDeviceID(self, id: int) -> None:
@@ -440,7 +438,12 @@ class Device:
             self.setAllResourceLimit(data['resource_limit'])
         except KeyError as ke:
             logging.error(f"Error loading device resource data, setting values to default : {ke}")
-            self.setAllResourceLimit({'cpu': 2, 'gpu': 2, 'mem': 4 * 1024, 'disk': 250 * 1024})
+            if bool(random.getrandbits(1)):
+                # NDC
+                self.setAllResourceLimit({'cpu': 16, 'gpu': 0, 'mem': 32 * 1024, 'disk': 1000 * 1024})
+            else:
+                # Jetson https://connecttech.com/ftp/pdf/nvidia_jetson_orin_datasheet.pdf
+                self.setAllResourceLimit({'cpu': 8, 'gpu': 8, 'mem': 8 * 1024, 'disk': 1000 * 1024})
 
         for key in self.resource_limit:
             self.current_resource_usage[key] = 0

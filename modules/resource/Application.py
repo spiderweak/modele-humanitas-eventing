@@ -102,7 +102,7 @@ class Application:
                 self.processus_list.append(new_processus)
 
 
-    def __json__(self) -> str:
+    def __json__(self) -> dict:
         """
         Returns a JSON string that represents the Application object.
         to be parsed by a JSON exporter.
@@ -117,17 +117,15 @@ class Application:
         proc_links = [[int(val) for val in row] for row in self.proc_links]
 
         # Using the __json__ method of the Processus class to serialize each Processus object in processus_list
-        proc_list_serialized = [proc.__json__() for proc in self.processus_list]
+        #proc_list_serialized = [proc.__json__() for proc in self.processus_list]
 
 
-        data_dict = {
+        return {
             "app_id" : self.id,
             "duration" : self.duration,
-            "proc_list" : proc_list_serialized,
+            "proc_list" : self.processus_list,
             "proc_links" : proc_links
         }
-
-        return json.dumps(data_dict, indent=4)
 
 
     def setAppID(self, id: int) -> None:
