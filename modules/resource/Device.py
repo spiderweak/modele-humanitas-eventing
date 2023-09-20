@@ -421,6 +421,9 @@ class Device:
             # We might change this to raise and error such as "no route to host"
             #return (-1, 1000)
 
+    def setResourceUsageHistory(self, resource_history):
+        self.resource_usage_history = resource_history
+
     def initFromDict(self, data):
 
         try:
@@ -445,10 +448,13 @@ class Device:
                 # Jetson https://connecttech.com/ftp/pdf/nvidia_jetson_orin_datasheet.pdf
                 self.setAllResourceLimit({'cpu': 8, 'gpu': 8, 'mem': 8 * 1024, 'disk': 1000 * 1024})
 
-        for key in self.resource_limit:
-            self.current_resource_usage[key] = 0
-            self.theoretical_resource_usage[key] = 0
-            self.resource_usage_history[key] = [(0,0)]
+        try:
+            self.setResourceUsageHistory(data['resource_usage_history'])
+        except KeyError as ke:
+            for key in self.resource_limit:
+                self.current_resource_usage[key] = 0
+                self.theoretical_resource_usage[key] = 0
+                self.resource_usage_history[key] = [(0,0)]
 
         try:
             self.routing_table = data['routing_table']

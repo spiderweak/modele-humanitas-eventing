@@ -37,40 +37,12 @@ class CeilingUnlimitedMigration(FullStateProcessing):
 
     # Goal of this, handle unlimited migrations, serves as ceiling for deployment informations
 
-    def __init__(self) -> None:
+    def __init__(self, proc_matrix, dev_matrix) -> None:
         super().__init__()
+        self.proc_matrix = proc_matrix
+        self.dev_matrix = dev_matrix
 
-    def define_nodes(self, nodes_array):
-
-        self.nodes_array = nodes_array
-
-    def define_nodes_k_resources(self, nodes_k_resource):
-
-        self.nodes_k_resource = nodes_k_resource
-
-    def list_running_application_ids(self, application_id_list):
-
-        self.application_id_list = application_id_list
-
-        # JSON Load
-
-        # INPUT is array of application ID to deploy in infrastructure
-
-    def load_currently_deployed_app_data(self, currently_deployed_app_data):
-
-        self.currently_deployed_app_data = currently_deployed_app_data
-
-        # JSON Load
-
-        # INPUT is array of dict, each dict key is a resource, each dict value is an array of values
-
-        # OUTPUT ?
-
-
-    # Objective is for each application, to find an optimal solution that deploys everything.
-
-
-    def processing(self, proc_matrix, dev_matrix):
+    def processing(self):
         # Define the problem
         prob = pulp.LpProblem("MILP_Problem", pulp.LpMaximize)
 
@@ -78,7 +50,7 @@ class CeilingUnlimitedMigration(FullStateProcessing):
         num_proc = 3
         K = 4    # Number of resources
 
-        As = proc_matrix
+        As = self.proc_matrix
 
         dict_keys = ['cpu', 'gpu', 'mem', 'disk']
         app_dataset = {'cpu': [], 'gpu': [], 'mem': [], 'disk': []}
@@ -90,7 +62,7 @@ class CeilingUnlimitedMigration(FullStateProcessing):
 
         num_apps = len(As) # Number of applications
 
-        D = dev_matrix
+        D = self.dev_matrix
 
         num_devices = len(D['cpu'])
 

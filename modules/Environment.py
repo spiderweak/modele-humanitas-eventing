@@ -88,6 +88,10 @@ class Environment(object):
         raise DeviceNotFoundError
 
 
+    def getRandomDevice(self):
+        return random.choice(self.devices)
+
+
     def addDevice(self, device):
         """ Adds a new `Device` to the devices list"""
         self.devices.append(device)
@@ -208,7 +212,8 @@ class Environment(object):
             raise FileNotFoundError("Please add devices list in argument, default value is devices.json in current directory")
 
         for device in devices_list['devices']:
-            self.devices.append(Device(data=device))
+            dev = Device(data=device)
+            self.devices.append(dev)
 
 
     def importApplications(self):
@@ -285,7 +290,8 @@ class Environment(object):
 
         try:
             for device in json_data['devices']:
-                self.devices.append(Device(data=device))
+                dev = Device(data=device)
+                self.devices.append(dev)
         except KeyError:
             n_devices = self.config.number_of_devices # Number of devices
             try:
@@ -409,3 +415,13 @@ class Environment(object):
         self.physical_network.extractNetworkMatrix()
         self.extractDevicesResources()
 
+
+    def importResults(self):
+        with open(self.config.results_filename) as file:
+            json_data = json.load(file)
+        try :
+            for device in json_data['devices']:
+                dev = Device(data=device)
+                self.devices.append(dev)
+        except:
+            raise NotImplementedError

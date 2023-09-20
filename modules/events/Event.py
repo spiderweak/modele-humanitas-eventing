@@ -167,7 +167,12 @@ class Placement(Event):
             Undeploy("Release", self.queue, self.application_to_place, event_time=int(self.get_time()+self.application_to_place.duration)).add_to_queue()
             return deployment_times, deployed_onto_devices
 
-        device = env.getDeviceByID(self.deployment_starting_point)
+        try:
+            device = env.getDeviceByID(self.deployment_starting_point)
+        except:
+            device = env.getRandomDevice()
+            logging.debug(f"Placement procedure from other device {device.getDeviceID()}")
+
         distance_from_device = {i: device.routing_table[i][1] for i in device.routing_table}
         sorted_distance_from_device = sorted(distance_from_device.items(), key=lambda x: x[1])
 
@@ -362,19 +367,18 @@ class RegularCheck(Event):
 
 
 class Organize(Event):
-    def __init__(self, event_name, queue, event_time=None):
+    def __init__(self, event_name, queue, application_to_place, event_time=None):
         super().__init__(event_name, queue, event_time)
         self.priority = 5
+        self.application_to_place = application_to_place
 
-    def process(self, env):
-        instance = CeilingUnlimitedMigration()
+    def process(self, env: Environment):
 
-        env.extractDevicesResources()
-        env.extractCurrentlyDeployedAppData()
+        dev_matrix = env.extractDevicesResources()
+        proc_matrix = env.extractCurrentlyDeployedAppData()
+        instance = CeilingUnlimitedMigration(proc_matrix, dev_matrix)
 
-        x = instance.processing(env.list_currently_deployed_app_data, env.list_devices_data)
-
-        raise NotImplementedError
+        x = instance.processing()
 
         return x
 
