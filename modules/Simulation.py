@@ -13,7 +13,7 @@ from tqdm import tqdm
 
 from modules.resource.Application import Application
 from modules.EventQueue import EventQueue
-from modules.events.Event import (Event, Placement, Deploy_Proc, Sync, FinalReport)
+from modules.events.Event import (Event, Placement, Deploy_Proc, Sync, Organize, FinalReport)
 from modules.Visualization import Visualizer
 
 from modules.ResourceManagement import custom_distance
@@ -137,5 +137,19 @@ class Simulation(object):
             device_id = item["requesting_device"]
             arrival_time = item["placement_time"]
             Placement("Placement",self.__queue, application, device_id, event_time=arrival_time).add_to_queue()
+
+        FinalReport("Final Report", self.__queue, event_time=TIME_PERIOD).add_to_queue()
+
+    def bulkimportQueueItems(self):
+        try:
+            with open(self.__env.config.arrivals_file) as file:
+                arrivals_list = json.load(file)
+        except FileNotFoundError:
+            raise FileNotFoundError("Please add placements list in argument, default value is placements.json in current directory")
+
+        for item in arrivals_list:
+            application = self.__env.getApplicationByID(item["application"])
+            arrival_time = item["placement_time"]
+            Organize("Organize",self.__queue, application, event_time=arrival_time).add_to_queue()
 
         FinalReport("Final Report", self.__queue, event_time=TIME_PERIOD).add_to_queue()
