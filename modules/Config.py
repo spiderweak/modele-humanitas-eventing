@@ -49,6 +49,7 @@ class Config():
 
         self.devices_template_filename = "devices.json"
         self.application_template_filename = "application.json"
+        self.results_filename = "results.json"
 
         self.number_of_applications = 500
         self.number_of_devices = 40
@@ -146,6 +147,11 @@ class Config():
             self.app_duration = int(self.parsed_yaml['app_duration'])
         except (KeyError,TypeError) as e:
             logging.error(f"Default simulation value {self.app_duration} used for entry {e}")
+
+        try:
+            self.results_filename = options.results
+        except KeyError as ke:
+            logging.error("f'No results file {ke}, processing output will be default {self.results_filename}")
 
         try:
             self.devices_file = options.devices
