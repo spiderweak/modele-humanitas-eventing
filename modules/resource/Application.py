@@ -92,14 +92,18 @@ class Application:
 
         self.deployment_info: Dict[Processus, int] = {}
 
-        if data:
-            self.initFromDict(data)
-        else:
-            for _ in range(num_procs):
-                # Generate a new (non-initialized) processus
-                new_processus = Processus()
-                # Adds the new processus to the list
-                self.processus_list.append(new_processus)
+        try:
+            # Might be a bit legacy and might need a bit of cleanup here
+            if data:
+                self.initFromDict(data)
+            else:
+                for _ in range(num_procs):
+                    # Generate a new (non-initialized) processus
+                    new_processus = Processus()
+                    # Adds the new processus to the list
+                    self.processus_list.append(new_processus)
+        except Exception as e:
+            raise RuntimeError(f"Failed to initialize from dict: {e}") from e
 
 
     def __json__(self) -> dict:
