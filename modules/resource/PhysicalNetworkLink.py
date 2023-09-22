@@ -6,161 +6,124 @@ Usage:
 """
 
 class PhysicalNetworkLink:
-    # A PhysicalNetworkLink is defined as a link between two physical devices
+    """
+    Represents a physical link between two network devices.
+    A PhysicalNetworkLink is defined as a link between two physical devices
+    A Physical Network Link is plugged on two network interfaces (Will need to modify device description)
+    For now, the Physical Link is plugged between two devices in a directional way, device IDs are not swappable
+    """
 
-    # A Physical Network Link is plugged on two network interfaces (Will need to modify device description)
-
-    # For now, the Physical Link is plugged between two devices in a directional way, device IDs are not swappable
-    id = 0
+    next_id = 0
+    DEFAULT_BANDWIDTH = 1000 * 1024  # in KB/s
+    DEFAULT_LATENCY = 10.0
 
 
     @classmethod
-    def _generate_id(cls):
+    def _generate_id(cls) -> int:
         """
-        Class method for id generation
-        Assigns id then increment for next generation
-
-        Args:
-        -----
-        None
+        Generates an ID for a new PhysicalNetworkLink instance.
 
         Returns:
-        --------
-        result : `int`
-            Device ID
+            int: The PhysicalNetworkLink ID.
         """
-        result = cls.id
-        cls.id +=1
+
+        result = cls.next_id
+        cls.next_id +=1
         return result
 
 
-    def __init__(self, device_1_id=-1, device_2_id=-1, size = -1, latency = 10) -> None:
+    def __init__(self, device_1_id: int = -1, device_2_id: int = -1, size: int = -1, latency: float = DEFAULT_LATENCY) -> None:
         """
         Initializes the device with basic values
         Assigns ID, initial position, resource values, routing table and resource limits
-
-        Args:
-        -----
-        None
-
-        Returns:
-        --------
-        None
         """
         # ID setting
         self.id = PhysicalNetworkLink._generate_id()
-        self.device_1_id = device_1_id
-        self.device_2_id = device_2_id
+        self.device_1_id: int = device_1_id
+        self.device_2_id: int = device_2_id
+
+        self.bandwidth: float = PhysicalNetworkLink.DEFAULT_BANDWIDTH # Bandwidth in KB/s
+        self.latency: float = latency # Additionnal Latency, defined when creating the link, needs to be defined as a distance function
+        self.bandwidth_use: float = 0.0
 
         if size > 0:
             self.setLinkID(device_1_id*size + device_2_id)
 
-        self.bandwidth = 1000 * 1024 # Bandwidth in KB/s
-        self.latency = latency # Additionnal Latency, defined when creating the link, needs to be defined as a distance function
-        self.bandwidth_use = 0
-
 
     def setLinkID(self, id):
         """
-        Sets a Physical Link's ID by hand if necessary
-
+        Sets a Physical Link's ID by hand if necessary.
         Args:
-        -----
-        id : `int`
-            New device ID
-
+            id : int
+                New device ID
         Returns:
-        --------
-        None
+            None
         """
         self.id = id
 
 
-    def getOrigin(self):
+    def getOrigin(self) -> int:
         return self.device_1_id
 
-    def getDestination(self):
+    def getDestination(self) -> int:
         return self.device_2_id
 
 
-    def setPhysicalNetworkLinkBandwidth(self, bandwidth):
+    def setPhysicalNetworkLinkBandwidth(self, bandwidth: float):
         """
         Sets a Physical Link's Bandwidth (in kBytes/s)
 
         Args:
-        -----
-        bandwidth : `float`
-            Physical link's bandwidth (in kBytes/s)
-
-        Returns:
-        --------
-        None
+            bandwidth : float
+                Physical link's bandwidth (in kBytes/s)
         """
         self.bandwidth = bandwidth
 
 
-    def setPhysicalNetworkLinkLatency(self, latency):
+    def setPhysicalNetworkLinkLatency(self, latency: float):
         """
         Sets a Physical Link's associated latency
 
         Args:
-        -----
-        latency : `float`
-            Physical link's latency
-
-        Returns:
-        --------
-        None
+            latency : float
+                Physical link's latency
         """
         self.latency = latency
 
 
-    def getPhysicalNetworkLinkLatency(self):
+    def getPhysicalNetworkLinkLatency(self) -> float:
         """
         Returns the Physical Link's associated latency
 
-        Args:
-        -----
-        None
-
         Returns:
-        --------
-        latency : `float`
-            Physical link's latency
+            latency : float
+                Physical link's latency
         """
         return self.latency
 
 
-    def availableBandwidth(self):
+    def availableBandwidth(self) -> float:
         """
         Returns the Physical Link's available (unused) bandwidth (in kBytes/s)
 
-        Args:
-        -----
-        None
-
         Returns:
-        --------
-        available_bandwidth : `float`
-            Physical link's available bandwidth
+            available_bandwidth : float
+                Physical link's available bandwidth
         """
-        available_bandwidth = self.bandwidth - self.bandwidth_use
-        return available_bandwidth
+        return self.bandwidth - self.bandwidth_use
 
 
-    def useBandwidth(self, bandwidth_request):
+    def useBandwidth(self, bandwidth_request: float) -> bool:
         """
         Allocates Physical Link's bandwidth based on bandwidth request (in kBytes/s)
 
         Args:
-        -----
-        bandwidth_request : `float`
-            Necessary bandwidth to allocate (in kBytes/s)
+            bandwidth_request : float
+                Necessary bandwidth to allocate (in kBytes/s)
 
         Returns:
-        --------
-        `Boolean`
-            True if allocation possible and successfull, else False
+            bool
+                True if allocation possible and successfull, else False
         """
         if bandwidth_request < self.availableBandwidth():
             self.bandwidth_use += bandwidth_request
@@ -169,35 +132,25 @@ class PhysicalNetworkLink:
             return False
 
 
-    def freeBandwidth(self, free_bandwidth_request):
+    def freeBandwidth(self, free_bandwidth_request: float):
         """
         Free a part of the Physical Link's bandwidth based on free bandwidth request (in kBytes/s)
         If requested bandwidth is superior to allocated bandwidth, bandwidth use is set to 0 instead of negative value
 
         Args:
-        -----
-        free_bandwidth_request : `float`
-            Necessary bandwidth to free (in kBytes/s)
-
-        Returns:
-        --------
-        None
+            free_bandwidth_request : float
+                Necessary bandwidth to free (in kBytes/s)
         """
         self.bandwidth_use = max(self.bandwidth_use-free_bandwidth_request, 0)
 
 
-    def checkPhysicalLink(self, device_1_id, device_2_id):
+    def checkPhysicalLink(self, device_1_id: int, device_2_id: int) -> bool:
         """
         Check if the associated link actually links the two given devices
 
         Args:
-        -----
-        device_1_id : `int`
-        device_2_id : 'int'
-
-        Returns:
-        --------
-        None
+            device_1_id : int
+            device_2_id : int
         """
         if self.device_1_id == device_1_id and self.device_2_id == device_2_id:
             return True

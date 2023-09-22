@@ -1,7 +1,3 @@
-import json
-from modules.resource.PhysicalNetworkLink import PhysicalNetworkLink
-from modules.ResourceManagement import custom_distance
-import numpy as np
 """
 Physical Network Link module, defines the physical link constraints and capabilities for inter-devices links
 
@@ -9,26 +5,64 @@ Usage:
 
 """
 
+import json
+import numpy as np
+from typing import List
+from modules.resource.PhysicalNetworkLink import PhysicalNetworkLink
+from modules.ResourceManagement import custom_distance
+
 class PhysicalNetwork:
+    """
+    Manages physical network links and provides network matrix extraction methods.
 
+    Attributes:
+        links (numpy.array): 2D array holding physical network links between devices.
+    """
 
-    def __init__(self, size = 1) -> None:
+    def __init__(self, size: int = 1) -> None:
+        """
+        Initializes a 2D numpy array to store physical network links.
 
-        self.links = np.array([[None] * size] * size)
+        Args:
+            size (int, optional): Size of the 2D array for physical network links. Defaults to 1.
+        """
+
+        self.links = np.array([[PhysicalNetworkLink] * size] * size)
 
         # Links need to be a matrix of Physical Network Links
 
 
     def selectLink(self, source_id, destination_id):
+        """
+        Selects a link based on source and destination IDs.
 
-        physical_links = []
+        Args:
+            source_id (int): Source device ID.
+            destination_id (int): Destination device ID.
+
+        Returns:
+            list: List of physical links matching the given source and destination IDs.
+        """
+
+        physical_links: List[PhysicalNetworkLink] = []
 
         for link in self.links:
             if link.checkPhysicalLink(source_id, destination_id):
                 physical_links.append(link)
 
+        return physical_links
 
-    def addLink(self, physical_network_link):
+
+    def addLink(self, physical_network_link: PhysicalNetworkLink) -> None:
+        """
+        Adds a physical network link to the links 2D array.
+
+        Args:
+            physical_network_link (PhysicalNetworkLink): Physical network link object.
+
+        Returns:
+            None
+        """
 
         origin_device_id = physical_network_link.getOrigin()
         destination_device_id = physical_network_link.getDestination()
@@ -36,7 +70,15 @@ class PhysicalNetwork:
         self.links[origin_device_id][destination_device_id] = physical_network_link
 
 
-    def generatePhysicalNetwork(self):
+    def generatePhysicalNetwork(self) -> None:
+        """
+        Generates physical network links based on a given environment.
+
+        Currently not implemented.
+
+        Returns:
+            None
+        """
         """
         with open(env.config.devices_template_filename) as file:
             json_data = json.load(file)
@@ -75,7 +117,16 @@ class PhysicalNetwork:
         """
         raise NotImplementedError
 
-    def extractNetworkMatrix(self, filename = None):
+    def extractNetworkMatrix(self, filename = None) -> np.array:
+        """
+        Extracts a binary matrix representing the existence of links.
+
+        Args:
+            filename (str, optional): The filename to save the extracted matrix. Defaults to None.
+
+        Returns:
+            np.array: Binary matrix representing the existence of links.
+        """
         export_arr = np.empty(self.links.shape, dtype=int)
 
         for index, link in np.ndenumerate(self.links):
@@ -89,7 +140,16 @@ class PhysicalNetwork:
         return export_arr
 
 
-    def extractLatencyMatrix(self, filename = None):
+    def extractLatencyMatrix(self, filename = None) -> np.array:
+        """
+        Extracts a matrix representing the latency of links.
+
+        Args:
+            filename (str, optional): The filename to save the extracted matrix. Defaults to None.
+
+        Returns:
+            np.array: Matrix representing the latency of links.
+        """
         export_arr = np.empty(self.links.shape, dtype=float)
 
         for index, link in np.ndenumerate(self.links):
@@ -103,7 +163,16 @@ class PhysicalNetwork:
         return export_arr
 
 
-    def extractBandwidthMatrix(self, filename = None):
+    def extractBandwidthMatrix(self, filename = None) -> np.array:
+        """
+        Extracts a matrix representing the bandwidth of links.
+
+        Args:
+            filename (str, optional): The filename to save the extracted matrix. Defaults to None.
+
+        Returns:
+            np.array: Matrix representing the bandwidth of links.
+        """
         export_arr = np.empty(self.links.shape, dtype=float)
 
         for index, link in np.ndenumerate(self.links):
@@ -117,7 +186,16 @@ class PhysicalNetwork:
         return export_arr
 
 
-    def extractAvailableBandwidthMatrix(self, filename = None):
+    def extractAvailableBandwidthMatrix(self, filename = None) -> np.array:
+        """
+        Extracts a matrix representing the available bandwidth of links.
+
+        Args:
+            filename (str, optional): The filename to save the extracted matrix. Defaults to None.
+
+        Returns:
+            np.array: Matrix representing the available bandwidth of links.
+        """
         export_arr = np.empty(self.links.shape, dtype=float)
 
         for index, link in np.ndenumerate(self.links):
@@ -129,3 +207,14 @@ class PhysicalNetwork:
         if filename:
             np.savetxt(filename, export_arr, fmt='%.2f', delimiter=',')
         return export_arr
+
+    def computeClosenessCentrality(self) -> None:
+        """
+        Computes the closeness centrality for the network.
+
+        Currently not implemented.
+
+        Returns:
+            None
+        """
+        raise NotImplementedError
