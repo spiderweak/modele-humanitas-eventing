@@ -411,6 +411,8 @@ class Device:
         """
         Append the resource usage to the history at a specific time.
 
+        TODO : Rewrite this
+
         Args:
             time (int): The current time value.
             force (bool, optional): Force the operation even if max_time is greater than time. Defaults to False.
