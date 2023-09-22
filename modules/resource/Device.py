@@ -411,7 +411,8 @@ class Device:
         """
         Append the resource usage to the history at a specific time.
 
-        TODO : Rewrite this
+        TODO : Rewrite this to put resources as input values so that it defaults to reporting on
+        all resources in the device but can handle partial reports too
 
         Args:
             time (int): The current time value.
