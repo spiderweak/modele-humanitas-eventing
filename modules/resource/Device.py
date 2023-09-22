@@ -29,8 +29,6 @@ class Device:
     ----------
     device_id : int
         The unique identifier for this device.
-    name : str
-        A human-readable name for the device.
     location : Tuple[float, float, float]
         The x, y, z coordinates of the device in the network.
     resource_limit : Dict[str, Union[int, float]]
@@ -46,6 +44,10 @@ class Device:
     routing_table : Dict[int, Tuple[int, float]]
         A dictionary representing the routing table for this device.
         Each key is the device_id of a destination, and the value is a tuple (next_hop_id, distance).
+    proc : List
+        A list containing processus that are running on this device.
+    closeness_centrality : float
+        The closeness centrality metric for this device in the network graph.
     """
 
     # Devices have a given id
@@ -105,8 +107,10 @@ class Device:
             logging.error(f"Failed to initialize Device from dict: {e}")
             raise RuntimeError(f"Failed to initialize from dict: {e}") from e
 
+        # TODO : Define a setter and a getter
         self.proc: List = []
 
+        # TODO : Define a setter and a getter, compute it somewhere
         self.closeness_centrality: float = 0.0
 
 
