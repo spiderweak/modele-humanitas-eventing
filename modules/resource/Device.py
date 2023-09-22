@@ -152,18 +152,6 @@ class Device:
         self.routing_table = data.get('routing_table', {self.id: (self.id, 0)})
 
 
-        try:
-            self.setAllResourceLimit(data['resource_limit'])
-        except KeyError as ke:
-            logging.error(f"Error loading device resource data, setting values to default : {ke}")
-            if bool(random.getrandbits(1)):
-                # NDC
-                self.setAllResourceLimit({'cpu': 16, 'gpu': 0, 'mem': 32 * 1024, 'disk': 1000 * 1024})
-            else:
-                # Jetson https://connecttech.com/ftp/pdf/nvidia_jetson_orin_datasheet.pdf
-                self.setAllResourceLimit({'cpu': 8, 'gpu': 8, 'mem': 8 * 1024, 'disk': 1000 * 1024})
-
-
     def __json__(self) -> Dict[str, Any]:
         """
         Returns a dictionary that represents the Device object, suitable for JSON serialization.
