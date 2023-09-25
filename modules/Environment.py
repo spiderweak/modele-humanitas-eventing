@@ -136,6 +136,7 @@ class Environment(object):
         Generates a routing table on each device in `self.devices`
         The function first lists the neighboring device, then iterate on the list to build a routing table based on shortest distance among links
         This is bruteforcing the shortest path betweend devices, we can probably create a better algorithm, but this is not the point for now.
+        TODO : Fix duplicated entries in routing table
         """
 
         number_of_devices = len(self.getDevices())
@@ -385,6 +386,13 @@ class Environment(object):
 
         return extracted_data
 
+    def extractDecisionWeights(self):
+        extracted_data = dict()
+
+        for device in self.devices:
+            extracted_data[device.getDeviceID()] = device.closeness_centrality
+
+        return extracted_data
 
     def extractCurrentlyDeployedAppData(self, resources = ['cpu', 'gpu', 'mem', 'disk'], filename = "apps_data.json"):
         extracted_data = []

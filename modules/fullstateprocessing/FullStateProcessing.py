@@ -37,10 +37,11 @@ class CeilingUnlimitedMigration(FullStateProcessing):
 
     # Goal of this, handle unlimited migrations, serves as ceiling for deployment informations
 
-    def __init__(self, proc_matrix, dev_matrix) -> None:
+    def __init__(self, proc_matrix, dev_matrix, dev_weights) -> None:
         super().__init__()
         self.proc_matrix = proc_matrix
         self.dev_matrix = dev_matrix
+        self.dev_weights = dev_weights
 
     def processing(self):
         # Define the problem
@@ -73,7 +74,9 @@ class CeilingUnlimitedMigration(FullStateProcessing):
         y = pulp.LpVariable.dicts("y", [s for s in range(num_apps)], cat="Binary")
 
         # Objective function
-        prob += pulp.lpSum(y[s] for s in range(num_apps)), "Total number of apps deployed"
+        #prob += pulp.lpSum(y[s] for s in range(num_apps)), "Total number of apps deployed"
+        prob += pulp.lpSum(self.dev_weights[i] for i in range(num_devices)) / num_devices
+
 
         # Application Integrity: each process is deployed once and only once on the infrastructure
         for s in range(num_apps):
@@ -100,12 +103,14 @@ class CeilingUnlimitedMigration(FullStateProcessing):
         # Solve the problem
         prob.solve()
 
+        """
         for s in range(num_apps):
             for u in range(num_proc):
                 for i in range(num_devices):
                     if x[(s,u,i)].value() == 1.0:
                         if sum(p_s_u_k[s][u][k] for k in range(K)) !=0:
                             print(f"Process {u} of Application {s} is deployed on Device {i}")
+        """
 
         return x
 

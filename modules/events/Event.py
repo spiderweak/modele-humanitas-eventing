@@ -375,8 +375,9 @@ class Organize(Event):
     def process(self, env: Environment):
 
         dev_matrix = env.extractDevicesResources()
+        dev_weight = env.extractDecisionWeights()
         proc_matrix = env.extractCurrentlyDeployedAppData()
-        instance = CeilingUnlimitedMigration(proc_matrix, dev_matrix)
+        instance = CeilingUnlimitedMigration(proc_matrix, dev_matrix, dev_weight)
 
         x = instance.processing()
 
