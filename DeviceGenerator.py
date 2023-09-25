@@ -61,6 +61,9 @@ def main():
 
     environment.generateDeviceList()
     environment.importLinks()
+
+    environment.processClosenessCentrality()
+
     environment.plotDeviceNetwork()
     environment.generateRoutingTable()
 

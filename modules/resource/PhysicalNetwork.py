@@ -7,7 +7,10 @@ Usage:
 
 import json
 import numpy as np
-from typing import List
+import numpy.typing as npt
+import networkx as nx
+
+from typing import List, Tuple, Any
 from modules.resource.PhysicalNetworkLink import PhysicalNetworkLink
 from modules.ResourceManagement import custom_distance
 
@@ -27,7 +30,7 @@ class PhysicalNetwork:
             size (int, optional): Size of the 2D array for physical network links. Defaults to 1.
         """
 
-        self.links = np.array([[PhysicalNetworkLink] * size] * size)
+        self.links: npt.NDArray = np.array([[PhysicalNetworkLink()] * size] * size)
 
         # Links need to be a matrix of Physical Network Links
 
@@ -46,9 +49,10 @@ class PhysicalNetwork:
 
         physical_links: List[PhysicalNetworkLink] = []
 
-        for link in self.links:
-            if link.checkPhysicalLink(source_id, destination_id):
-                physical_links.append(link)
+        for column in self.links:
+            for link in column:
+                if link.checkPhysicalLink(source_id, destination_id):
+                    physical_links.append(link)
 
         return physical_links
 
@@ -117,7 +121,7 @@ class PhysicalNetwork:
         """
         raise NotImplementedError
 
-    def extractNetworkMatrix(self, filename = None) -> np.array:
+    def extractNetworkMatrix(self, filename = None) -> npt.NDArray:
         """
         Extracts a binary matrix representing the existence of links.
 
@@ -140,7 +144,7 @@ class PhysicalNetwork:
         return export_arr
 
 
-    def extractLatencyMatrix(self, filename = None) -> np.array:
+    def extractLatencyMatrix(self, filename = None) -> npt.NDArray:
         """
         Extracts a matrix representing the latency of links.
 
@@ -163,7 +167,7 @@ class PhysicalNetwork:
         return export_arr
 
 
-    def extractBandwidthMatrix(self, filename = None) -> np.array:
+    def extractBandwidthMatrix(self, filename = None) -> npt.NDArray:
         """
         Extracts a matrix representing the bandwidth of links.
 
@@ -186,7 +190,7 @@ class PhysicalNetwork:
         return export_arr
 
 
-    def extractAvailableBandwidthMatrix(self, filename = None) -> np.array:
+    def extractAvailableBandwidthMatrix(self, filename = None) -> npt.NDArray:
         """
         Extracts a matrix representing the available bandwidth of links.
 
@@ -208,7 +212,19 @@ class PhysicalNetwork:
             np.savetxt(filename, export_arr, fmt='%.2f', delimiter=',')
         return export_arr
 
-    def computeClosenessCentrality(self) -> None:
+
+    def extractNetworkxGraph(self) -> Any:
+        nxlinks: List[Tuple[int, int]] = []
+        for column in self.links:
+            for link in column:
+                origin = link.getOrigin()
+                destination = link.getDestination()
+                if origin != -1 and destination != -1:
+                    nxlinks.append((link.getOrigin(), link.getDestination()))
+
+        return nx.Graph(nxlinks)
+
+    def computeClosenessCentrality(self) -> Any:
         """
         Computes the closeness centrality for the network.
 
@@ -217,4 +233,6 @@ class PhysicalNetwork:
         Returns:
             None
         """
-        raise NotImplementedError
+        extracted_nxgraph = self.extractNetworkxGraph()
+        cc_dict = nx.closeness_centrality(extracted_nxgraph)
+        return cc_dict

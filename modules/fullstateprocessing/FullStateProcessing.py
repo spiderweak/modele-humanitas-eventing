@@ -100,9 +100,6 @@ class CeilingUnlimitedMigration(FullStateProcessing):
         # Solve the problem
         prob.solve()
 
-        # Print the result
-        print("Status:", pulp.LpStatus[prob.status])
-
         for s in range(num_apps):
             for u in range(num_proc):
                 for i in range(num_devices):

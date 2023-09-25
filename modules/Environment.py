@@ -72,7 +72,7 @@ class Environment(object):
         return self.devices
 
 
-    def getDeviceByID(self, dev_id):
+    def getDeviceByID(self, dev_id) -> Device:
         """
         Gets the first `Device` which ID matches `dev_id`.
         `Device` IDs are supposed to be unique by construction.
@@ -425,3 +425,12 @@ class Environment(object):
                 self.devices.append(dev)
         except:
             raise NotImplementedError
+
+    def processClosenessCentrality(self):
+        computed_cc = self.physical_network.computeClosenessCentrality()
+
+        for k,v in computed_cc.items():
+            device = self.getDeviceByID(k)
+            device.closeness_centrality = v
+
+        return computed_cc
