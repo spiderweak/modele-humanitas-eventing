@@ -10,7 +10,7 @@ import logging
 import random
 import json
 
-from typing import List, Dict, Any, Union, Tuple
+from typing import List, Dict, Any, Union, Tuple, Optional
 
 from modules.CustomExceptions import NoRouteToHost
 
@@ -90,7 +90,7 @@ class Device:
         self.theoretical_resource_usage: Dict[str, Union[int, float]] = {key: 0 for key in self.resource_limit}
 
         # Resource usage history
-        self.resource_usage_history: Dict[str, List[Tuple[int, Union[int, float]]]] = {key: [(0, 0)] for key in self.resource_limit}
+        self.resource_usage_history = {key: [(0, 0)] for key in self.resource_limit}
 
         # Routing table, dict {destination:(next_hop, distance)}
         ## Initialized to {self.id:(self.id,0)} as route to self is considered as distance 0
@@ -376,24 +376,32 @@ class Device:
         raise ValueError("Please use the associated allocation function to allocate resources.")
 
 
-    def reportOnValue(self, time: int, *, force: bool = False) -> None:
-        """
-        Append the resource usage to the history at a specific time.
-
-        TODO : Rewrite this to put resources as input values so that it defaults to reporting on
-        all resources in the device but can handle partial reports too
+    def reportOnValue(self, time: int, *, force: bool = False, resources: Optional[List[str]] = None) -> List:
+        """Append the last resource usage value to the history at a specific time.
 
         Args:
             time (int): The current time value.
             force (bool, optional): Force the operation even if max_time is greater than time. Defaults to False.
+            resources (Optional[List[str]], optional): List of resource types to report on. Defaults to ['cpu', 'gpu', 'mem', 'disk'].
 
+        Returns:
+            List[Tuple[int, Union[int, float]]]: A list of reported data.
         """
-        resources = ['cpu', 'gpu', 'mem', 'disk']
-        max_time = max(self.resource_usage_history[resource][-1][0] for resource in resources)
 
-        if max_time <= time or force:
-            for resource in resources:
-                self.resource_usage_history[resource].append((time, self.resource_usage_history[resource][-1][1]))
+        resources = resources or ['cpu', 'gpu', 'mem', 'disk']
+        max_time = max(self.resource_usage_history[resource][-1][0] for resource in resources)
+        reported_data: List[Tuple[int, Union[int, float]]] = []
+
+        if max_time > time and not force:
+            return reported_data
+            # raise AttributeError("Unable to report on values at the specified time")
+
+        for resource in resources:
+            last_value = self.resource_usage_history[resource][-1][1]
+            self.resource_usage_history[resource].append((time, last_value))
+            reported_data.append((time, last_value))
+
+        return reported_data
 
 
     def addToRoutingTable(self, destination_id: int, next_hop_id: int, distance_destination: float) -> None:
@@ -406,32 +414,23 @@ class Device:
         Single path for now
 
         Args:
-        -----
-        destination_id : `int`
-            Device ID of the destination point
-        next_hop_id : `int`
-            Device ID of the next hop in the path to destination
-        distance_destination : `int`
-            distance from device (self) to destination (destination_id), when passing through device (next_hop_id), distance is arbitrary, can be actual distance, number of hops, ...
+            destination_id (int)
+                Device ID of the destination point
+            next_hop_id (int)
+                Device ID of the next hop in the path to destination
+            distance_destination (int)
+                distance from device (self) to destination (destination_id), when passing through device (next_hop_id), distance is arbitrary, can be actual distance, number of hops, ...
 
-        Returns:
-        --------
-            None
         """
-        # First we check if the destination is already in the table
-        if destination_id in self.routing_table:
-            # We check if we need to change the existing value
-            if distance_destination < self.routing_table[destination_id][1]:
-                # Update the existing value if the new one is lower (the lower the better)
-                self.routing_table[destination_id] = (next_hop_id,distance_destination)
-        else:
-            # Add the new value if no previous value
-            self.routing_table[destination_id] = (next_hop_id,distance_destination)
+        existing_value = self.routing_table.get(destination_id, (None, float('inf')))
+        _, existing_distance = existing_value
+
+        if distance_destination < existing_distance:
+            self.routing_table[destination_id] = (next_hop_id, distance_destination)
 
 
     def getRouteInfo(self, destination_id: int) -> Tuple[int, float]:
-        """
-        Returns the next hop and distance for a given destination.
+        """Returns the next hop and distance for a given destination.
 
         Args:
             destination_id (int): The ID of the destination device.
@@ -445,7 +444,6 @@ class Device:
 
         # We check if the destination is known
         try:
-            #if destination_id in self.routing_table:
             # If it is known, we return the associated values
             return self.routing_table[destination_id]
         except KeyError:
@@ -460,3 +458,22 @@ class Device:
             resource_history (Dict[str, List[Tuple[int, Union[int, float]]]]): The new resource usage history.
         """
         self.resource_usage_history = resource_history
+
+
+    @property
+    def resource_usage_history(self) -> Dict[str, List[Tuple[int, Union[int, float]]]]:
+        """Get the resource usage history.
+
+        Returns:
+            Dict[str, List[Tuple[int, Union[int, float]]]]: The resource usage history.
+        """
+        return self._resource_usage_history
+
+    @resource_usage_history.setter
+    def resource_usage_history(self, resource_history: Dict[str, List[Tuple[int, Union[int, float]]]]) -> None:
+        """Set the resource usage history.
+
+        Args:
+            resource_history (Dict[str, List[Tuple[int, Union[int, float]]]]): The new resource usage history.
+        """
+        self._resource_usage_history = resource_history
