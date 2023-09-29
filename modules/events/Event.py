@@ -171,7 +171,7 @@ class Placement(Event):
             device = env.getDeviceByID(self.deployment_starting_point)
         except:
             device = env.getRandomDevice()
-            logging.debug(f"Placement procedure from other device {device.getDeviceID()}")
+            logging.debug(f"Placement procedure from other device {device.id}")
 
         distance_from_device = {i: device.routing_table[i][1] for i in device.routing_table}
         sorted_distance_from_device = sorted(distance_from_device.items(), key=lambda x: x[1])

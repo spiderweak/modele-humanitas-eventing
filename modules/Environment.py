@@ -268,9 +268,9 @@ class Environment(object):
         except KeyError as ke:
             if ke.args[0] == 'links':
                 for device_1 in self.getDevices():
-                    device_1_id = device_1.getDeviceID()
+                    device_1_id = device_1.id
                     for device_2 in self.getDevices():
-                        device_2_id = device_2.getDeviceID()
+                        device_2_id = device_2.id
                         distance = custom_distance(device_1.position.values(),device_2.position.values())
 
                         if distance < self.config.wifi_range:
@@ -375,7 +375,7 @@ class Environment(object):
         for resource in resources:
             extracted_data[resource] = np.empty(len(self.devices))
             for device in self.devices:
-                extracted_data[resource][device.getDeviceID()] = device.resource_limit[resource]
+                extracted_data[resource][device.id] = device.resource_limit[resource]
 
         if filename:
             json_string = json.dumps(extracted_data, default=lambda o: list(o), indent=4)
@@ -390,7 +390,7 @@ class Environment(object):
         extracted_data = dict()
 
         for device in self.devices:
-            extracted_data[device.getDeviceID()] = device.closeness_centrality
+            extracted_data[device.id] = device.closeness_centrality
 
         return extracted_data
 

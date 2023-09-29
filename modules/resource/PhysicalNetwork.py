@@ -100,9 +100,9 @@ class PhysicalNetwork:
             env.physical_network_links = [0] * number_of_devices * number_of_devices
 
             for device_1 in env.getDevices():
-                device_1_id = device_1.getDeviceID()
+                device_1_id = device_1.id
                 for device_2 in env.getDevices():
-                    device_2_id = device_2.getDeviceID()
+                    device_2_id = device_2.id
                     distance = custom_distance(device_1.position.values(),device_2.position.values())
                     new_physical_network_link_id = device_1_id*number_of_devices + device_2_id
                     if distance < env.config.wifi_range:

@@ -86,7 +86,7 @@ class Path:
             self.devices_path.append(next_hop_id)
             device_source = env.getDeviceByID(next_hop_id)
             next_hop_id = device_source.getRouteInfo(device_destination_id)[0]
-            self.physical_links_path.append(device_source.getDeviceID()*len(env.devices)+next_hop_id)
+            self.physical_links_path.append(device_source.id*len(env.devices)+next_hop_id)
             hops+=1
 
         if self.devices_path[-1] != device_destination_id:
