@@ -81,48 +81,48 @@ class Visualizer():
 
             previous_time, previous_value = (0,0)
 
-            cpu_data[device.getDeviceID()] = [(previous_time, previous_value)]
-            cpu_limit_data[device.getDeviceID()] = device.resource_limit['cpu']
+            cpu_data[device.id] = [(previous_time, previous_value)]
+            cpu_limit_data[device.id] = device.resource_limit['cpu']
 
             for time,value in device.resource_usage_history['cpu']:
                 if time != previous_time:
-                    cpu_data[device.getDeviceID()].append((time,value-previous_value))
+                    cpu_data[device.id].append((time,value-previous_value))
                     previous_time = time
                     previous_value = value
 
             max_time = max(time, max_time)
 
             previous_time, previous_value = (0,0)
-            gpu_data[device.getDeviceID()] = [(previous_time, previous_value)]
-            gpu_limit_data[device.getDeviceID()] = device.resource_limit['gpu']
+            gpu_data[device.id] = [(previous_time, previous_value)]
+            gpu_limit_data[device.id] = device.resource_limit['gpu']
 
             for time,value in device.resource_usage_history['gpu']:
                 if time != previous_time:
-                    gpu_data[device.getDeviceID()].append((time,value-previous_value))
+                    gpu_data[device.id].append((time,value-previous_value))
                     previous_time = time
                     previous_value = value
 
             max_time = max(time, max_time)
 
             previous_time, previous_value = (0,0)
-            mem_data[device.getDeviceID()] = [(previous_time, previous_value)]
-            mem_limit_data[device.getDeviceID()] = device.resource_limit['mem']
+            mem_data[device.id] = [(previous_time, previous_value)]
+            mem_limit_data[device.id] = device.resource_limit['mem']
 
             for time,value in device.resource_usage_history['mem']:
                 if time != previous_time:
-                    mem_data[device.getDeviceID()].append((time,value-previous_value))
+                    mem_data[device.id].append((time,value-previous_value))
                     previous_time = time
                     previous_value = value
 
             max_time = max(time, max_time)
 
             previous_time, previous_value = (0,0)
-            disk_data[device.getDeviceID()] = [(previous_time, previous_value)]
-            disk_limit_data[device.getDeviceID()] = device.resource_limit['disk']
+            disk_data[device.id] = [(previous_time, previous_value)]
+            disk_limit_data[device.id] = device.resource_limit['disk']
 
             for time,value in device.resource_usage_history['disk']:
                 if time != previous_time:
-                    disk_data[device.getDeviceID()].append((time,value-previous_value))
+                    disk_data[device.id].append((time,value-previous_value))
                     previous_time = time
                     previous_value = value
 
