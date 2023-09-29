@@ -1,5 +1,4 @@
-"""
-Device module, defines the Device Class
+"""Device module, defines the Device Class
 
 Usage:
 
@@ -18,8 +17,7 @@ from modules.CustomExceptions import NoRouteToHost
 from modules.ResourceManagement import fit_resource
 
 class Device:
-    """
-    Represents a computing device with limited resources and network capabilities.
+    """Represents a computing device with limited resources and network capabilities.
 
     A Device is characterized by resource limitations in terms of CPU, GPU, memory, and disk space.
     Each resource has an associated maximum limit and current usage level. The device also maintains
@@ -52,12 +50,13 @@ class Device:
 
     # Devices have a given id
     next_id = 0
-
+    DEFAULT_POSITION = {'x': 0, 'y': 0, 'z': 0}
+    DEFAULT_RESOURCE_LIMIT_NVIDIA : Dict[str, Union[int, float]] = {'cpu': 8, 'gpu': 8, 'mem': 8 * 1024, 'disk': 1000 * 1024}
+    DEFAULT_RESOURCE_LIMIT_ARM : Dict[str, Union[int, float]] = {'cpu': 16, 'gpu': 0, 'mem': 32 * 1024, 'disk': 1000 * 1024}
 
     @classmethod
     def _generate_id(cls) -> int:
-        """
-        Generates an ID for a new Device instance.
+        """Generates an ID for a new Device instance.
 
         Returns:
             int: The Device ID.
@@ -69,43 +68,33 @@ class Device:
 
 
     def __init__(self, data: Dict) -> None:
-        """
-        Initialize the Device with basic values.
+        """Initialize the Device with basic values.
 
         Args:
             data (Dict): A dictionary containing initialization data.
 
-        Raises:
-            RuntimeError: If initialization from dict fails.
         """
 
-        # ID setting
         self.id = Device._generate_id()
 
-        # Device Position in the area considered, initialized to {'x':0, 'y':0, 'z':0}
-        self.position: Dict[str, float] = {}
+        self.position = self.DEFAULT_POSITION.copy()
 
-        # Maximal limit for each device feature
-        self.resource_limit: Dict[str, Union[int, float]] = {}
+        # Set Resource Limits
+        default_resource_limit = self.DEFAULT_RESOURCE_LIMIT_NVIDIA.copy() if bool(random.getrandbits(1)) else self.DEFAULT_RESOURCE_LIMIT_ARM.copy()
+        self.resource_limit = data.get('resource_limit', default_resource_limit)
 
         # Current usage for each device feature
-        self.current_resource_usage: Dict[str, Union[int, float]] = {}
+        self.current_resource_usage: Dict[str, Union[int, float]] = {key: 0 for key in self.resource_limit}
 
         # Theoretical usage for each device feature
-        self.theoretical_resource_usage: Dict[str, Union[int, float]] = {}
+        self.theoretical_resource_usage: Dict[str, Union[int, float]] = {key: 0 for key in self.resource_limit}
 
         # Resource usage history
-        self.resource_usage_history: Dict[str, List[Tuple[int, Union[int, float]]]] = {}
+        self.resource_usage_history: Dict[str, List[Tuple[int, Union[int, float]]]] = {key: [(0, 0)] for key in self.resource_limit}
 
         # Routing table, dict {destination:(next_hop, distance)}
         ## Initialized to {self.id:(self.id,0)} as route to self is considered as distance 0
         self.routing_table: Dict[int, Tuple[int, float]] = {self.id: (self.id, 0.0)}
-
-        try:
-            self.initFromDict(data)
-        except Exception as e:
-            logging.error(f"Failed to initialize Device from dict: {e}")
-            raise RuntimeError(f"Failed to initialize from dict: {e}") from e
 
         # TODO : Define a setter and a getter
         self.proc: List = []
@@ -113,43 +102,15 @@ class Device:
         # TODO : Define a setter and a getter, compute it somewhere
         self.closeness_centrality: float = 0.0
 
-
-    def initFromDict(self, data: Dict) -> None:
-        """
-        Initializes the device instance using the provided dictionary.
-
-        Args:
-            data (dict): The dictionary containing device data.
-
-        Returns:
-            None
-        """
-
-        # Set Device ID
-        self.id = data.get('id', Device._generate_id())
-
-        # Set Device Position
-        self.position = data.get('position', {'x': 0, 'y': 0, 'z': 0})
-
-        # Set Resource Limits
-        default_resource_limit = {
-            'cpu': 8, 'gpu': 8, 'mem': 8 * 1024, 'disk': 1000 * 1024
-        } if bool(random.getrandbits(1)) else {
-            'cpu': 16, 'gpu': 0, 'mem': 32 * 1024, 'disk': 1000 * 1024
-        }
-        self.resource_limit = data.get('resource_limit', default_resource_limit)
-
-        # Other Resource Attributes based on limit
-        self.current_resource_usage = {key: 0 for key in self.resource_limit}
-        self.theoretical_resource_usage = {key: 0 for key in self.resource_limit}
-
-
-        # Set Resource Usage History
-        self.resource_usage_history = data.get('resource_usage_history',
-                                            {key: [(0, 0)] for key in self.resource_limit})
-
-        # Set Routing Table
-        self.routing_table = data.get('routing_table', {self.id: (self.id, 0)})
+        if data:
+            # Validate and initialize from data dict here
+            self.id = data.get('id', self.id)
+            self.position = data.get('position', self.position)
+            self.resource_limit = data.get('resource_limit', self.resource_limit)
+            self.current_resource_usage = data.get('current_resource_usage', self.current_resource_usage)
+            self.theoretical_resource_usage = data.get('theoretical_resource_usage', self.theoretical_resource_usage)
+            self.resource_usage_history = data.get('resource_usage_history', self.resource_usage_history)
+            self.routing_table = data.get('routing_table', self.routing_table)
 
 
     def __json__(self) -> Dict[str, Any]:
@@ -168,8 +129,18 @@ class Device:
             "routing_table": self.routing_table
         }
 
+    @property
+    def id(self) -> int:
+        """
+        Retrieves the device's ID.
 
-    def setDeviceID(self, id: int) -> None:
+        Returns:
+            int: The device ID.
+        """
+        return self._id
+
+    @id.setter
+    def id(self, id: int) -> None:
         """
         Sets the device's ID and reinitializes its routing table.
 
@@ -181,7 +152,7 @@ class Device:
         """
 
         # Set the new ID
-        self.id = id
+        self._id = id
 
         # Reset the routing table
         self.routing_table = {self.id: (self.id, 0)}
@@ -190,17 +161,13 @@ class Device:
         logging.debug(f"Device ID changed to {id}, routing_table reset.")
 
 
-    def getDeviceID(self) -> int:
-        """
-        Retrieves the device's ID.
+    @property
+    def position(self) -> Dict[str, float]:
+        logging.debug("Getting device position")
+        return self._position
 
-        Returns:
-            int: The device ID.
-        """
-        return self.id
-
-
-    def setDevicePosition(self, position: Dict[str, Any]) -> None:
+    @position.setter
+    def position(self, position: Dict[str, Any]) -> None:
         """"
         Sets the device's position in a 3D space.
 
@@ -208,28 +175,17 @@ class Device:
             position (Dict[str, Any]): A dictionary containing the x, y, and z coordinates for the device's position.
         """
 
-        self.position = position
+        self._position = position
         logging.debug(f"Device {self.id}'s position has been updated to {self.position}")
 
 
-    def setDeviceResourceLimit(self, resource: str, resource_limit: Union[int, float]) -> None:
-        """
-        Sets the device's resource limit for a given resource type.
+    @property
+    def resource_limit(self) -> Dict[str, Union[int, float]] :
+        logging.debug("Getting device maximal resources values dictionary")
+        return self._resource_limit
 
-        Args:
-            resource (str): The type of resource to set.
-                Can take any value but try to be consistent between Device and Application.
-            resource_limit (Union[int, float]): The maximum limit for the specified resource type.
-
-        Raises:
-            ValueError: If the resource type is invalid or the resource limit is non-positive.
-        """
-
-        self.resource_limit[resource] = resource_limit if resource_limit > 0 else 0
-        logging.debug(f"Resource limit for {resource} has been set to {self.resource_limit[resource]} on device {self.id}")
-
-
-    def setAllResourceLimit(self, resources: Dict[str,Union[int, float]]) -> None:
+    @resource_limit.setter
+    def resource_limit(self, resources: Dict[str,Union[int, float]]) -> None:
         """
         Sets all device resource limits. This overwrites any previous limits.
 
@@ -241,6 +197,9 @@ class Device:
 
         """
 
+        if not hasattr(self, '_resource_limit'):
+            self._resource_limit = {}
+
         # Zero out previous values for safety.
         for resource in self.resource_limit:
             self.setDeviceResourceLimit(resource, 0)
@@ -248,6 +207,23 @@ class Device:
         # Set new resource limits using the setDeviceResourceLimit method.
         for resource, resource_limit in resources.items():
             self.setDeviceResourceLimit(resource, resource_limit)
+
+
+    def setDeviceResourceLimit(self, resource: str, resource_limit: Union[int, float]) -> None:
+        """
+        Sets the device's resource limit for a given resource type.
+
+        Args:
+            resource (str): The type of resource to set.
+                Can take any value but try to be consistent between Device and Application.
+            resource_limit (Union[int, float]): The maximum limit for the specified resource type.
+        """
+
+        if not hasattr(self, '_resource_limit'):
+            self._resource_limit = {}
+
+        self._resource_limit[resource] = resource_limit if resource_limit > 0 else 0
+        logging.debug(f"Resource limit for {resource} has been set to {self.resource_limit[resource]} on device.")# {self.id}")
 
 
     def allocateDeviceResource(self, t: int, resource_name: str, resource: float, *, force = False, overconsume = False) -> float:
