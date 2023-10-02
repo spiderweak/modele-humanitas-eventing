@@ -2,6 +2,21 @@ from typing import Optional, Dict, Any, Union, List
 import random
 
 class Processus:
+    """
+    The Processus class represents a sub-component of an Application and is responsible for managing
+    its resource requirements and allocations.
+
+    This class provides methods for comparing Processus instances, combining their resource requirements,
+    and generating JSON representations.
+
+    Comparison is based on an arbitrary resource priority order.
+
+    Attributes:
+        id (int): Unique identifier for the Processus instance.
+        app_id (int): Identifier for the application to which this Processus instance belongs.
+        resource_request (Dict[str, Union[int, float]]): Dictionary representing the resource requirements for this Processus.
+        resource_allocation (Dict[str, Union[int, float]]): Dictionary representing the allocated resources for this Processus.
+    """
 
     next_id: int = 0
     DEFAULT_RESOURCES: Dict[str, Union[int, float]] = {'cpu' : 0, 'gpu' : 0, 'mem' : 0, 'disk' : 0}
@@ -11,6 +26,12 @@ class Processus:
         'mem': {'range': (0.025, 1), 'factor': 4 * 1024},
         'disk': {'range': (1, 10), 'factor': 10 * 1024},
     }
+
+    # Arbitrary resource order
+    # To compare Processus, we chose to decide on an arbitrary resource order,
+    # Comparing two Processus object first mean comparing there GPU request, then CPU, then memory and finally disk size
+    RESOURCE_ORDER = ['gpu', 'cpu', 'mem', 'disk']
+
 
     @classmethod
     def _generate_id(cls) -> int:
@@ -38,7 +59,7 @@ class Processus:
             self.id = data.get("proc_id", Processus._generate_id())
             self.app_id = data.get("app_id", -1)
             self.resource_request = data.get("proc_resource_request", self.DEFAULT_RESOURCES.copy())
-            self.resource_allocation = data.get("proc_resource_allocation", {key: 0 for key in self.resource_request})
+            self.resource_allocation: Dict[str, Union[int, float]] = data.get("proc_resource_allocation", {key: 0 for key in self.resource_request})
         else:
             self.id = Processus._generate_id()
             self.app_id = -1
@@ -46,48 +67,71 @@ class Processus:
             self.resource_allocation = self.DEFAULT_RESOURCES.copy()
 
 
-    def __add__(self, other):
-
-        if isinstance(other, int):
-            if other == 0:
-                return self
-
+    def __add__(self, other : "Processus") -> "Processus":
         if isinstance(other, Processus):
-            new_proc = Processus()
 
-            new_proc.setProcessusResourceRequest('cpu', self.resource_request['cpu'] + other.resource_request['cpu'])
-            new_proc.setProcessusResourceRequest('gpu', self.resource_request['gpu'] + other.resource_request['gpu'])
-            new_proc.setProcessusResourceRequest('mem', self.resource_request['mem'] + other.resource_request['mem'])
-            new_proc.setProcessusResourceRequest('disk', self.resource_request['disk'] + other.resource_request['disk'])
+            all_keys = set(self.resource_request.keys()) | set(other.resource_request.keys())
+            combined_resource_request = {
+                key: self.resource_request.get(key, 0) + other.resource_request.get(key, 0)
+                for key in all_keys
+            }
+
+            app_id = self.app_id if self.app_id == other.app_id else -1
+
+            new_proc_data = {
+                "app_id" : app_id,
+                "proc_resource_request": combined_resource_request
+            }
+
+            new_proc = Processus(new_proc_data)
 
             return new_proc
+
         else:
-            raise TypeError
+            raise TypeError("Unsupported operand type for +: 'Processus' and '{}'".format(type(other).__name__))
+
+    def __radd__(self, other : "Processus")-> "Processus":
+        return self + other
 
 
-    def __radd__(self, other):
-        return self.__add__(other)
+    def __lt__(self, other : "Processus") -> bool:
+        """Compare two Processus objects based on their resource requests.
 
+        The comparison uses an arbitrary order of resources: `RESOURCE_ORDER`.
 
-    def __lt__(self, other):
-        # Arbitrary resource order
-        resource_order = ['gpu', 'cpu', 'mem', 'disk']
-
-        for resource in resource_order:
-            if self.resource_request[resource] > other.resource_request[resource]:
-                return False
-        return True
-
-
-    def __gt__(self, other):
-        return other.__lt__(self)
-
-
-    def __json__(self):
-        """Return the Processus signature as a json string to be parsed by a json exporter
+        Parameters:
+            other : Processus
+                The other Processus object to compare with.
 
         Returns:
-            dict
+            bool
+                True if the current object is "less than" the other, based on resource requests.
+                False otherwise.
+
+        Raises:
+            TypeError
+                If the other object is not a Processus instance.
+        """
+        if isinstance(other, Processus):
+            for resource in self.RESOURCE_ORDER:
+                # We consider values set to zero in case the resources does not exist
+                self_val = self.resource_request.get(resource, 0)
+                other_val = other.resource_request.get(resource, 0)
+                if self_val > other_val:
+                    return False
+            return True
+        else:
+            raise TypeError(f"Cannot compare Processus with {type(other).__name__}")
+
+    def __gt__(self, other : "Processus") -> bool:
+        return other < self
+
+
+    def __json__(self) -> Dict:
+        """Returns a dictionary containing the Processus' attributes.
+
+        Returns:
+            dict: A dictionary containing the 'proc_id' and 'proc_resource_request'.
         """
 
         return {
