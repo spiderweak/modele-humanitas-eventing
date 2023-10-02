@@ -450,16 +450,6 @@ class Device:
             raise NoRouteToHost(f'No route to host {destination_id}')
 
 
-    def setResourceUsageHistory(self, resource_history: Dict[str, List[Tuple[int, Union[int, float]]]]) -> None:
-        """
-        Set the resource usage history.
-
-        Args:
-            resource_history (Dict[str, List[Tuple[int, Union[int, float]]]]): The new resource usage history.
-        """
-        self.resource_usage_history = resource_history
-
-
     @property
     def resource_usage_history(self) -> Dict[str, List[Tuple[int, Union[int, float]]]]:
         """Get the resource usage history.
@@ -471,7 +461,9 @@ class Device:
 
     @resource_usage_history.setter
     def resource_usage_history(self, resource_history: Dict[str, List[Tuple[int, Union[int, float]]]]) -> None:
-        """Set the resource usage history.
+        """Set all the resource usage history.
+
+        Should not be used except for visualisation tasks
 
         Args:
             resource_history (Dict[str, List[Tuple[int, Union[int, float]]]]): The new resource usage history.
