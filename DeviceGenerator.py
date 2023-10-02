@@ -70,7 +70,7 @@ def main():
     # Exporting devices list
     print("Generating dataset and exporting data")
 
-    logging.debug(f"{datetime.datetime.now().isoformat(timespec='minutes')}:Exporting data to {options.output}")
+    logging.info(f"{datetime.datetime.now().isoformat(timespec='minutes')}:Exporting data to {options.output}")
     os.makedirs(os.path.dirname(options.output), exist_ok=True)
 
     environment.exportDevices(filename=f"{options.output}")
@@ -78,7 +78,7 @@ def main():
     date_string = datetime.datetime.now().isoformat(timespec='minutes').replace(":","-")[:-1]+"0"
 
     # Export figure to {ROOT}/data/{date_string}/devices.png
-    logging.debug(f"{datetime.datetime.now().isoformat(timespec='minutes')}:Exporting figure to {ROOT}/data/{date_string}/devices.png")
+    logging.info(f"{datetime.datetime.now().isoformat(timespec='minutes')}:Exporting figure to {ROOT}/data/{date_string}/devices.png")
     os.makedirs(os.path.dirname(f"{ROOT}/data/{date_string}/devices.png"), exist_ok=True)
     shutil.copyfile(f"{ROOT}/fig/graph.png", f"{ROOT}/data/{date_string}/devices.png")
     shutil.copyfile(f"{ROOT}/fig/graph.png", f"{ROOT}/latest/devices.png")

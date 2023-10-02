@@ -74,43 +74,35 @@ class Device:
             data (Dict): A dictionary containing initialization data.
 
         """
-
-        self.id = Device._generate_id()
-
-        self.position = self.DEFAULT_POSITION.copy()
-
-        # Set Resource Limits
         default_resource_limit = self.DEFAULT_RESOURCE_LIMIT_NVIDIA.copy() if bool(random.getrandbits(1)) else self.DEFAULT_RESOURCE_LIMIT_ARM.copy()
-        self.resource_limit = data.get('resource_limit', default_resource_limit)
 
-        # Current usage for each device feature
-        self.current_resource_usage: Dict[str, Union[int, float]] = {key: 0 for key in self.resource_limit}
+        if data:
+            # Validate and initialize from data dict here
+            self.id = data.get('id', Device._generate_id())
+            self.position = data.get('position', self.DEFAULT_POSITION.copy())
+            self.resource_limit = data.get('resource_limit', default_resource_limit)
+            self.current_resource_usage = data.get('current_resource_usage', {key: 0 for key in self.resource_limit})
+            self.theoretical_resource_usage = data.get('theoretical_resource_usage', {key: 0 for key in self.resource_limit})
+            self.resource_usage_history = data.get('resource_usage_history', {key: [(0, 0)] for key in self.resource_limit})
+            self.routing_table = data.get('routing_table', {self.id: (self.id, 0.0)})
 
-        # Theoretical usage for each device feature
-        self.theoretical_resource_usage: Dict[str, Union[int, float]] = {key: 0 for key in self.resource_limit}
+        else:
+            self.id = Device._generate_id()
+            self.position = self.DEFAULT_POSITION.copy()
+            self.resource_limit = default_resource_limit
+            self.current_resource_usage: Dict[str, Union[int, float]] = {key: 0 for key in self.resource_limit}
+            self.theoretical_resource_usage: Dict[str, Union[int, float]] = {key: 0 for key in self.resource_limit}
+            self.resource_usage_history = {key: [(0, 0)] for key in self.resource_limit}
 
-        # Resource usage history
-        self.resource_usage_history = {key: [(0, 0)] for key in self.resource_limit}
-
-        # Routing table, dict {destination:(next_hop, distance)}
-        ## Initialized to {self.id:(self.id,0)} as route to self is considered as distance 0
-        self.routing_table: Dict[int, Tuple[int, float]] = {self.id: (self.id, 0.0)}
+            # Routing table, dict {destination:(next_hop, distance)}
+            ## Initialized to {self.id:(self.id,0)} as route to self is considered as distance 0
+            self.routing_table: Dict[int, Tuple[int, float]] = {self.id: (self.id, 0.0)}
 
         # TODO : Define a setter and a getter
         self.proc: List = []
 
-        # TODO : Define a setter and a getter, compute it somewhere
-        self.closeness_centrality: float = 0.0
-
-        if data:
-            # Validate and initialize from data dict here
-            self.id = data.get('id', self.id)
-            self.position = data.get('position', self.position)
-            self.resource_limit = data.get('resource_limit', self.resource_limit)
-            self.current_resource_usage = data.get('current_resource_usage', self.current_resource_usage)
-            self.theoretical_resource_usage = data.get('theoretical_resource_usage', self.theoretical_resource_usage)
-            self.resource_usage_history = data.get('resource_usage_history', self.resource_usage_history)
-            self.routing_table = data.get('routing_table', self.routing_table)
+        # Value externally set
+        self.closeness_centrality = 0.0
 
 
     def __json__(self) -> Dict[str, Any]:
@@ -163,7 +155,6 @@ class Device:
 
     @property
     def position(self) -> Dict[str, float]:
-        logging.debug("Getting device position")
         return self._position
 
     @position.setter
@@ -181,7 +172,6 @@ class Device:
 
     @property
     def resource_limit(self) -> Dict[str, Union[int, float]] :
-        logging.debug("Getting device maximal resources values dictionary")
         return self._resource_limit
 
     @resource_limit.setter
@@ -469,3 +459,22 @@ class Device:
             resource_history (Dict[str, List[Tuple[int, Union[int, float]]]]): The new resource usage history.
         """
         self._resource_usage_history = resource_history
+
+
+    @property
+    def closeness_centrality(self) -> float:
+        """Gets the closeness centrality of the device.
+
+        Returns:
+            float: The closeness centrality value.
+        """
+        return self._closeness_centrality
+
+    @closeness_centrality.setter
+    def closeness_centrality(self, cc: float) -> None:
+        """Sets the closeness centrality of the device.
+
+        Args:
+            cc (float): The new closeness centrality value.
+        """
+        self._closeness_centrality = float(cc)

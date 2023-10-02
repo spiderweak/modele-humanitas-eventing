@@ -151,7 +151,7 @@ class Config():
         try:
             self.results_filename = options.results
         except (KeyError,AttributeError) as e:
-            logging.error("f'No results file {e}, processing output will be default {self.results_filename}")
+            logging.error(f"{e}, processing output will be default {self.results_filename}")
 
         try:
             self.devices_file = options.devices
