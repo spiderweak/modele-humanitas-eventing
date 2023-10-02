@@ -43,7 +43,7 @@ def main():
 
     config = Config(options, environment)
 
-    environment.setConfig(config)
+    environment.config = config
 
     environment.generateApplicationList()
 

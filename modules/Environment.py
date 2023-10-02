@@ -2,6 +2,7 @@ from modules.resource.PhysicalNetworkLink import PhysicalNetworkLink
 from modules.resource.Application import Application
 from modules.resource.Device import Device
 from modules.resource.PhysicalNetwork import PhysicalNetwork
+from modules.Config import Config
 from modules.CustomExceptions import (NoRouteToHost, DeviceNotFoundError)
 from modules.ResourceManagement import custom_distance
 
@@ -13,6 +14,9 @@ import networkx as nx
 import os
 import matplotlib.pyplot as plt
 import numpy as np
+
+from typing import List, Optional
+
 class Environment(object):
     """
     The ``Environment`` class mostly serves as a structure for storing information about the environment (configuration, device info, application info, network link...)
@@ -30,6 +34,8 @@ class Environment(object):
     physical_network_links: list of physical network links
         List of Physical links between devices, connectivity matrix
     """
+
+    TIME_PERIOD: int = 24 * 60 * 60 * 100
 
 
     def __init__(self):
@@ -50,26 +56,36 @@ class Environment(object):
         self.count_accepted_application=[[0,0]]
         self.count_tentatives=[[0,0]]
 
-        self.TIME_PERIOD = 24 * 60 * 60 * 100
-
         self.list_devices_data = None
         self.list_currently_deployed_app_data = None
 
-
-    def setConfig(self, config):
+    @property
+    def config(self) ->  Optional[Config]:
         """
-        Sets the configuration based on a given instanciated `Config` class.
+        Get the Config object for the environment.
+
+        Returns:
+            Optional[Config]: The Config object, or None if not set.
+        """
+        return self._config
+
+    @config.setter
+    def config(self, config:  Optional[Config]) -> None:
+        """Sets the configuration based on a given instanciated `Config` class.
 
         Args:
-        -----
-        config: `Config`
-            Environment configuration generated in the `Config` module
+            config (Config): Environment configuration generated in the `Config` module
         """
-        self.config = config
+        self._config = config
 
 
-    def getDevices(self):
-        return self.devices
+    @property
+    def devices(self) -> List[Device]:
+        return self._devices
+
+    @devices.setter
+    def devices(self, devices: List[Device]):
+        self._devices = devices
 
 
     def getDeviceByID(self, dev_id) -> Device:
@@ -139,7 +155,7 @@ class Environment(object):
         TODO : Fix duplicated entries in routing table
         """
 
-        number_of_devices = len(self.getDevices())
+        number_of_devices = len(self.devices)
 
         ## We iterate on the matrix:
 
@@ -235,7 +251,7 @@ class Environment(object):
             json_data = json.load(file)
         try :
 
-            number_of_devices = len(self.getDevices())
+            number_of_devices = len(self.devices)
 
             if (self.config.number_of_devices != number_of_devices):
                 print("Discrepency between number of devices in config and number of device in json, will use number of devices in db")
@@ -267,9 +283,9 @@ class Environment(object):
 
         except KeyError as ke:
             if ke.args[0] == 'links':
-                for device_1 in self.getDevices():
+                for device_1 in self.devices:
                     device_1_id = device_1.id
-                    for device_2 in self.getDevices():
+                    for device_2 in self.devices:
                         device_2_id = device_2.id
                         distance = custom_distance(device_1.position.values(),device_2.position.values())
 

@@ -9,7 +9,7 @@ from modules.ResourceManagement import custom_distance
 
 import json
 class Config():
-    def __init__(self, options, env) -> None:
+    def __init__(self, options, env):
         """
         Initializes the application configuration with basic values
         Assigns default values if no values are given

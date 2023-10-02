@@ -47,7 +47,7 @@ def main():
 
     config = Config(options, environment)
 
-    environment.setConfig(config)
+    environment.config = config
 
     arrival_times = [int(time) for time in np.cumsum(np.random.poisson(1/(environment.config.number_of_applications/environment.TIME_PERIOD), environment.config.number_of_applications))]
 
