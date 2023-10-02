@@ -1,11 +1,16 @@
-from typing import Optional, Dict, Any, Union
+from typing import Optional, Dict, Any, Union, List
 import random
 
 class Processus:
 
     next_id: int = 0
     DEFAULT_RESOURCES: Dict[str, Union[int, float]] = {'cpu' : 0, 'gpu' : 0, 'mem' : 0, 'disk' : 0}
-
+    RANDOMIZER_DEFAULT_RESOURCE: Dict[str, Dict[str, Any]] = {
+        'cpu': {'choices': [0.5, 1, 2, 3, 4]},
+        'gpu': {'choices': [0, 0, 0, 0, 0.5, 1, 2, 4]},
+        'mem': {'range': (0.025, 1), 'factor': 4 * 1024},
+        'disk': {'range': (1, 10), 'factor': 10 * 1024},
+    }
 
     @classmethod
     def _generate_id(cls) -> int:
@@ -29,18 +34,16 @@ class Processus:
             data (Optional[Dict[str, Any]], optional): A dictionary to initialize the object's attributes. Defaults to None.
         """
 
-        self.id = Processus._generate_id()
-        self.app_id = -1
-
-        self.resource_request = self.DEFAULT_RESOURCES.copy()
-        self.resource_allocation = self.DEFAULT_RESOURCES.copy()
-
         if data:
-            self.id = data.get("proc_id", self.id)
-            self.app_id = data.get("app_id", self.app_id)
-
+            self.id = data.get("proc_id", Processus._generate_id())
+            self.app_id = data.get("app_id", -1)
             self.resource_request = data.get("proc_resource_request", self.DEFAULT_RESOURCES.copy())
             self.resource_allocation = data.get("proc_resource_allocation", {key: 0 for key in self.resource_request})
+        else:
+            self.id = Processus._generate_id()
+            self.app_id = -1
+            self.resource_request = self.DEFAULT_RESOURCES.copy()
+            self.resource_allocation = self.DEFAULT_RESOURCES.copy()
 
 
     def __add__(self, other):
@@ -81,12 +84,10 @@ class Processus:
 
 
     def __json__(self):
-        """
-        Returns the Processus signature as a json string to be parsed by a json exporter
+        """Return the Processus signature as a json string to be parsed by a json exporter
 
         Returns:
-        --------
-            `dict`
+            dict
         """
 
         return {
@@ -117,7 +118,7 @@ class Processus:
 
     @property
     def app_id(self) -> int:
-        """Gets the application ID associated with this processus.
+        """Get the application ID associated with this processus.
 
         Returns:
             int: The application ID.
@@ -126,7 +127,7 @@ class Processus:
 
     @app_id.setter
     def app_id(self, app_id: int) -> None:
-        """Sets the application ID for this processus.
+        """Set the application ID for this processus.
 
         Args:
             app_id (int): The new application ID.
@@ -137,7 +138,7 @@ class Processus:
     @property
     def resource_request(self) -> Dict[str, Union[int, float]]:
         """
-        Gets the resource request dictionary for this processus.
+        Get the resource request dictionary for this processus.
 
         Returns:
             Dict[str, Union[int, float]]: The resource request dictionary.
@@ -146,7 +147,7 @@ class Processus:
 
     @resource_request.setter
     def resource_request(self, new_resource_request: Dict[str, Union[int, float]]) -> None:
-        """Sets the resource request dictionary for this processus.
+        """Set the resource request dictionary for this processus.
 
         Args:
             new_resource_request (Dict[str, Union[int, float]]): The new resource request dictionary.
@@ -158,7 +159,7 @@ class Processus:
             self.setProcessusResourceRequest(resource, resource_requested)
 
     def setProcessusResourceRequest(self, resource: str, resource_requested: Union[int, float]):
-        """Sets Processus Resource (CPU, GPU, Mem, Disk) Request
+        """Set Processus Resource (CPU, GPU, Mem, Disk) Request
 
         Args:
             resource (str`): Resource name
@@ -170,24 +171,33 @@ class Processus:
 
 
     def randomProcInit(self):
-        """
-        Random processus initialization :
+        """Randomly initialize the resource request for this processus:
             Random number of CPU between 0.5 and 4
             Random number of GPU between 0 and 8
             Random Memory between 0.1 and 4 GigaBytes
             Random Disk space between 10 and 100 GigaBytes
-
-        Args:
-        -----
-        None
-
-        Returns:
-        --------
-        None
         """
+        random_resource_request: Dict[str, Union[int, float]] = {}
 
-        self.setProcessusResourceRequest('cpu', random.choice([0.5,1,2,3,4]))
-        self.setProcessusResourceRequest('gpu', random.choice([0]*4+[0.5,1,2,4]))
-        self.setProcessusResourceRequest('mem', (random.random() * 0.975 + 0.025) * 4 * 1024)
-        self.setProcessusResourceRequest('disk', (random.random() * 9 + 1) * 10 * 1024)
+        for resource_type in self.resource_request.keys():
+            random_resource_request[resource_type] = self._get_random_value(resource_type)
+
+        self.resource_request = random_resource_request
+
+
+    def _get_random_value(self, resource_type: str) -> Union[int, float]:
+            """Helper method to get a random value for a given resource type."""
+            # Randomizer for 'choices' type values (CPU/GPU)
+            choices = self.RANDOMIZER_DEFAULT_RESOURCE[resource_type].get('choices')
+            if choices:
+                return random.choice(choices)
+
+            # Randomizer for 'range' type values (Mem/Disk)
+            value_range = self.RANDOMIZER_DEFAULT_RESOURCE[resource_type].get('range')
+            factor = self.RANDOMIZER_DEFAULT_RESOURCE[resource_type].get('factor', 1)
+            if value_range:
+                min_val, max_val = value_range
+                return (random.random() * (max_val - min_val) + min_val) * factor
+
+            return 0  # Default to 0 if no range or choices are defined
 
