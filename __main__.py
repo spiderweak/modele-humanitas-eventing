@@ -54,7 +54,7 @@ def main():
     environment.config = config
 
     environment.generateDeviceList()
-    environment.generateDevicesLinks()
+    environment.importLinks()
     environment.plotDeviceNetwork()
     environment.generateRoutingTable()
 
@@ -68,32 +68,6 @@ def main():
         simulation.initSimulation()
 
         simulation.simulate()
-
-    else:
-        logging.info("Testing a single app deployment")
-
-        current_device_id = random.randint(0, len(environment.devices)-1)
-        my_application = Application()
-
-        event_queue = EventQueue(environment)
-
-        with open(options.application, 'r') as app_config:
-
-            app_yaml = yaml.safe_load(app_config)
-            my_application.app_yaml_parser(app_yaml)
-
-            Placement("Placement", event_queue, my_application, current_device_id).add_to_queue()
-
-            current_event = None
-
-            while not event_queue.is_empty():
-                event_time, event_index, current_event = event_queue.pop()
-
-                process_event = current_event.process(environment)
-
-                logging.debug("process_event: {}".format(process_event))
-
-            logging.info("\n***************\nEND OF TEST\n***************")
 
 if __name__ == '__main__':
     logger.info("MAIN")

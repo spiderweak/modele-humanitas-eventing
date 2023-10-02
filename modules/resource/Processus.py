@@ -1,6 +1,5 @@
-import random
-
 from typing import Optional, Dict, Any, Union
+import random
 
 class Processus:
 
@@ -115,6 +114,7 @@ class Processus:
         """
         self._id = id
 
+
     @property
     def app_id(self) -> int:
         """Gets the application ID associated with this processus.
@@ -190,25 +190,4 @@ class Processus:
         self.setProcessusResourceRequest('gpu', random.choice([0]*4+[0.5,1,2,4]))
         self.setProcessusResourceRequest('mem', (random.random() * 0.975 + 0.025) * 4 * 1024)
         self.setProcessusResourceRequest('disk', (random.random() * 9 + 1) * 10 * 1024)
-
-
-    def processus_yaml_parser(self, processus_yaml):
-        """
-        Parser to load application characteristics from yaml file, usually called from the app configuration.
-
-        Args:
-        -----
-        processus_yaml : `dict`
-            dictionary from yaml file content.
-
-        Returns:
-        --------
-        None
-        """
-        processus_content = processus_yaml['Processus']
-
-        self.setProcessusResourceRequest('cpu', processus_content['cpu'])
-        self.setProcessusResourceRequest('gpu', processus_content['gpu'])
-        self.setProcessusResourceRequest('mem', processus_content['memory'])
-        self.setProcessusResourceRequest('disk', processus_content['disk'])
 

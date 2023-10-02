@@ -200,48 +200,6 @@ class Application:
         self.duration = duration
 
 
-    def app_yaml_parser(self, app_yaml: Dict) -> None:
-        """
-        Parser to load application characteristics from a YAML file.
-
-        Args:
-        -----
-        app_yaml : `dict`
-            Dictionary derived from YAML file content parsing
-        """
-
-        try:
-            application_content = app_yaml["Application"]
-        except KeyError:
-            raise KeyError("The 'Application' key was not found in the YAML file.")
-
-        self.num_procs = len(application_content)
-        self.processus_list = []
-
-        for yaml_processus in application_content:
-            new_processus = Processus()
-            new_processus.processus_yaml_parser(yaml_processus)
-            new_processus.app_id = self.id
-            self.processus_list.append(new_processus)
-
-        try:
-            links_details = app_yaml["AppLinks"]
-        except KeyError:
-            raise KeyError("The 'AppLinks' key was not found in the YAML file.")
-
-        self.proc_links = np.zeros((self.num_procs, self.num_procs))
-
-        for app_links in links_details:
-            try:
-                link = app_links['Link']
-                p1, p2, bandwidth = link['Processus 1'], link['Processus 2'], int(link['Bandwidth'])
-            except KeyError as e:
-                raise KeyError(f"A necessary key was not found in the 'AppLinks' section: {e}")
-
-            self.proc_links[p1][p2] = bandwidth
-            self.proc_links[p2][p1] = bandwidth  # Assuming the bandwidth is the same in both directions
-
-
     def setDeploymentInfo(self, deployed_onto_device: List[int]) -> None:
         """
         Creates a dictionary matching `Processus` and `Device` ID.
@@ -274,7 +232,7 @@ class Application:
             A list containing the IDs of all processus in the application.
         """
 
-        return [proc.getProcessusID() for proc in self.processus_list]
+        return [proc.id for proc in self.processus_list]
 
 
     def getAppProcByID(self, id: int) -> Processus:
@@ -298,7 +256,7 @@ class Application:
         """
 
         try:
-            return next(proc for proc in self.processus_list if proc.getProcessusID() == id)
+            return next(proc for proc in self.processus_list if proc.id == id)
         except StopIteration:
             raise KeyError(f"Processus with ID {id} not found.")
 
