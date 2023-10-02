@@ -1,59 +1,47 @@
 import random
 
+from typing import Optional, Dict, Any, Union
+
 class Processus:
 
-    id = 0
+    next_id: int = 0
+    DEFAULT_RESOURCES: Dict[str, Union[int, float]] = {'cpu' : 0, 'gpu' : 0, 'mem' : 0, 'disk' : 0}
 
 
     @classmethod
-    def _generate_id(cls):
-        """
-        Class method for id generation
+    def _generate_id(cls) -> int:
+        """Class method for id generation
         Assigns id then increment for next generation
 
-        Args:
-        -----
-        None
-
         Returns:
-        --------
-        result : `int`
-            Processus ID
+            result (int): Processus ID
         """
-        result = cls.id
-        cls.id +=1
+        result = cls.next_id
+        cls.next_id +=1
         return result
 
 
-    def __init__(self, data = dict()) -> None:
-        """
-        A processus is a sub-part of an application
+    def __init__(self, data: Optional[Dict[str, Any]] = None) -> None:
+        """A processus is a sub-part of an application
         A processus is defined as a values corresponding to resource requests
-        Initializes the processus values with zeros
+        Initializes the Processus object.
 
         Args:
-        -----
-        None
-
-        Returns:
-        --------
-        None
+            data (Optional[Dict[str, Any]], optional): A dictionary to initialize the object's attributes. Defaults to None.
         """
 
         self.id = Processus._generate_id()
-
-        self.resource_request = dict()
-        self.resource_allocation = dict()
         self.app_id = -1
 
-        if data:
-            self.initFromDict(data)
+        self.resource_request = self.DEFAULT_RESOURCES.copy()
+        self.resource_allocation = self.DEFAULT_RESOURCES.copy()
 
-        else:
-            # A process requests ressources among the 4 resources defined : CPU, GPU, Memory and Disk
-            self.resource_request = {'cpu' : 0, 'gpu' : 0, 'mem' : 0, 'disk' : 0}
-            self.resource_allocation = {'cpu' : 0, 'gpu' : 0, 'mem' : 0, 'disk' : 0}
-            self.app_id = -1
+        if data:
+            self.id = data.get("proc_id", self.id)
+            self.app_id = data.get("app_id", self.app_id)
+
+            self.resource_request = data.get("proc_resource_request", self.DEFAULT_RESOURCES.copy())
+            self.resource_allocation = data.get("proc_resource_allocation", {key: 0 for key in self.resource_request})
 
 
     def __add__(self, other):
@@ -108,67 +96,77 @@ class Processus:
         }
 
 
-    def setProcessusID(self, id):
-        """
-        Used to set a processus's ID by hand if necessary
-
-        Args:
-        -----
-        id : `int`
-            New processus ID
+    @property
+    def id(self) -> int:
+        """Used to get a processus's ID
 
         Returns:
-        --------
-        None
+            id (int): Processus ID
         """
-        self.id = id
+        return self._id
 
-
-    def getProcessusID(self) -> int:
-        """
-        Used to get a processus's ID
+    @id.setter
+    def id(self, id: int):
+        """Used to set a processus's ID by hand if necessary.
+        Note: IDs are usually immutable; use this cautiously.
 
         Args:
-        -----
-        None
+        id (int): New processus ID
+        """
+        self._id = id
+
+    @property
+    def app_id(self) -> int:
+        """Gets the application ID associated with this processus.
 
         Returns:
-        --------
-        id : `int`
-            Processus ID
+            int: The application ID.
         """
-        return self.id
+        return self._app_id
 
-
-    def setProcessusResourceRequest(self, resource, resource_request):
-        """
-        Sets Processus Resource (CPU, GPU, Mem, Disk) Request
+    @app_id.setter
+    def app_id(self, app_id: int) -> None:
+        """Sets the application ID for this processus.
 
         Args:
-        -----
-        resource : `str`
-            Resource name
-        resource_request : `float`
-            Quantity of a given resource to request from device.
+            app_id (int): The new application ID.
         """
-        self.resource_request[resource] = resource_request
+        self._app_id = app_id
 
 
-    def setAllResourceRequest(self, resources):
+    @property
+    def resource_request(self) -> Dict[str, Union[int, float]]:
         """
-        Sets All Processus Resource (CPU, GPU, Mem, Disk) Request
+        Gets the resource request dictionary for this processus.
 
-        Removes previous values for safety
+        Returns:
+            Dict[str, Union[int, float]]: The resource request dictionary.
+        """
+        return self._resource_request
+
+    @resource_request.setter
+    def resource_request(self, new_resource_request: Dict[str, Union[int, float]]) -> None:
+        """Sets the resource request dictionary for this processus.
 
         Args:
-        -----
-        resources : `dict`
-            dictionary of all resources to request
+            new_resource_request (Dict[str, Union[int, float]]): The new resource request dictionary.
         """
-        self.resource_request = dict()
+        if not hasattr(self, '_resource_request'):
+            self._resource_request: Dict[str, Union[int, float]] = {}
 
-        for resource, resource_request in resources.items():
-            self.setProcessusResourceRequest(resource, resource_request)
+        for resource, resource_requested in new_resource_request.items():
+            self.setProcessusResourceRequest(resource, resource_requested)
+
+    def setProcessusResourceRequest(self, resource: str, resource_requested: Union[int, float]):
+        """Sets Processus Resource (CPU, GPU, Mem, Disk) Request
+
+        Args:
+            resource (str`): Resource name
+            resource_requested (float): Quantity of a given resource to request from device.
+        """
+        if not hasattr(self, '_resource_request'):
+            self._resource_request: Dict[str, Union[int, float]] = {}
+        self._resource_request[resource] = resource_requested
 
 
     def randomProcInit(self):
@@ -214,13 +212,3 @@ class Processus:
         self.setProcessusResourceRequest('mem', processus_content['memory'])
         self.setProcessusResourceRequest('disk', processus_content['disk'])
 
-
-    def initFromDict(self, data):
-
-        self.setProcessusID(data["proc_id"])
-
-        self.setAllResourceRequest(data["proc_resource_request"])
-
-        self.resource_allocation = dict()
-        for key in self.resource_request:
-            self.resource_allocation[key] = 0
