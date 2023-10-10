@@ -40,7 +40,7 @@ class Path:
         # Physical Links path is a list of all the physicalNetworkLink IDs corresponding to the path from source device to destination device
         self.physical_links_path: List[int] = []
 
-    def setSourceID(self, device_source_id: int) -> None:
+    def set_source_id(self, device_source_id: int) -> None:
         """
         Set the source device ID for the path.
 
@@ -49,7 +49,7 @@ class Path:
         """
         self.source_id = device_source_id
 
-    def setDestinationID(self, device_destination_id: int):
+    def set_destination_id(self, device_destination_id: int):
         """
         Set the destination device ID for the path.
 
@@ -73,26 +73,26 @@ class Path:
         """
         # get Route from source to destination
 
-        self.setSourceID(device_source_id)
-        self.setDestinationID(device_destination_id)
+        self.set_source_id(device_source_id)
+        self.set_destination_id(device_destination_id)
         self.devices_path.append(device_source_id)
 
-        device_source = env.getDeviceByID(device_source_id)
-        next_hop_id = device_source.getRouteInfo(device_destination_id)[0]
+        device_source = env.get_device_by_id(device_source_id)
+        next_hop_id = device_source.get_route_info(device_destination_id)[0]
         self.physical_links_path.append(device_source_id*len(env.devices)+next_hop_id)
         hops = 1
 
         while next_hop_id != device_destination_id and hops < MAX_HOPS:
             self.devices_path.append(next_hop_id)
-            device_source = env.getDeviceByID(next_hop_id)
-            next_hop_id = device_source.getRouteInfo(device_destination_id)[0]
+            device_source = env.get_device_by_id(next_hop_id)
+            next_hop_id = device_source.get_route_info(device_destination_id)[0]
             self.physical_links_path.append(device_source.id*len(env.devices)+next_hop_id)
             hops+=1
 
         if self.devices_path[-1] != device_destination_id:
             self.devices_path.append(device_destination_id)
 
-    def minBandwidthAvailableonPath(self, env: Environment):
+    def min_bandwidth_available_on_path(self, env: Environment):
         """
         Calculates the minimum available bandwidth on the path.
 
@@ -105,5 +105,5 @@ class Path:
         Returns:
             float: The minimum available bandwidth on the path.
         """
-        min_bandwidth_available = min(env.physical_network.links[path_id].availableBandwidth() for path_id in self.physical_links_path)
+        min_bandwidth_available = min(env.physical_network.links[path_id].available_bandwidth() for path_id in self.physical_links_path)
         return min_bandwidth_available
