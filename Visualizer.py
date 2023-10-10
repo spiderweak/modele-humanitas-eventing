@@ -55,7 +55,7 @@ def main():
 
     environment.config = config
 
-    environment.importResults()
+    environment.import_results()
 
     visu = Visualizer()
 

@@ -45,12 +45,12 @@ def main():
 
     environment.config = config
 
-    environment.generateApplicationList()
+    environment.generate_application_list()
 
     logging.debug(f"{datetime.datetime.now().isoformat(timespec='minutes')}:Exporting data to {options.output}")
     os.makedirs(os.path.dirname(options.output), exist_ok=True)
 
-    environment.exportApplications(filename=f"{options.output}")
+    environment.export_applications(filename=f"{options.output}")
 
 
 if __name__ == '__main__':

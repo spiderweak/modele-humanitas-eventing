@@ -3,6 +3,7 @@ import logging
 import pandas as pd
 import matplotlib.pyplot as plt
 from tqdm import tqdm
+from modules.Environment import Environment
 
 class Visualizer():
 
@@ -10,9 +11,9 @@ class Visualizer():
         pass
 
 
-    def visualize_environment(self, env):
+    def visualize_environment(self, env: Environment):
 
-        data = env.getDeviceByID(12).resource_usage_history['cpu']
+        data = env.get_device_by_id(12).resource_usage_history['cpu']
 
         x,y = zip(*data)
 
@@ -26,7 +27,7 @@ class Visualizer():
         plt.savefig("fig/results.png")
 
 
-    def apps_visualiser(self, env):
+    def apps_visualiser(self, env: Environment):
         times, values = zip(*env.count_rejected_application)
 
         plt.clf()
@@ -76,6 +77,7 @@ class Visualizer():
         disk_limit_data = dict()
 
         max_time = 0
+        time = 0
 
         for device in env.devices:
 

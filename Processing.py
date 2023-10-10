@@ -66,18 +66,18 @@ def main():
 
     environment = Environment()
 
-    config = Config()
+    config = Config(options=options)
 
-    environment.config = config.from_options(options=options)
+    environment.config = config
 
-    environment.importDevices()
+    environment.import_devices()
 
-    environment.importApplications()
+    environment.import_applications()
 
     logging.info("Running complete simulation")
     simulation = Simulation(environment)
 
-    simulation.importQueueItems()
+    simulation.import_queue_items()
 
     simulation.simulate()
 
@@ -87,7 +87,7 @@ def main():
     logging.debug(f"{datetime.datetime.now().isoformat(timespec='minutes')}:Exporting data to {options.output}")
     os.makedirs(os.path.dirname(options.output), exist_ok=True)
 
-    environment.exportDevices(filename=f"{options.output}")
+    environment.export_devices(filename=f"{options.output}")
 
     visu = Visualizer()
 

@@ -145,7 +145,7 @@ class Environment(object):
             raise DeviceNotFoundError("Device not found in the list.")
 
 
-    def get_device_by_id(self, dev_id: int):
+    def get_device_by_id(self, dev_id: int) -> Device:
         """Gets the `Device` whose ID matches `dev_id`.
         `Device` IDs are supposed to be unique by construction.
 
@@ -174,7 +174,7 @@ class Environment(object):
             raise DeviceNotFoundError("No devices are available.")
         return random.choice(self.devices)
 
-    def generateDeviceList(self):
+    def generate_device_list(self):
         if self.config is None:
             raise ValueError("Config is not initialized.")
 
@@ -299,11 +299,11 @@ class Environment(object):
 
         for i in range(self.config.number_of_applications):
             application = Application()
-            application.randomAppInit()
-            application.setAppID(id=i)
+            application.random_app_init()
+            application.id = i
 
             if self.config.app_duration != 0:
-                application.setAppDuration(self.config.app_duration)
+                application.set_app_duration(self.config.app_duration)
 
             self.add_application(application)
 
@@ -337,7 +337,7 @@ class Environment(object):
                     device_j = self.get_device_by_id(j)
 
                     try:
-                        next_hop,distance = device_i.getRouteInfo(device_j.id)
+                        next_hop,distance = device_i.get_route_info(device_j.id)
                     except NoRouteToHost:
                         next_hop,distance = (-1,1000)
 
@@ -346,12 +346,12 @@ class Environment(object):
                     for k in range(number_of_devices):
                         device_k = self.get_device_by_id(k)
                         try:
-                            next_hop_i_k,distance_i_k = device_i.getRouteInfo(device_k.id)
+                            next_hop_i_k,distance_i_k = device_i.get_route_info(device_k.id)
                         except NoRouteToHost:
                             next_hop_i_k,distance_i_k = (-1,1000)
 
                         try:
-                            _,distance_k_j = device_k.getRouteInfo(device_j.id)
+                            _,distance_k_j = device_k.get_route_info(device_j.id)
                         except NoRouteToHost:
                             distance_k_j = 1000
 
@@ -366,7 +366,7 @@ class Environment(object):
                     ## If we observe any change, update and break the loop, keep going
                         changes = True
                         progress_bar.update()
-                        device_i.addToRoutingTable(device_j.id, min_nh, min_array)
+                        device_i.add_to_routing_table(device_j.id, min_nh, min_array)
 
 
     def export_devices(self, filename = "devices.json"):
@@ -444,19 +444,19 @@ class Environment(object):
                 source_device = self.get_device_by_id(link['source'])
                 target_device = self.get_device_by_id(link['target'])
                 try:
-                    source_device.addToRoutingTable(target_device.id, target_device.id,link['weight'])
+                    source_device.add_to_routing_table(target_device.id, target_device.id,link['weight'])
                 except KeyError as ke:
                     distance = custom_distance(source_device.position.values(),target_device.position.values())
-                    source_device.addToRoutingTable(target_device.id, target_device.id,distance)
-                # target_device.addToRoutingTable(source_device.id, source_device.id,link['weight'])
+                    source_device.add_to_routing_table(target_device.id, target_device.id,distance)
+                # target_device.add_to_routing_table(source_device.id, source_device.id,link['weight'])
 
                 new_physical_network_link = PhysicalNetworkLink(source_device.id, target_device.id, size=number_of_devices)
                 try:
                     if link['id'] != new_physical_network_link.id:
-                        new_physical_network_link.setLinkID(link['id'])
+                        new_physical_network_link.set_link_id(link['id'])
                 except KeyError as ke:
                     pass
-                self.physical_network.addLink(new_physical_network_link)
+                self.physical_network.add_link(new_physical_network_link)
 
         except KeyError as ke:
             if ke.args[0] == 'links':
@@ -467,13 +467,13 @@ class Environment(object):
                         distance = custom_distance(device_1.position.values(),device_2.position.values())
 
                         if distance < self.config.wifi_range:
-                            device_1.addToRoutingTable(device_2_id, device_2_id, distance)
-                            device_2.addToRoutingTable(device_1_id, device_1_id, distance)
+                            device_1.add_to_routing_table(device_2_id, device_2_id, distance)
+                            device_2.add_to_routing_table(device_1_id, device_1_id, distance)
 
                             new_physical_network_link = PhysicalNetworkLink(device_1_id, device_2_id, size=number_of_devices, latency=distance)
                             if device_1_id == device_2_id:
-                                new_physical_network_link.setPhysicalNetworkLinkLatency(0)
-                            self.physical_network.addLink(new_physical_network_link)
+                                new_physical_network_link.set_physical_network_link_latency(0)
+                            self.physical_network.add_link(new_physical_network_link)
                             link = {"source": device_1_id, "target": device_2_id, "weight": distance, "id": new_physical_network_link.id}
                             self.devices_links.append(link)
 
@@ -580,7 +580,7 @@ class Environment(object):
 
     def extract_values(self):
 
-        self.physical_network.extractNetworkMatrix()
+        self.physical_network.extract_network_matrix()
         self.extract_devices_resources()
 
 
@@ -598,7 +598,7 @@ class Environment(object):
             raise NotImplementedError
 
     def process_closeness_centrality(self):
-        computed_cc = self.physical_network.computeClosenessCentrality()
+        computed_cc = self.physical_network.compute_closeness_centrality()
 
         for k,v in computed_cc.items():
             device = self.get_device_by_id(k)

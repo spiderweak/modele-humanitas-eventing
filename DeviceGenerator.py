@@ -59,13 +59,13 @@ def main():
 
     environment.config = config
 
-    environment.generateDeviceList()
-    environment.importLinks()
+    environment.generate_device_list()
+    environment.import_links()
 
-    environment.processClosenessCentrality()
+    environment.process_closeness_centrality()
 
-    environment.plotDeviceNetwork()
-    environment.generateRoutingTable()
+    environment.plot_device_network()
+    environment.generate_routing_table()
 
     # Exporting devices list
     print("Generating dataset and exporting data")
@@ -73,7 +73,7 @@ def main():
     logging.info(f"{datetime.datetime.now().isoformat(timespec='minutes')}:Exporting data to {options.output}")
     os.makedirs(os.path.dirname(options.output), exist_ok=True)
 
-    environment.exportDevices(filename=f"{options.output}")
+    environment.export_devices(filename=f"{options.output}")
 
     date_string = datetime.datetime.now().isoformat(timespec='minutes').replace(":","-")[:-1]+"0"
 

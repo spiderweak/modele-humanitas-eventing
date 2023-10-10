@@ -12,6 +12,7 @@ import numpy as np
 from tqdm import tqdm
 
 from modules.resource.Application import Application
+from modules.Environment import Environment
 from modules.EventQueue import EventQueue
 from modules.events.Event import (Event, Placement, Deploy_Proc, Sync, Organize, FinalReport)
 from modules.Visualization import Visualizer
@@ -26,14 +27,16 @@ class Simulation(object):
 
     def __init__(self, env):
 
-        self.__env = env
+        self.__env: Environment = env
         self.__queue = EventQueue(self.__env)
 
         # Deploying X applictions
         #arrival_times = [int(time) for time in np.random.uniform(0, TIME_PERIOD, env.config.number_of_applications)]
 
 
-    def initSimulation(self):
+    def init_simulation(self):
+        if self.__env.config is None:
+            raise ValueError
 
         arrival_times = [int(time) for time in np.cumsum(np.random.poisson(1/(self.__env.config.number_of_applications/TIME_PERIOD), self.__env.config.number_of_applications))]
 
@@ -42,10 +45,10 @@ class Simulation(object):
         for i in tqdm(range(self.__env.config.number_of_applications)):
             # Generating 1 random application
             application = Application()
-            application.randomAppInit()
-            application.setAppID(i)
+            application.random_app_init()
+            application.set_app_id(i)
             if self.__env.config.app_duration != 0:
-                application.setAppDuration(self.__env.config.app_duration)
+                application.set_app_duration(self.__env.config.app_duration)
 
             # Getting a random device starting point
             device_id = random.choice(range(len(self.__env.devices)))
@@ -111,8 +114,8 @@ class Simulation(object):
             self.__env.current_time = event_time
 
             if event_time != previous_time:
-                self.__env.extractDevicesResources()
-                self.__env.extractCurrentlyDeployedAppData()
+                self.__env.extract_devices_resources()
+                self.__env.extract_currently_deployed_apps_data()
 
             process_event = current_event.process(self.__env)
             logging.debug("process_event: {}".format(process_event))
@@ -125,7 +128,10 @@ class Simulation(object):
 
 
 
-    def importQueueItems(self):
+    def import_queue_items(self):
+        if self.__env.config is None:
+            raise ValueError
+
         try:
             with open(self.__env.config.arrivals_file) as file:
                 arrivals_list = json.load(file)
@@ -133,14 +139,14 @@ class Simulation(object):
             raise FileNotFoundError("Please add placements list in argument, default value is placements.json in current directory")
 
         for item in arrivals_list:
-            application = self.__env.getApplicationByID(item["application"])
+            application = self.__env.get_application_by_id(item["application"])
             device_id = item["requesting_device"]
             arrival_time = item["placement_time"]
             Placement("Placement",self.__queue, application, device_id, event_time=arrival_time).add_to_queue()
 
         FinalReport("Final Report", self.__queue, event_time=TIME_PERIOD).add_to_queue()
 
-    def bulkimportQueueItems(self):
+    def bulk_import_queue_items(self):
         try:
             with open(self.__env.config.arrivals_file) as file:
                 arrivals_list = json.load(file)
@@ -148,7 +154,7 @@ class Simulation(object):
             raise FileNotFoundError("Please add placements list in argument, default value is placements.json in current directory")
 
         for item in arrivals_list:
-            application = self.__env.getApplicationByID(item["application"])
+            application = self.__env.get_application_by_id(item["application"])
             arrival_time = item["placement_time"]
             Organize("Organize",self.__queue, application, event_time=arrival_time).add_to_queue()
 

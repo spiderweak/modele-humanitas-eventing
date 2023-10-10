@@ -47,10 +47,10 @@ class PhysicalNetworkLink:
         self.bandwidth_use: float = 0.0
 
         if size > 0:
-            self.setLinkID(device_1_id*size + device_2_id)
+            self.set_link_id(device_1_id*size + device_2_id)
 
 
-    def setLinkID(self, id):
+    def set_link_id(self, id):
         """
         Sets a Physical Link's ID by hand if necessary.
         Args:

@@ -72,7 +72,7 @@ def main():
     logging.debug(f"{datetime.datetime.now().isoformat(timespec='minutes')}:Exporting data to {options.output}")
     os.makedirs(os.path.dirname(options.output), exist_ok=True)
 
-    environment.exportApplications(filename=f"{options.output}")
+    environment.export_applications(filename=f"{options.output}")
 
     json_string = json.dumps(placement_list, indent=4)
     with open(f"{options.output}", 'w') as file:

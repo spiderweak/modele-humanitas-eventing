@@ -223,7 +223,7 @@ class PhysicalNetwork:
 
         return nx.Graph(nxlinks)
 
-    def computeClosenessCentrality(self) -> Any:
+    def compute_closeness_centrality(self) -> Any:
         """
         Computes the closeness centrality for the network.
 

@@ -142,7 +142,7 @@ class Application:
         self.id = id
 
 
-    def random_appinit(self, num_procs: int = 3, num_proc_random: bool = True) -> None:
+    def random_app_init(self, num_procs: int = 3, num_proc_random: bool = True) -> None:
         """
         Random initialization of the application.
 
@@ -164,7 +164,7 @@ class Application:
         # Initialize a random list of processus, starts with an empty list
         self.processus_list = [Processus() for _ in range(num_procs)]
         for proc in self.processus_list:
-            proc.randomProcInit()
+            proc.random_proc_init()
 
         # Generates the random link matrix between processus
         # Links will be symmetrical, link matrix initialized to zero
