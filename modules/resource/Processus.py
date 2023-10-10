@@ -46,7 +46,7 @@ class Processus:
         return result
 
 
-    def __init__(self, data: Optional[Dict[str, Any]] = None) -> None:
+    def __init__(self, data: Optional[Dict[str, Any]] = None, * , priority: int = 0) -> None:
         """A processus is a sub-part of an application
         A processus is defined as a values corresponding to resource requests
         Initializes the Processus object.
@@ -65,6 +65,8 @@ class Processus:
             self.app_id = -1
             self.resource_request = self.DEFAULT_RESOURCES.copy()
             self.resource_allocation = self.DEFAULT_RESOURCES.copy()
+
+        self.priority = priority
 
 
     def __add__(self, other : "Processus") -> "Processus":
@@ -212,6 +214,27 @@ class Processus:
         if not hasattr(self, '_resource_request'):
             self._resource_request: Dict[str, Union[int, float]] = {}
         self._resource_request[resource] = resource_requested
+
+
+    @property
+    def priority(self) -> int:
+        """
+        Get the priority level of the object.
+
+        Returns:
+            Priority level as an integer.
+        """
+        return self._priority
+
+    @priority.setter
+    def priority(self, priority_level: int):
+        """
+        Set the priority level of the object.
+
+        Args:
+            priority_level(int): New priority level to set.
+        """
+        self._priority = priority_level
 
 
     def randomProcInit(self):

@@ -1,8 +1,11 @@
 import logging
 from modules.resource.Path import Path
+from modules.resource.Application import Application
 from modules.Environment import Environment
 from modules.fullstateprocessing.FullStateProcessing import CeilingUnlimitedMigration
 import json
+
+from typing import Any
 
 MAX_TENTATIVES = 5
 
@@ -57,7 +60,7 @@ class Event():
 
 class Placement(Event):
 
-    def __init__(self, event_name, queue, app, device_id, event_time=None):
+    def __init__(self, event_name, queue, app: Application, device_id, event_time=None):
         """
             app : Application, application to place
             device : Device, first device to try placement, \"Placement Request Receptor\" device
@@ -66,7 +69,7 @@ class Placement(Event):
         self.application_to_place = app
         self.deployment_starting_point = device_id
         self.tentatives = 1
-        self.priority = 2
+        self.priority: float = 2 + app.priority/10
 
 
     def __json__(self):

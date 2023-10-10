@@ -8,11 +8,9 @@ Usage:
 """
 import numpy as np
 import random
-
 import json
 
 from typing import List, Dict, Union
-
 from modules.resource.Processus import Processus
 
 # Number of group of 10 ms
@@ -92,6 +90,8 @@ class Application:
 
         self.deployment_info: Dict[Processus, int] = {}
 
+        self.proirity = 1
+
         try:
             # Might be a bit legacy and might need a bit of cleanup here
             if data:
@@ -104,6 +104,7 @@ class Application:
                     self.processus_list.append(new_processus)
         except Exception as e:
             raise RuntimeError(f"Failed to initialize from dict: {e}") from e
+
 
 
     def __json__(self) -> dict:
@@ -143,6 +144,7 @@ class Application:
         """
 
         self.id = id
+
 
     def randomAppInit(self, num_procs: int = 3, num_proc_random: bool = True) -> None:
         """
@@ -288,3 +290,14 @@ class Application:
             self.processus_list.append(Processus(data=proc))
 
         self.proc_links = np.array(data.get("proc_links", []))
+
+
+    @property
+    def priority(self) -> int:
+        return self._priority
+
+    @priority.setter
+    def priority(self, priority_level):
+        for proc in self.processus_list:
+            proc.priority = priority_level
+        self._priority = priority_level
