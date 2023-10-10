@@ -16,7 +16,7 @@ class Config:
     DEFAULT_APP_DURATION: int = 0
     DEFAULT_3D_SPACE: Dict[str,Union[int,float]] = {"x_min": 0, "x_max": 40, "y_min": 0, "y_max": 40, "z_min": 0, "z_max": 0}
 
-    def __init__(self, options: argparse.Namespace):
+    def __init__(self, *, options: argparse.Namespace):
         """Initializes the application configuration with default values or values from a YAML file.
 
         Args:
@@ -132,7 +132,7 @@ class Config:
             logging.error(f"{e}, processing output will be default {self.results_filename}")
 
         self.results_filename = getattr(options, 'results', self.results_filename)
-        self.devices_file = getattr(options, 'devices', self.devices_file)
-        self.applications_file = getattr(options, 'applications', self.applications_file)
-        self.arrivals_file = getattr(options, 'arrivals', self.arrivals_file)
+        self.devices_file = getattr(options, 'devices', None)
+        self.applications_file = getattr(options, 'applications', None)
+        self.arrivals_file = getattr(options, 'arrivals', None)
         self.dry_run = getattr(options, 'dry_run', False)
