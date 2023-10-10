@@ -30,12 +30,11 @@ class PhysicalNetwork:
             size (int, optional): Size of the 2D array for physical network links. Defaults to 1.
         """
 
-        self.links: npt.NDArray = np.array([[PhysicalNetworkLink()] * size] * size)
-
+        self.links: npt.NDArray = np.array([[PhysicalNetworkLink() for _ in range(size)] for _ in range(size)])
         # Links need to be a matrix of Physical Network Links
 
 
-    def selectLink(self, source_id, destination_id):
+    def select_link(self, source_id, destination_id):
         """
         Selects a link based on source and destination IDs.
 
@@ -51,13 +50,13 @@ class PhysicalNetwork:
 
         for column in self.links:
             for link in column:
-                if link.checkPhysicalLink(source_id, destination_id):
+                if link.check_physical_link(source_id, destination_id):
                     physical_links.append(link)
 
         return physical_links
 
 
-    def addLink(self, physical_network_link: PhysicalNetworkLink) -> None:
+    def add_link(self, physical_network_link: PhysicalNetworkLink) -> None:
         """
         Adds a physical network link to the links 2D array.
 
@@ -68,13 +67,13 @@ class PhysicalNetwork:
             None
         """
 
-        origin_device_id = physical_network_link.getOrigin()
-        destination_device_id = physical_network_link.getDestination()
+        origin_device_id = physical_network_link.get_origin()
+        destination_device_id = physical_network_link.get_destination()
 
         self.links[origin_device_id][destination_device_id] = physical_network_link
 
 
-    def generatePhysicalNetwork(self) -> None:
+    def generate_physical_network(self) -> None:
         """
         Generates physical network links based on a given environment.
 
@@ -121,7 +120,7 @@ class PhysicalNetwork:
         """
         raise NotImplementedError
 
-    def extractNetworkMatrix(self, filename = None) -> npt.NDArray:
+    def extract_network_matrix(self, filename = None) -> npt.NDArray:
         """
         Extracts a binary matrix representing the existence of links.
 
@@ -144,7 +143,7 @@ class PhysicalNetwork:
         return export_arr
 
 
-    def extractLatencyMatrix(self, filename = None) -> npt.NDArray:
+    def extract_latency_matrix(self, filename = None) -> npt.NDArray:
         """
         Extracts a matrix representing the latency of links.
 
@@ -167,7 +166,7 @@ class PhysicalNetwork:
         return export_arr
 
 
-    def extractBandwidthMatrix(self, filename = None) -> npt.NDArray:
+    def extract_bandwidth_matrix(self, filename = None) -> npt.NDArray:
         """
         Extracts a matrix representing the bandwidth of links.
 
@@ -190,7 +189,7 @@ class PhysicalNetwork:
         return export_arr
 
 
-    def extractAvailableBandwidthMatrix(self, filename = None) -> npt.NDArray:
+    def extract_available_bandwidth_matrix(self, filename = None) -> npt.NDArray:
         """
         Extracts a matrix representing the available bandwidth of links.
 
@@ -213,14 +212,14 @@ class PhysicalNetwork:
         return export_arr
 
 
-    def extractNetworkxGraph(self) -> Any:
+    def extract_networkx_graph(self) -> Any:
         nxlinks: List[Tuple[int, int]] = []
         for column in self.links:
             for link in column:
-                origin = link.getOrigin()
-                destination = link.getDestination()
+                origin = link.get_origin()
+                destination = link.get_destination()
                 if origin != -1 and destination != -1:
-                    nxlinks.append((link.getOrigin(), link.getDestination()))
+                    nxlinks.append((link.get_origin(), link.get_destination()))
 
         return nx.Graph(nxlinks)
 
@@ -233,6 +232,6 @@ class PhysicalNetwork:
         Returns:
             None
         """
-        extracted_nxgraph = self.extractNetworkxGraph()
+        extracted_nxgraph = self.extract_networkx_graph()
         cc_dict = nx.closeness_centrality(extracted_nxgraph)
         return cc_dict
