@@ -202,9 +202,9 @@ class Processus:
             self._resource_request: Dict[str, Union[int, float]] = {}
 
         for resource, resource_requested in new_resource_request.items():
-            self.setProcessusResourceRequest(resource, resource_requested)
+            self.set_processus_resource_request(resource, resource_requested)
 
-    def setProcessusResourceRequest(self, resource: str, resource_requested: Union[int, float]):
+    def set_processus_resource_request(self, resource: str, resource_requested: Union[int, float]):
         """Set Processus Resource (CPU, GPU, Mem, Disk) Request
 
         Args:
@@ -237,7 +237,7 @@ class Processus:
         self._priority = priority_level
 
 
-    def randomProcInit(self):
+    def random_proc_init(self):
         """Randomly initialize the resource request for this processus:
             Random number of CPU between 0.5 and 4
             Random number of GPU between 0 and 8
