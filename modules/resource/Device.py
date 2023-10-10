@@ -192,14 +192,14 @@ class Device:
 
         # Zero out previous values for safety.
         for resource in self.resource_limit:
-            self.setDeviceResourceLimit(resource, 0)
+            self.set_device_resource_limit(resource, 0)
 
-        # Set new resource limits using the setDeviceResourceLimit method.
+        # Set new resource limits using the set_device_resource_limit method.
         for resource, resource_limit in resources.items():
-            self.setDeviceResourceLimit(resource, resource_limit)
+            self.set_device_resource_limit(resource, resource_limit)
 
 
-    def setDeviceResourceLimit(self, resource: str, resource_limit: Union[int, float]) -> None:
+    def set_device_resource_limit(self, resource: str, resource_limit: Union[int, float]) -> None:
         """
         Sets the device's resource limit for a given resource type.
 
@@ -216,7 +216,7 @@ class Device:
         logging.debug(f"Resource limit for {resource} has been set to {self.resource_limit[resource]} on device.")# {self.id}")
 
 
-    def allocateDeviceResource(self, t: int, resource_name: str, resource: float, *, force = False, overconsume = False) -> float:
+    def allocate_device_resource(self, t: int, resource_name: str, resource: float, *, force = False, overconsume = False) -> float:
         """
         Allocates a given amount of device resource.
 
@@ -269,9 +269,9 @@ class Device:
         return retrofiting_coefficient
 
 
-    def allocateAllResources(self, t: int, resources: Dict[str, float], *, force: bool = False, overconsume: bool = False) -> Dict[str, float]:
+    def allocate_all_resources(self, t: int, resources: Dict[str, float], *, force: bool = False, overconsume: bool = False) -> Dict[str, float]:
         """
-        Allocate all resources based on calls to allocateDeviceResource.
+        Allocate all resources based on calls to allocate_device_resource.
 
         Args:
             t (int): current time value.
@@ -289,7 +289,7 @@ class Device:
 
         for resource, resource_limit in resources.items():
             try:
-                resource_retrofitting_coefficient = self.allocateDeviceResource(t, resource, resource_limit, force = force, overconsume = overconsume)
+                resource_retrofitting_coefficient = self.allocate_device_resource(t, resource, resource_limit, force = force, overconsume = overconsume)
                 retrofitting_dictionary[resource] = resource_retrofitting_coefficient
             except Exception as e:
                 # Log the exception and continue with the next resource
@@ -298,7 +298,7 @@ class Device:
         return retrofitting_dictionary
 
 
-    def releaseDeviceResource(self, t: int, resource_name: str, resource: float, *, force: bool = False, overconsume: bool = False) -> float:
+    def release_device_resource(self, t: int, resource_name: str, resource: float, *, force: bool = False, overconsume: bool = False) -> float:
         """
         Release resource allocation from the device by allocating a negative resource value.
 
@@ -310,14 +310,14 @@ class Device:
             overconsume (bool, optional): Allows allocation over the resource limit. Defaults to False.
 
         Returns:
-            float: Retrofitting coefficient returned by allocateDeviceResource
+            float: Retrofitting coefficient returned by allocate_device_resource
         """
-        return self.allocateDeviceResource(t, resource_name, -resource, force = force, overconsume = overconsume)
+        return self.allocate_device_resource(t, resource_name, -resource, force = force, overconsume = overconsume)
 
 
     def releaseAllResources(self, t: int, resources: Dict[str, float], *, force: bool = False, overconsume: bool = False) -> Dict[str, float]:
         """
-        Release all resources based on calls to releaseDeviceResource.
+        Release all resources based on calls to release_device_resource.
 
         Note: This method does not propagate the retrofitting coefficient for now.
 
@@ -335,7 +335,7 @@ class Device:
 
         for resource, resource_limit in resources.items():
             try:
-                resource_retrofitting_coefficient = self.releaseDeviceResource(t, resource, resource_limit, force = force, overconsume = overconsume)
+                resource_retrofitting_coefficient = self.release_device_resource(t, resource, resource_limit, force = force, overconsume = overconsume)
                 retrofitting_dictionary[resource] = resource_retrofitting_coefficient
             except Exception as e:
                 # Log the exception and continue with the next resource
@@ -344,7 +344,7 @@ class Device:
         return retrofitting_dictionary
 
 
-    def getDeviceResourceUsage(self, resource: str) -> Union[int, float]:
+    def get_device_rResource_usage(self, resource: str) -> Union[int, float]:
         """
         Retrieve the current usage of a given resource on the device.
 
@@ -366,7 +366,7 @@ class Device:
         raise ValueError("Please use the associated allocation function to allocate resources.")
 
 
-    def reportOnValue(self, time: int, *, force: bool = False, resources: Optional[List[str]] = None) -> List:
+    def report_on_value(self, time: int, *, force: bool = False, resources: Optional[List[str]] = None) -> List:
         """Append the last resource usage value to the history at a specific time.
 
         Args:
@@ -394,7 +394,7 @@ class Device:
         return reported_data
 
 
-    def addToRoutingTable(self, destination_id: int, next_hop_id: int, distance_destination: float) -> None:
+    def add_to_routing_table(self, destination_id: int, next_hop_id: int, distance_destination: float) -> None:
         """
         Adds a new destination or update an existing one in the routing table
         Reminder - routing table element are : {destination:(next_hop, distance)}
@@ -419,7 +419,7 @@ class Device:
             self.routing_table[destination_id] = (next_hop_id, distance_destination)
 
 
-    def getRouteInfo(self, destination_id: int) -> Tuple[int, float]:
+    def get_route_info(self, destination_id: int) -> Tuple[int, float]:
         """Returns the next hop and distance for a given destination.
 
         Args:
