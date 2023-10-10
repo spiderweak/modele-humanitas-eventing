@@ -70,6 +70,9 @@ class Processus:
 
 
     def __add__(self, other : "Processus") -> "Processus":
+        if isinstance(other, int):
+            return self
+
         if isinstance(other, Processus):
 
             all_keys = set(self.resource_request.keys()) | set(other.resource_request.keys())

@@ -315,7 +315,7 @@ class Device:
         return self.allocate_device_resource(t, resource_name, -resource, force = force, overconsume = overconsume)
 
 
-    def releaseAllResources(self, t: int, resources: Dict[str, float], *, force: bool = False, overconsume: bool = False) -> Dict[str, float]:
+    def release_all_resources(self, t: int, resources: Dict[str, float], *, force: bool = False, overconsume: bool = False) -> Dict[str, float]:
         """
         Release all resources based on calls to release_device_resource.
 
@@ -344,7 +344,7 @@ class Device:
         return retrofitting_dictionary
 
 
-    def get_device_rResource_usage(self, resource: str) -> Union[int, float]:
+    def get_device_resource_usage(self, resource: str) -> Union[int, float]:
         """
         Retrieve the current usage of a given resource on the device.
 

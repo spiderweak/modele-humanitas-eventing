@@ -168,7 +168,7 @@ class Placement(Event):
 
         if env.config.dry_run:
             self.application_to_place.set_deployment_info(deployed_onto_devices)
-            env.currenty_deployed_apps.append(self.application_to_place)
+            env.currently_deployed_apps.append(self.application_to_place)
             Undeploy("Release", self.queue, self.application_to_place, event_time=int(self.get_time()+self.application_to_place.duration)).add_to_queue()
             return deployment_times, deployed_onto_devices
 
@@ -184,8 +184,8 @@ class Placement(Event):
         pref_proc = dict()
         for proc in self.application_to_place.processus_list:
             pref_proc[proc.id] = list()
-            for dev_id,dev_latency in sorted_distance_from_device:
-                device = env.get_device_by_id(dev_id)
+            for dev_id, dev_latency in sorted_distance_from_device:
+                device = env.get_device_by_id(int(dev_id)) # Error here, TODO: Better handling of ids types
                 if self.deployable_proc(proc, device):
                     pref_proc[proc.id].append((dev_id, dev_latency))
 
@@ -208,7 +208,7 @@ class Placement(Event):
             else:
                 matching_procs = [self.application_to_place.get_app_proc_by_id(proc) for proc,dev in matching.items() if dev == deployed]
                 agglomerated = sum(matching_procs)# + proc # type: ignore
-                if self.deployable_proc(agglomerated, env.get_device_by_id(dev_id)):
+                if self.deployable_proc(agglomerated, env.get_device_by_id(int(dev_id))): # Error here, TODO: Better handling of ids types
                     matching[proc_id] = deployed
                     matching_latency[proc_id] = deployment_latency
                 else:
@@ -284,7 +284,7 @@ class Deploy_Proc(Event):
                             'mem': self.proc_to_deploy.resource_request['mem'],
                             'disk': self.proc_to_deploy.resource_request['disk']}
 
-        env.get_device_by_id(self.device_destination_id).allocate_all_resources(self.time, allocation_request)
+        env.get_device_by_id(int(self.device_destination_id)).allocate_all_resources(self.time, allocation_request) # Error here, TODO: Better handling of ids types
 
         if self.last_proc:
             Sync("Synchronize", self.queue, self.app, self.devices_destinations, event_time=int(self.get_time()+self.synchronization_time)).add_to_queue()
@@ -323,7 +323,7 @@ class Sync(Event):
 
         # Set Deployment info
         self.app.set_deployment_info(self.devices_destinations)
-        env.currenty_deployed_apps.append(self.app)
+        env.currently_deployed_apps.append(self.app)
 
         # Run
         Undeploy("Release", self.queue, self.app, event_time=int(self.get_time()+self.app.duration)).add_to_queue()
@@ -347,7 +347,7 @@ class Undeploy(Event):
 
             release_request = {'cpu': process.resource_request['cpu'], 'gpu': process.resource_request['gpu'], 'mem': process.resource_request['mem'], 'disk': process.resource_request['disk']}
 
-            env.get_device_by_id(device_id).release_all_resources(self.time, release_request)
+            env.get_device_by_id(int(device_id)).release_all_resources(self.time, release_request) # Error here, TODO: Better handling of ids types
 
             # undeploy links
             """
@@ -361,7 +361,7 @@ class Undeploy(Event):
                     else:
                         logging.error(f"Physical network link error, expexted PhysicalNetworkLink, got {env.physical_network_links[path_id]}")
             """
-        env.currenty_deployed_apps.remove(self.application_to_undeploy)
+        env.currently_deployed_apps.remove(self.application_to_undeploy)
         return True
 
 

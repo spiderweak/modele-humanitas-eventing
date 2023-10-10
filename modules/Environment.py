@@ -15,7 +15,7 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 
-from typing import List, Optional
+from typing import List, Dict, Optional, Union
 
 class Environment(object):
     """
@@ -47,10 +47,10 @@ class Environment(object):
 
         self.currently_deployed_apps: List[Application] = []
         self.devices = []
-        self.id_to_device = {}
+        self.id_to_device: Dict[int, Union[None, Device, List[Device]]] = {}
 
         self.applications = []
-        self.id_to_applications = {}
+        self.id_to_application: Dict[int, Union[None, Application, List[Application]]] = {}
 
         self.devices_links: List[dict[str, int]] = []
         self.physical_network: PhysicalNetwork = PhysicalNetwork()
@@ -158,6 +158,8 @@ class Environment(object):
         device = self.id_to_device.get(dev_id)
         if device is None:
             raise DeviceNotFoundError
+        if isinstance(device, list):
+            return device[0]
         return device
 
 
@@ -184,7 +186,7 @@ class Environment(object):
         try:
             for device in json_data['devices']:
                 dev = Device(data=device)
-                self.devices.append(dev)
+                self.add_device(dev)
         except KeyError:
             n_devices = self.config.number_of_devices # Number of devices
             try:
@@ -211,7 +213,7 @@ class Environment(object):
 
 
     @property
-    def applications(self) -> List['Application']:
+    def applications(self) -> List[Application]:
         """Get the list of Application objects in the environment.
 
         Returns:
@@ -220,7 +222,7 @@ class Environment(object):
         return self._applications
 
     @applications.setter
-    def applications(self, applications: List['Application']):
+    def applications(self, applications: List[Application]):
         """Set the list of Application objects for the environment.
 
         Args:
@@ -231,7 +233,7 @@ class Environment(object):
         for application in applications:
             self.add_application(application)
 
-    def add_application(self, application: 'Application'):
+    def add_application(self, application: Application):
         """Adds a new `Application` to the applications list.
 
         The id_to_application dictionary is updated as well.
@@ -250,7 +252,7 @@ class Environment(object):
         else:
             self.id_to_application[application.id] = [existing_application, application]
 
-    def remove_application(self, application: 'Application'):
+    def remove_application(self, application: Application):
         """Removes an `Application` from the applications list.
 
         Args:
@@ -269,7 +271,7 @@ class Environment(object):
         except ValueError:
             raise ApplicationNotFoundError("Application not found in the list.")
 
-    def get_application_by_id(self, app_id: int) -> 'Application':
+    def get_application_by_id(self, app_id: int) -> Application:
         """Gets the `Application` whose ID matches `app_id`.
 
         Args:
@@ -284,6 +286,8 @@ class Environment(object):
         application = self.id_to_application.get(app_id)
         if application is None:
             raise ApplicationNotFoundError("Application not found.")
+        if isinstance(application, list):
+            return application[0]
         return application
 
     def generate_application_list(self) -> None:
@@ -398,7 +402,7 @@ class Environment(object):
 
         for device in devices_list['devices']:
             dev = Device(data=device)
-            self.devices.append(dev)
+            self.add_device(dev)
 
 
     def import_applications(self):
@@ -417,7 +421,7 @@ class Environment(object):
             raise
 
         for application in applications_list:
-            self.applications.append(Application(data=application))
+            self.add_application(Application(data=application))
 
 
     def import_links(self):
@@ -441,10 +445,10 @@ class Environment(object):
         try:
             for link in json_data['links']:
                 self.devices_links.append(link)
-                source_device = self.get_device_by_id(link['source'])
-                target_device = self.get_device_by_id(link['target'])
+                source_device = self.get_device_by_id(int(link['source'])) # Error here, TODO: Better handling of ids types
+                target_device = self.get_device_by_id(int(link['target'])) # Error here, TODO: Better handling of ids types
                 try:
-                    source_device.add_to_routing_table(target_device.id, target_device.id,link['weight'])
+                    source_device.add_to_routing_table(target_device.id, target_device.id, float(link['weight']))
                 except KeyError as ke:
                     distance = custom_distance(source_device.position.values(),target_device.position.values())
                     source_device.add_to_routing_table(target_device.id, target_device.id,distance)
@@ -453,7 +457,7 @@ class Environment(object):
                 new_physical_network_link = PhysicalNetworkLink(source_device.id, target_device.id, size=number_of_devices)
                 try:
                     if link['id'] != new_physical_network_link.id:
-                        new_physical_network_link.set_link_id(link['id'])
+                        new_physical_network_link.set_link_id(int(link['id']))
                 except KeyError as ke:
                     pass
                 self.physical_network.add_link(new_physical_network_link)
@@ -593,7 +597,7 @@ class Environment(object):
         try :
             for device in json_data['devices']:
                 dev = Device(data=device)
-                self.devices.append(dev)
+                self.add_device(dev)
         except:
             raise NotImplementedError
 
