@@ -91,7 +91,7 @@ class Application:
         try:
             # Might be a bit legacy and might need a bit of cleanup here
             if data:
-                self.initFromDict(data)
+                self.init_from_dict(data)
             else:
                 for _ in range(num_procs):
                     # Generate a new (non-initialized) processus
@@ -129,7 +129,7 @@ class Application:
         }
 
 
-    def setAppID(self, id: int) -> None:
+    def set_app_id(self, id: int) -> None:
         """
         Used to set an application's ID by hand if necessary
 
@@ -142,7 +142,7 @@ class Application:
         self.id = id
 
 
-    def randomAppInit(self, num_procs: int = 3, num_proc_random: bool = True) -> None:
+    def random_appinit(self, num_procs: int = 3, num_proc_random: bool = True) -> None:
         """
         Random initialization of the application.
 
@@ -180,10 +180,10 @@ class Application:
         self.proc_links = proc_links
 
         # Random value between 15 and 60 minutes
-        self.setAppDuration(random.randint(int(TIME_PERIOD/96), int(TIME_PERIOD/24)))
+        self.set_app_duration(random.randint(int(TIME_PERIOD/96), int(TIME_PERIOD/24)))
 
 
-    def setAppDuration(self, duration: int = int(TIME_PERIOD/48)) -> None:
+    def set_app_duration(self, duration: int = int(TIME_PERIOD/48)) -> None:
         """
         Sets the application execution duration.
 
@@ -198,7 +198,7 @@ class Application:
         self.duration = duration
 
 
-    def setDeploymentInfo(self, deployed_onto_device: List[int]) -> None:
+    def set_deployment_info(self, deployed_onto_device: List[int]) -> None:
         """
         Creates a dictionary matching `Processus` and `Device` ID.
 
@@ -220,7 +220,7 @@ class Application:
             self.deployment_info[self.processus_list[i]] = device_id
 
 
-    def getAppProcsIDs(self) -> List[int]:
+    def get_app_procs_ids(self) -> List[int]:
         """
         Retrieves the IDs of all processus in the application.
 
@@ -233,7 +233,7 @@ class Application:
         return [proc.id for proc in self.processus_list]
 
 
-    def getAppProcByID(self, id: int) -> Processus:
+    def get_app_proc_by_id(self, id: int) -> Processus:
         """
         Retrieves a processus by its ID.
 
@@ -259,7 +259,7 @@ class Application:
             raise KeyError(f"Processus with ID {id} not found.")
 
 
-    def initFromDict(self, data: Dict) -> None:
+    def init_from_dict(self, data: Dict) -> None:
         """
         Initializes the Application object from a dictionary of data.
 
@@ -278,9 +278,9 @@ class Application:
         None
         """
 
-        self.setAppID(data['app_id'])
+        self.set_app_id(data['app_id'])
 
-        self.setAppDuration(data['duration'])
+        self.set_app_duration(data['duration'])
 
         for proc in data.get("proc_list", []):
             self.processus_list.append(Processus(data=proc))
