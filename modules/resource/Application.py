@@ -10,7 +10,7 @@ import numpy as np
 import random
 import json
 
-from typing import List, Dict, Union
+from typing import List, Dict, Union, Optional
 from modules.resource.Processus import Processus
 
 # Number of group of 10 ms
@@ -59,22 +59,18 @@ class Application:
         return result
 
 
-    def __init__(self, data: Union[Dict, None] = None, num_procs: int = 1) -> None:
-        """
-        Initializes a new Application object with the given data dictionary and number of processus.
+    def __init__(self, data: Optional[Dict] = None, *, id: Optional[int] = None, num_procs: int = 1) -> None:
+        """Initializes a new Application object.
 
         Args:
-        -----
-        data : `dict`, optional
-            A dictionary containing initial data for the application.
-            If provided, the application will be initialized with the values from this dictionary.
-            Defaults to None.
-        num_procs : `int`, optional
-            The number of processus in the application.
-            Defaults to 1.
-        """
+            id (int, optional): The ID for the application. Will be generated if not provided.
+            data (dict, optional): Dictionary containing initial data for the application.
+            num_procs (int, optional): The number of processes in the application.
 
-        self.id: int = Application._generate_id()
+        Raises:
+            RuntimeError: If initialization from the data dictionary fails.
+    """
+        self.id = id if id is not None else Application._generate_id()
 
         # Application duration
         self.duration: int = 0
@@ -90,7 +86,7 @@ class Application:
 
         self.deployment_info: Dict[Processus, int] = {}
 
-        self.proirity = 1
+        self.priority = 1
 
         try:
             # Might be a bit legacy and might need a bit of cleanup here

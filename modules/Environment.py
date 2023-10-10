@@ -48,6 +48,7 @@ class Environment(object):
         self.applications: List[Application] = []
         self.currently_deployed_apps: List[Application] = []
         self.devices = []
+        self.id_to_device = {}
 
         self.devices_links: List[dict[str, int]] = []
         self.physical_network: PhysicalNetwork = PhysicalNetwork()
@@ -96,10 +97,53 @@ class Environment(object):
         Args:
             devices (List[Device]): A list of Device objects to represent network devices in the environment.
         """
-        self._devices = devices
+        self._devices = []
+        self.id_to_device = {}
+        for device in devices:
+            self.add_device(device)
 
 
-    def getDeviceByID(self, dev_id: int) -> Device:
+    def add_device(self, device: Device):
+        """Adds a new `Device` to the devices list.
+
+        The id_to_device dictionary is updated along the way. We use a trick so that dictionary members are either a single device or a list.
+
+        Args:
+            device (Device): The `Device` object to be added.
+        """
+        self._devices.append(device)
+        existing_device = self.id_to_device.get(device.id)
+
+        if existing_device is None:
+            self.id_to_device[device.id] = device
+        elif isinstance(existing_device, list):
+            existing_device.append(device)
+        else:
+            self.id_to_device[device.id] = [existing_device, device]
+
+
+
+    def remove_device(self, device: Device):
+        """Removes a `Device` from the devices list
+
+        Args:
+            device (Device): The `Device` object to be added.
+        """
+        try:
+            self._devices.remove(device)
+            existing_device = self.id_to_device.get(device.id)
+
+            if isinstance(existing_device, list):
+                existing_device.remove(device)
+                if len(existing_device) == 1:
+                    self.id_to_device[device.id] = existing_device[0]
+            else:
+                del self.id_to_device[device.id]
+        except ValueError:
+            raise DeviceNotFoundError("Device not found in the list.")
+
+
+    def get_device_by_id(self, dev_id: int):
         """Gets the `Device` whose ID matches `dev_id`.
         `Device` IDs are supposed to be unique by construction.
 
@@ -109,13 +153,13 @@ class Environment(object):
         Returns:
             Device: The device with the matching ID.
         """
-        for device in self.devices:
-            if device.id == int(dev_id):
-                return device
-        raise DeviceNotFoundError
+        device = self.id_to_device.get(dev_id)
+        if device is None:
+            raise DeviceNotFoundError
+        return device
 
 
-    def getRandomDevice(self) -> Device:
+    def get_random_device(self) -> Device:
         """Get a random `Device` from the list of devices.
 
         Returns:
@@ -125,15 +169,6 @@ class Environment(object):
             DeviceNotFoundError: If no devices are available.
         """
         return random.choice(self.devices)
-
-
-    def addDevice(self, device: Device):
-        """Adds a new `Device` to the devices list.
-
-        Args:
-            device (Device): The `Device` object to be added.
-        """
-        self.devices.append(device)
 
 
     def getApplicationByID(self, app_id: int) -> Application:
