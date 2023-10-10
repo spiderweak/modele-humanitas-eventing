@@ -45,10 +45,12 @@ class Environment(object):
         self.current_time: int = 0
         self.config = None
 
-        self.applications: List[Application] = []
         self.currently_deployed_apps: List[Application] = []
         self.devices = []
         self.id_to_device = {}
+
+        self.applications = []
+        self.id_to_applications = {}
 
         self.devices_links: List[dict[str, int]] = []
         self.physical_network: PhysicalNetwork = PhysicalNetwork()
@@ -118,9 +120,9 @@ class Environment(object):
             self.id_to_device[device.id] = device
         elif isinstance(existing_device, list):
             existing_device.append(device)
+            logging.info("Duplicated Device ID, Carefull with handling this")
         else:
             self.id_to_device[device.id] = [existing_device, device]
-
 
 
     def remove_device(self, device: Device):
@@ -163,254 +165,14 @@ class Environment(object):
         """Get a random `Device` from the list of devices.
 
         Returns:
-            Optional[Device]: A random `Device` object, or None if no devices are available.
+            Device: A random `Device` object.
 
         Raises:
             DeviceNotFoundError: If no devices are available.
         """
+        if not self.devices:
+            raise DeviceNotFoundError("No devices are available.")
         return random.choice(self.devices)
-
-
-    def getApplicationByID(self, app_id: int) -> Application:
-        """Gets the `Application` whose ID matches `app_id`.
-        `Application` IDs are supposed to be unique by construction.
-
-        Args:
-            app_id (int): Application identifier.
-
-        Returns:
-            Optional[Application]: The Application object with the matching ID, or None if not found.
-
-        Raises:
-            ApplicationNotFoundError: If no application is found
-        """
-        for application in self.applications:
-            if application.id == app_id:
-                return application
-        raise ApplicationNotFoundError
-
-
-    def addApplication(self, application: Application):
-        """Adds a new `Application` to the list of applications.
-
-        Args:
-            application (Application): The `Application` object to be added.
-        """
-        self.applications.append(application)
-
-
-    def removeApplication(self, app_id: int) -> bool:
-        """
-        Removes the `Application` with the given `app_id` from the list of applications.
-
-        Uses getApplicationByID to locate application to remove.
-
-        `Application` IDs are supposed to be unique, so only one application should be removed.
-
-        Args:
-            app_id (int): The ID of the `Application` to be removed.
-
-        Returns:
-            bool: True if an application was removed, False otherwise.
-        """
-        try:
-            application_to_remove = self.getApplicationByID(app_id)
-
-        except ApplicationNotFoundError:
-            return False
-
-        self.applications.remove(application_to_remove)
-        return True
-
-
-    def generateApplicationList(self) -> None:
-        """
-        Generates a list of `Application` objects and appends them to `self.applications`.
-
-        The number of applications to be generated is retrieved from `self.config.number_of_applications`.
-        """
-        if self.config is None:
-            raise ValueError("Config is not initialized.")
-
-        for i in tqdm(range(self.config.number_of_applications)):
-            application = Application()
-            application.randomAppInit()
-            application.setAppID(i)
-
-            if self.config.app_duration != 0:
-                application.setAppDuration(self.config.app_duration)
-
-            self.applications.append(application)
-
-    # Let's try to code a routing table
-    def generateRoutingTable(self):
-        """
-        Generates a routing table on each device in `self.devices`
-        The function first lists the neighboring device, then iterate on the list to build a routing table based on shortest distance among links
-        This is bruteforcing the shortest path betweend devices, we can probably create a better algorithm, but this is not the point for now.
-        TODO : Fix duplicated entries in routing table
-        """
-
-        number_of_devices = len(self.devices)
-
-        ## We iterate on the matrix:
-
-        changes = True
-
-        # Approximative number of loops
-        logging.info("Generating routing table")
-        print("Generating Routing Table, (maximal value is arbitrary)")
-        progress_bar = tqdm(total=int(number_of_devices*number_of_devices*1.5))
-
-        while(changes):
-            ## As long as the values change
-            changes = False
-            for i in range(number_of_devices):
-                for j in range(number_of_devices):
-                    device_i = self.getDeviceByID(i)
-                    device_j = self.getDeviceByID(j)
-
-                    try:
-                        next_hop,distance = device_i.getRouteInfo(device_j.id)
-                    except NoRouteToHost:
-                        next_hop,distance = (-1,1000)
-
-                    nh_array = [next_hop]
-                    dist_array = [distance]
-                    for k in range(number_of_devices):
-                        device_k = self.getDeviceByID(k)
-                        try:
-                            next_hop_i_k,distance_i_k = device_i.getRouteInfo(device_k.id)
-                        except NoRouteToHost:
-                            next_hop_i_k,distance_i_k = (-1,1000)
-
-                        try:
-                            _,distance_k_j = device_k.getRouteInfo(device_j.id)
-                        except NoRouteToHost:
-                            distance_k_j = 1000
-
-                        nh_array.append(next_hop_i_k)
-                        dist_array.append(distance_i_k + distance_k_j)
-
-                    min_index = dist_array.index(min(dist_array))
-                    min_nh = nh_array[min_index]
-                    min_array = dist_array[min_index]
-
-                    if min_array < distance:
-                    ## If we observe any change, update and break the loop, keep going
-                        changes = True
-                        progress_bar.update()
-                        device_i.addToRoutingTable(device_j.id, min_nh, min_array)
-
-
-    def exportDevices(self, filename = "devices.json"):
-        output_string = {"devices" : self.devices, "links" : self.devices_links}
-        json_string = json.dumps(output_string, default=lambda o: o.__json__(), indent=4)
-
-        with open(filename, 'w') as file:
-            file.write(json_string)
-
-
-    def exportApplications(self, filename = "applications.json"):
-        json_string = json.dumps(self.applications, default=lambda o: o.__json__(), indent=4)
-        with open(filename, 'w') as file:
-            file.write(json_string)
-
-
-    def importDevices(self):
-        if self.config is None:
-            raise ValueError("Config is not initialized.")
-
-        if self.config.devices_file is None:
-            raise ImportError("No device list to process")
-
-        try:
-            with open(self.config.devices_file) as file:
-                devices_list = json.load(file)
-        except FileNotFoundError:
-            raise FileNotFoundError("Please add devices list in argument, default value is devices.json in current directory")
-
-        for device in devices_list['devices']:
-            dev = Device(data=device)
-            self.devices.append(dev)
-
-
-    def importApplications(self):
-        if self.config is None:
-            raise ValueError("Config is not initialized.")
-
-        if self.config.applications_file is None:
-            raise ImportError("No application list to process")
-
-        try:
-            with open(self.config.applications_file) as file:
-                applications_list = json.load(file)
-        except FileNotFoundError:
-            raise FileNotFoundError("Please add application list in argument, default value is applications.json in current directory")
-        except json.decoder.JSONDecodeError:
-            raise
-
-        for application in applications_list:
-            self.applications.append(Application(data=application))
-
-
-    def importLinks(self):
-        if self.config is None:
-            raise ValueError("Config is not initialized.")
-
-        with open(self.config.devices_template_filename) as file:
-            json_data = json.load(file)
-        try :
-
-            number_of_devices = len(self.devices)
-
-            if (self.config.number_of_devices != number_of_devices):
-                print("Discrepency between number of devices in config and number of device in json, will use number of devices in db")
-                logging.info("Discrepency between number of devices in config and number of device in json, will use number of devices in db")
-
-            self.physical_network = PhysicalNetwork(size=number_of_devices)
-        except:
-            raise ImportError
-
-        try:
-            for link in json_data['links']:
-                self.devices_links.append(link)
-                source_device = self.getDeviceByID(link['source'])
-                target_device = self.getDeviceByID(link['target'])
-                try:
-                    source_device.addToRoutingTable(target_device.id, target_device.id,link['weight'])
-                except KeyError as ke:
-                    distance = custom_distance(source_device.position.values(),target_device.position.values())
-                    source_device.addToRoutingTable(target_device.id, target_device.id,distance)
-                # target_device.addToRoutingTable(source_device.id, source_device.id,link['weight'])
-
-                new_physical_network_link = PhysicalNetworkLink(source_device.id, target_device.id, size=number_of_devices)
-                try:
-                    if link['id'] != new_physical_network_link.id:
-                        new_physical_network_link.setLinkID(link['id'])
-                except KeyError as ke:
-                    pass
-                self.physical_network.addLink(new_physical_network_link)
-
-        except KeyError as ke:
-            if ke.args[0] == 'links':
-                for device_1 in self.devices:
-                    device_1_id = device_1.id
-                    for device_2 in self.devices:
-                        device_2_id = device_2.id
-                        distance = custom_distance(device_1.position.values(),device_2.position.values())
-
-                        if distance < self.config.wifi_range:
-                            device_1.addToRoutingTable(device_2_id, device_2_id, distance)
-                            device_2.addToRoutingTable(device_1_id, device_1_id, distance)
-
-                            new_physical_network_link = PhysicalNetworkLink(device_1_id, device_2_id, size=number_of_devices, latency=distance)
-                            if device_1_id == device_2_id:
-                                new_physical_network_link.setPhysicalNetworkLinkLatency(0)
-                            self.physical_network.addLink(new_physical_network_link)
-                            link = {"source": device_1_id, "target": device_2_id, "weight": distance, "id": new_physical_network_link.id}
-                            self.devices_links.append(link)
-
 
     def generateDeviceList(self):
         if self.config is None:
@@ -448,7 +210,275 @@ class Environment(object):
                     device['resource'] = {"cpu": 8, "gpu": 8, "mem": 8192, "disk": 1024000}
 
 
-    def plotDeviceNetwork(self):
+    @property
+    def applications(self) -> List['Application']:
+        """Get the list of Application objects in the environment.
+
+        Returns:
+            List[Application]: The list of Application objects representing network applications.
+        """
+        return self._applications
+
+    @applications.setter
+    def applications(self, applications: List['Application']):
+        """Set the list of Application objects for the environment.
+
+        Args:
+            applications (List[Application]): A list of Application objects to represent network applications in the environment.
+        """
+        self._applications = []
+        self.id_to_application = {}
+        for application in applications:
+            self.add_application(application)
+
+    def add_application(self, application: 'Application'):
+        """Adds a new `Application` to the applications list.
+
+        The id_to_application dictionary is updated as well.
+
+        Args:
+            application (Application): The `Application` object to be added.
+        """
+        self._applications.append(application)
+        existing_application = self.id_to_application.get(application.id)
+
+        if existing_application is None:
+            self.id_to_application[application.id] = application
+        elif isinstance(existing_application, list):
+            logging.info("Duplicated Application ID, Carefull with handling this")
+            existing_application.append(application)
+        else:
+            self.id_to_application[application.id] = [existing_application, application]
+
+    def remove_application(self, application: 'Application'):
+        """Removes an `Application` from the applications list.
+
+        Args:
+            application (Application): The `Application` object to be removed.
+        """
+        try:
+            self._applications.remove(application)
+            existing_application = self.id_to_application.get(application.id)
+
+            if isinstance(existing_application, list):
+                existing_application.remove(application)
+                if len(existing_application) == 1:
+                    self.id_to_application[application.id] = existing_application[0]
+            else:
+                del self.id_to_application[application.id]
+        except ValueError:
+            raise ApplicationNotFoundError("Application not found in the list.")
+
+    def get_application_by_id(self, app_id: int) -> 'Application':
+        """Gets the `Application` whose ID matches `app_id`.
+
+        Args:
+            app_id (int): Application identifier.
+
+        Returns:
+            Application: The Application object with the matching ID.
+
+        Raises:
+            ApplicationNotFoundError: If no application is found.
+        """
+        application = self.id_to_application.get(app_id)
+        if application is None:
+            raise ApplicationNotFoundError("Application not found.")
+        return application
+
+    def generate_application_list(self) -> None:
+        """Generates a list of `Application` objects and appends them to `self.applications`.
+
+        The number of applications to be generated is retrieved from `self.config.number_of_applications`.
+
+        Raises:
+            ValueError: If the config is not initialized.
+        """
+        if self.config is None:
+            raise ValueError("Config is not initialized.")
+
+        for i in range(self.config.number_of_applications):
+            application = Application()
+            application.randomAppInit()
+            application.setAppID(id=i)
+
+            if self.config.app_duration != 0:
+                application.setAppDuration(self.config.app_duration)
+
+            self.add_application(application)
+
+
+    # Let's try to code a routing table
+    def generate_routing_table(self):
+        """
+        Generates a routing table on each device in `self.devices`
+        The function first lists the neighboring device, then iterate on the list to build a routing table based on shortest distance among links
+        This is bruteforcing the shortest path betweend devices, we can probably create a better algorithm, but this is not the point for now.
+        TODO : Fix duplicated entries in routing table
+        """
+
+        number_of_devices = len(self.devices)
+
+        ## We iterate on the matrix:
+
+        changes = True
+
+        # Approximative number of loops
+        logging.info("Generating routing table")
+        print("Generating Routing Table, (maximal value is arbitrary)")
+        progress_bar = tqdm(total=int(number_of_devices*number_of_devices*1.5))
+
+        while(changes):
+            ## As long as the values change
+            changes = False
+            for i in range(number_of_devices):
+                for j in range(number_of_devices):
+                    device_i = self.get_device_by_id(i)
+                    device_j = self.get_device_by_id(j)
+
+                    try:
+                        next_hop,distance = device_i.getRouteInfo(device_j.id)
+                    except NoRouteToHost:
+                        next_hop,distance = (-1,1000)
+
+                    nh_array = [next_hop]
+                    dist_array = [distance]
+                    for k in range(number_of_devices):
+                        device_k = self.get_device_by_id(k)
+                        try:
+                            next_hop_i_k,distance_i_k = device_i.getRouteInfo(device_k.id)
+                        except NoRouteToHost:
+                            next_hop_i_k,distance_i_k = (-1,1000)
+
+                        try:
+                            _,distance_k_j = device_k.getRouteInfo(device_j.id)
+                        except NoRouteToHost:
+                            distance_k_j = 1000
+
+                        nh_array.append(next_hop_i_k)
+                        dist_array.append(distance_i_k + distance_k_j)
+
+                    min_index = dist_array.index(min(dist_array))
+                    min_nh = nh_array[min_index]
+                    min_array = dist_array[min_index]
+
+                    if min_array < distance:
+                    ## If we observe any change, update and break the loop, keep going
+                        changes = True
+                        progress_bar.update()
+                        device_i.addToRoutingTable(device_j.id, min_nh, min_array)
+
+
+    def export_devices(self, filename = "devices.json"):
+        output_string = {"devices" : self.devices, "links" : self.devices_links}
+        json_string = json.dumps(output_string, default=lambda o: o.__json__(), indent=4)
+
+        with open(filename, 'w') as file:
+            file.write(json_string)
+
+
+    def export_applications(self, filename = "applications.json"):
+        json_string = json.dumps(self.applications, default=lambda o: o.__json__(), indent=4)
+        with open(filename, 'w') as file:
+            file.write(json_string)
+
+
+    def import_devices(self):
+        if self.config is None:
+            raise ValueError("Config is not initialized.")
+
+        if self.config.devices_file is None:
+            raise ImportError("No device list to process")
+
+        try:
+            with open(self.config.devices_file) as file:
+                devices_list = json.load(file)
+        except FileNotFoundError:
+            raise FileNotFoundError("Please add devices list in argument, default value is devices.json in current directory")
+
+        for device in devices_list['devices']:
+            dev = Device(data=device)
+            self.devices.append(dev)
+
+
+    def import_applications(self):
+        if self.config is None:
+            raise ValueError("Config is not initialized.")
+
+        if self.config.applications_file is None:
+            raise ImportError("No application list to process")
+
+        try:
+            with open(self.config.applications_file) as file:
+                applications_list = json.load(file)
+        except FileNotFoundError:
+            raise FileNotFoundError("Please add application list in argument, default value is applications.json in current directory")
+        except json.decoder.JSONDecodeError:
+            raise
+
+        for application in applications_list:
+            self.applications.append(Application(data=application))
+
+
+    def import_links(self):
+        if self.config is None:
+            raise ValueError("Config is not initialized.")
+
+        with open(self.config.devices_template_filename) as file:
+            json_data = json.load(file)
+        try :
+
+            number_of_devices = len(self.devices)
+
+            if (self.config.number_of_devices != number_of_devices):
+                print("Discrepency between number of devices in config and number of device in json, will use number of devices in db")
+                logging.info("Discrepency between number of devices in config and number of device in json, will use number of devices in db")
+
+            self.physical_network = PhysicalNetwork(size=number_of_devices)
+        except:
+            raise ImportError
+
+        try:
+            for link in json_data['links']:
+                self.devices_links.append(link)
+                source_device = self.get_device_by_id(link['source'])
+                target_device = self.get_device_by_id(link['target'])
+                try:
+                    source_device.addToRoutingTable(target_device.id, target_device.id,link['weight'])
+                except KeyError as ke:
+                    distance = custom_distance(source_device.position.values(),target_device.position.values())
+                    source_device.addToRoutingTable(target_device.id, target_device.id,distance)
+                # target_device.addToRoutingTable(source_device.id, source_device.id,link['weight'])
+
+                new_physical_network_link = PhysicalNetworkLink(source_device.id, target_device.id, size=number_of_devices)
+                try:
+                    if link['id'] != new_physical_network_link.id:
+                        new_physical_network_link.setLinkID(link['id'])
+                except KeyError as ke:
+                    pass
+                self.physical_network.addLink(new_physical_network_link)
+
+        except KeyError as ke:
+            if ke.args[0] == 'links':
+                for device_1 in self.devices:
+                    device_1_id = device_1.id
+                    for device_2 in self.devices:
+                        device_2_id = device_2.id
+                        distance = custom_distance(device_1.position.values(),device_2.position.values())
+
+                        if distance < self.config.wifi_range:
+                            device_1.addToRoutingTable(device_2_id, device_2_id, distance)
+                            device_2.addToRoutingTable(device_1_id, device_1_id, distance)
+
+                            new_physical_network_link = PhysicalNetworkLink(device_1_id, device_2_id, size=number_of_devices, latency=distance)
+                            if device_1_id == device_2_id:
+                                new_physical_network_link.setPhysicalNetworkLinkLatency(0)
+                            self.physical_network.addLink(new_physical_network_link)
+                            link = {"source": device_1_id, "target": device_2_id, "weight": distance, "id": new_physical_network_link.id}
+                            self.devices_links.append(link)
+
+
+    def plot_device_network(self):
         # We'll try our hand on plotting everything in a graph
 
         # Creating a graph
@@ -479,8 +509,8 @@ class Environment(object):
         ax.scatter(x_coords, y_coords, z_coords, c='b')
         ## Placing the edges by hand
         for i, j in G.edges():
-            device_i = self.getDeviceByID(i)
-            device_j = self.getDeviceByID(j)
+            device_i = self.get_device_by_id(i)
+            device_j = self.get_device_by_id(j)
             ax.plot([device_i.position['x'], device_j.position['x']],
                     [device_i.position['y'], device_j.position['y']],
                     [device_i.position['z'], device_j.position['z']], c='lightgray')
@@ -500,7 +530,7 @@ class Environment(object):
         plt.savefig("fig/graph.png")
 
 
-    def extractDevicesResources(self, resources = ['cpu', 'gpu', 'mem', 'disk'], filename = "devices_data.json"):
+    def extract_devices_resources(self, resources = ['cpu', 'gpu', 'mem', 'disk'], filename = "devices_data.json"):
         extracted_data = dict()
         for resource in resources:
             extracted_data[resource] = np.empty(len(self.devices))
@@ -516,7 +546,7 @@ class Environment(object):
 
         return extracted_data
 
-    def extractDecisionWeights(self):
+    def extract_decision_weights(self):
         extracted_data = dict()
 
         for device in self.devices:
@@ -524,7 +554,7 @@ class Environment(object):
 
         return extracted_data
 
-    def extractCurrentlyDeployedAppData(self, resources = ['cpu', 'gpu', 'mem', 'disk'], filename = "apps_data.json"):
+    def extract_currently_deployed_apps_data(self, resources = ['cpu', 'gpu', 'mem', 'disk'], filename = "apps_data.json"):
         extracted_data = []
         for app in self.currently_deployed_apps:
             app_data = dict()
@@ -548,13 +578,13 @@ class Environment(object):
         # Generate a dict with each resource (cpu, gpu, memory, disk) request for each proc for each app
         # return and export to csv
 
-    def extractValues(self):
+    def extract_values(self):
 
         self.physical_network.extractNetworkMatrix()
-        self.extractDevicesResources()
+        self.extract_devices_resources()
 
 
-    def importResults(self):
+    def import_results(self):
         if self.config is None:
             raise ValueError("Config is not initialized.")
 
@@ -567,11 +597,11 @@ class Environment(object):
         except:
             raise NotImplementedError
 
-    def processClosenessCentrality(self):
+    def process_closeness_centrality(self):
         computed_cc = self.physical_network.computeClosenessCentrality()
 
         for k,v in computed_cc.items():
-            device = self.getDeviceByID(k)
+            device = self.get_device_by_id(k)
             device.closeness_centrality = v
 
         return computed_cc
