@@ -45,7 +45,7 @@ def main():
 
     environment = Environment()
 
-    config = Config(options)
+    config = Config(options=options)
 
     environment.config = config
 

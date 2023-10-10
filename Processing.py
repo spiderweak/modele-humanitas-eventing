@@ -66,9 +66,9 @@ def main():
 
     environment = Environment()
 
-    config = Config(options)
+    config = Config()
 
-    environment.config = config
+    environment.config = config.from_options(options=options)
 
     environment.importDevices()
 
