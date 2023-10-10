@@ -62,14 +62,14 @@ class PhysicalNetworkLink:
         self.id = id
 
 
-    def getOrigin(self) -> int:
+    def get_origin(self) -> int:
         return self.device_1_id
 
-    def getDestination(self) -> int:
+    def get_destination(self) -> int:
         return self.device_2_id
 
 
-    def setPhysicalNetworkLinkBandwidth(self, bandwidth: float):
+    def set_physical_network_link_bandwidth(self, bandwidth: float):
         """
         Sets a Physical Link's Bandwidth (in kBytes/s)
 
@@ -80,7 +80,7 @@ class PhysicalNetworkLink:
         self.bandwidth = bandwidth
 
 
-    def setPhysicalNetworkLinkLatency(self, latency: float):
+    def set_physical_network_link_latency(self, latency: float):
         """
         Sets a Physical Link's associated latency
 
@@ -91,7 +91,7 @@ class PhysicalNetworkLink:
         self.latency = latency
 
 
-    def getPhysicalNetworkLinkLatency(self) -> float:
+    def get_physical_network_link_latency(self) -> float:
         """
         Returns the Physical Link's associated latency
 
@@ -102,7 +102,7 @@ class PhysicalNetworkLink:
         return self.latency
 
 
-    def availableBandwidth(self) -> float:
+    def available_bandwidth(self) -> float:
         """
         Returns the Physical Link's available (unused) bandwidth (in kBytes/s)
 
@@ -113,7 +113,7 @@ class PhysicalNetworkLink:
         return self.bandwidth - self.bandwidth_use
 
 
-    def useBandwidth(self, bandwidth_request: float) -> bool:
+    def use_bandwidth(self, bandwidth_request: float) -> bool:
         """
         Allocates Physical Link's bandwidth based on bandwidth request (in kBytes/s)
 
@@ -125,14 +125,14 @@ class PhysicalNetworkLink:
             bool
                 True if allocation possible and successfull, else False
         """
-        if bandwidth_request < self.availableBandwidth():
+        if bandwidth_request < self.available_bandwidth():
             self.bandwidth_use += bandwidth_request
             return True
         else:
             return False
 
 
-    def freeBandwidth(self, free_bandwidth_request: float):
+    def free_bandwidth(self, free_bandwidth_request: float):
         """
         Free a part of the Physical Link's bandwidth based on free bandwidth request (in kBytes/s)
         If requested bandwidth is superior to allocated bandwidth, bandwidth use is set to 0 instead of negative value
@@ -144,7 +144,7 @@ class PhysicalNetworkLink:
         self.bandwidth_use = max(self.bandwidth_use-free_bandwidth_request, 0)
 
 
-    def checkPhysicalLink(self, device_1_id: int, device_2_id: int) -> bool:
+    def check_physical_lLink(self, device_1_id: int, device_2_id: int) -> bool:
         """
         Check if the associated link actually links the two given devices
 
