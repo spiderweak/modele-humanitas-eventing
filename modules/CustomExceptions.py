@@ -3,3 +3,6 @@ class NoRouteToHost(Exception):
 
 class DeviceNotFoundError(Exception):
     pass
+
+class ApplicationNotFoundError(Exception):
+    pass
