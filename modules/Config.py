@@ -1,80 +1,80 @@
 import yaml
 import logging
-import datetime
-import os
-import networkx as nx
-import matplotlib.pyplot as plt
+from typing import Any, Dict, Union
 
-from modules.ResourceManagement import custom_distance
+import argparse
 
-import json
-class Config():
-    def __init__(self, options, env):
-        """
-        Initializes the application configuration with basic values
-        Assigns default values if no values are given
+class Config:
+    DEFAULT_LOG_LEVEL = logging.INFO
+    DEFAULT_LOG_FILENAME: str = 'log.txt'
+    DEFAULT_DEVICES_TEMPLATE_FILENAME: str = 'devices.json'
+    DEFAULT_APPLICATION_TEMPLATE_FILENAME: str = 'application.json'
+    DEFAULT_RESULTS_FILENAME: str = 'results.json'
+    DEFAULT_NUMBER_OF_APPLICATIONS: int = 500
+    DEFAULT_NUMBER_OF_DEVICES: int = 40
+    DEFAULT_WIFI_RANGE: float = 6.0
+    DEFAULT_APP_DURATION: int = 0
+    DEFAULT_3D_SPACE: Dict[str,Union[int,float]] = {"x_min": 0, "x_max": 40, "y_min": 0, "y_max": 40, "z_min": 0, "z_max": 0}
+
+    def __init__(self, options: argparse.Namespace):
+        """Initializes the application configuration with default values or values from a YAML file.
 
         Args:
-        -----
-        options : `argparse.Namespace`
-            parsed arguments from argument parser (`argparse`) module
-        env : `Environment`
-            Simulation environment
+            options (argparse.Namespace): parsed command-line options
+            env (Environment): simulation environment
 
         Attributes:
-        -----------
-        parsed_yaml : `dict`
-            Contains the outpout from loading the configuration YAML file, stored as a dict
-        log_level : `int`
-            Integer representation of the parsed log level
-        log_filename : `str`
-            LogFile name
-        devices_template_filename : `str`
-            Device Template Filename
-        application_template_filename : `str`
-            Application Template Filename
-        number_of_applications : `int`
-            Number of application to test
-        number_of_devices : `int`
-            Number of devices in the infrastructure
-        wifi_range : `float`
-            Distance necessary to establish links between two devices, defaults to 6m
+            parsed_yaml (Dict[str, Any]): Contains the parsed configuration YAML file, stored as a dict.
+            log_level (int): Integer representation of the parsed log level.
+            log_filename (str): Log file name.
+            ... (and others)
         """
+        self.set_defaults()
 
-        self.parsed_yaml = None
-        self.log_level = None
-        self.log_filename = None
+        if hasattr(options, 'config'):
+            self.load_yaml(options.config)
+        else:
+            logging.error("config option not used, using default settings.")
 
-        config_file_not_found = False
+        self.setup_logging()
+        self.set_options(options)
 
-        self.devices_template_filename = "devices.json"
-        self.application_template_filename = "application.json"
-        self.results_filename = "results.json"
+    def set_defaults(self) -> None:
+        """Sets default values for all attributes."""
+        self.parsed_yaml: Dict[str, Any] = {}
+        self.log_level : int = self.DEFAULT_LOG_LEVEL
+        self.log_filename: str = self.DEFAULT_LOG_FILENAME
 
-        self.number_of_applications = 500
-        self.number_of_devices = 40
-        self.wifi_range = 6
 
-        self._3D_space = {"x_min" : 0,
-                        "x_max" : 40,
-                        "y_min" : 0,
-                        "y_max" : 40,
-                        "z_min" : 0,
-                        "z_max" : 0}
+        self.devices_template_filename: str = self.DEFAULT_DEVICES_TEMPLATE_FILENAME
+        self.application_template_filename: str = self.DEFAULT_APPLICATION_TEMPLATE_FILENAME
+        self.results_filename: str = self.DEFAULT_RESULTS_FILENAME
 
-        self.app_duration = 0
+        self.number_of_applications: int = self.DEFAULT_NUMBER_OF_APPLICATIONS
+        self.number_of_devices: int = self.DEFAULT_NUMBER_OF_DEVICES
+        self.wifi_range: float = self.DEFAULT_WIFI_RANGE
 
-        # Parsing the folder
+        self._3D_space: Dict[str,Union[int,float]] = self.DEFAULT_3D_SPACE
+
+        self.app_duration: int = self.DEFAULT_APP_DURATION
+
+    def load_yaml(self, config_file_path: str) -> None:
+        """Loads settings from a YAML file.
+
+        Args:
+            config_file_path (str): Configuration File Path
+        """
         try:
-            with open(options.config, 'r') as config_file:
+            with open(config_file_path, 'r') as config_file:
                 self.parsed_yaml = yaml.safe_load(config_file)
         except FileNotFoundError:
-            self.parsed_yaml = None
-            config_file_not_found = True
+            logging.error("Configuration File Not Found, using default settings.")
 
-        # Log level
+    def setup_logging(self) -> None:
+        """Initializes logging based on parsed YAML."""
+
         try:
-            match self.parsed_yaml['loglevel']:
+            match self.parsed_yaml.get('loglevel', 'info'):
                 case 'error':
                     self.log_level = logging.ERROR
                 case 'warning':
@@ -88,79 +88,51 @@ class Config():
         except (KeyError, TypeError):
             self.log_level = logging.INFO
 
-        # Log file
-        try:
-            self.log_filename = self.parsed_yaml['logfile']
-        except (KeyError, TypeError):
-            self.log_filename = 'log.txt'
+        self.log_filename = self.parsed_yaml.get('logfile', 'log.txt')
 
         logging.basicConfig(filename=self.log_filename, encoding='utf-8', level=self.log_level)
         logging.info('\n')
-        if config_file_not_found:
-            logging.error("Configuration File Not Found, defaulting to default configuration")
-            logging.error("\n")
 
-        # Template files
+    def _set_attribute_from_yaml(self, attr_name: str, yaml_path: list, value_type: type) -> None:
+        """
+        Helper function to set attribute from parsed YAML.
+
+        Args:
+            attr_name (str): The name of the attribute to set.
+            yaml_path (list): The list of keys to navigate the YAML dictionary.
+            value_type (type): The type to cast the value to (e.g., int, float, str).
+        """
         try:
-            self.devices_template_filename = self.parsed_yaml['template_files']['devices']
-        except KeyError as e:
-            logging.error(f"No entry in configuration file for {e}, default solution uses 'devices.json' in the project's root")
+            value = self.parsed_yaml
+            for key in yaml_path:
+                value = value[key]
+            setattr(self, attr_name, value_type(value))
+        except (KeyError, TypeError) as e:
+            logging.error(f"Config Error, Default simulation value {getattr(self, attr_name)} used for entry {e}")
 
-        try:
-            self.application_template_filename = self.parsed_yaml['template_files']['applications']
-        except KeyError as e:
-            logging.error(f"No entry in configuration file for {e}, default solution uses 'applications.json' in the project's root")
+    def set_options(self, options: argparse.Namespace) -> None:
+        """Sets other options based on parsed YAML and command-line options."""
 
-        # Number of simulated applications to deploy
-        try:
-            self.number_of_applications = int(self.parsed_yaml['application_number'])
-        except KeyError as e:
-            logging.error(f"No entry in configuration file for {e}, default simulation value is 500 applications")
-        except TypeError:
-            logging.error("Configuration File Not Found, default simulation value is 500 applications")
+        self._set_attribute_from_yaml('devices_template_filename', ['template_files', 'devices'], str)
+        self._set_attribute_from_yaml('application_template_filename', ['template_files', 'applications'], str)
+        self._set_attribute_from_yaml('number_of_applications', ['application_number'], int)
+        self._set_attribute_from_yaml('number_of_devices', ['device_number'], int)
+        self._set_attribute_from_yaml('wifi_range', ['wifi_range'], float)
 
-        # Number of simulated devices
-        try:
-            self.number_of_devices = int(self.parsed_yaml['device_number'])
-        except KeyError as e:
-            logging.error(f"No entry in configuration file for {e}, default simulation value is 40 devices")
-        except TypeError:
-            logging.error("Configuration File Not Found, default simulation value is 40 devices")
-
-        # Simulated wifi range for device connectivity
-        try:
-            self.wifi_range = int(self.parsed_yaml['wifi_range'])
-        except KeyError as e:
-            logging.error(f"No entry in configuration file for {e}, default simulation value is 6 meters")
-        except TypeError:
-            logging.error("Configuration File Not Found, default simulations is 6 meters")
-
-        # Simulated 2D/3D space
+    # Simulated 2D/3D space
         for boundary in self._3D_space.keys():
-            try:
-                self._3D_space[boundary] = int(self.parsed_yaml['device_positionning'][boundary])
-            except (KeyError,TypeError) as e:
-                logging.error(f"Default simulation value {self._3D_space[boundary]} used for entry {boundary}")
+            self._set_attribute_from_yaml(f'_3D_space["{boundary}"]', ['device_positionning', boundary], float)
 
-        # Setting application durations
-        try:
-            self.app_duration = int(self.parsed_yaml['app_duration'])
-        except (KeyError,TypeError) as e:
-            logging.error(f"Default simulation value {self.app_duration} used for entry {e}")
+        self._set_attribute_from_yaml('app_duration', ['app_duration'], float)
 
+        # Setting options
         try:
             self.results_filename = options.results
         except (KeyError,AttributeError) as e:
             logging.error(f"{e}, processing output will be default {self.results_filename}")
 
-        try:
-            self.devices_file = options.devices
-            self.applications_file = options.applications
-            self.arrivals_file = options.arrivals
-        except AttributeError:
-            pass
-
-        try:
-            self.dry_run = options.dry_run
-        except (KeyError, AttributeError):
-            self.dry_run = False
+        self.results_filename = getattr(options, 'results', self.results_filename)
+        self.devices_file = getattr(options, 'devices', self.devices_file)
+        self.applications_file = getattr(options, 'applications', self.applications_file)
+        self.arrivals_file = getattr(options, 'arrivals', self.arrivals_file)
+        self.dry_run = getattr(options, 'dry_run', False)
