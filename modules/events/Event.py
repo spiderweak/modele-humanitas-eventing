@@ -1,7 +1,9 @@
 import logging
 from modules.resource.Path import Path
 from modules.resource.Application import Application
+from modules.resource.Processus import Processus
 from modules.Environment import Environment
+from modules.EventQueue import EventQueue
 from modules.fullstateprocessing.FullStateProcessing import CeilingUnlimitedMigration
 import json
 
@@ -13,7 +15,7 @@ class Event():
     """An event with event_number occurs at a specific time ``event_time`` and involves a specific
         event type ``event_type``. Comparing two events amounts to figuring out which event occurs first """
 
-    def __init__(self, event_name, queue, event_time=None):
+    def __init__(self, event_name, queue: EventQueue, event_time=None):
 
         self.name = event_name
         self.queue = queue
@@ -104,12 +106,12 @@ class Placement(Event):
         """
 
         for resource in proc.resource_request:
-            if proc.resource_request[resource] + device.getDeviceResourceUsage(resource) > device.resource_limit[resource]:
+            if proc.resource_request[resource] + device.get_device_resource_usage(resource) > device.resource_limit[resource]:
                 return False
         return True
 
 
-    def reservable_bandwidth(self, env, path, bandwidth_needed):
+    def reservable_bandwidth(self, env: Environment, path, bandwidth_needed):
         """
         Checks if a given bandwidth can be reserved along a given path.
 
@@ -121,7 +123,7 @@ class Placement(Event):
         Returns:
             Boolean, True if bandwidth can be reserved, else False
         """
-        return bandwidth_needed <= path.minBandwidthAvailableonPath(env)
+        return bandwidth_needed <= path.min_bandwidth_available_on_path(env)
 
 
     def linkability(self, env, deployed_app_list, proc_links):
@@ -165,13 +167,13 @@ class Placement(Event):
         logging.debug(f"Placement procedure from {self.deployment_starting_point}")
 
         if env.config.dry_run:
-            self.application_to_place.setDeploymentInfo(deployed_onto_devices)
+            self.application_to_place.set_deployment_info(deployed_onto_devices)
             env.currenty_deployed_apps.append(self.application_to_place)
             Undeploy("Release", self.queue, self.application_to_place, event_time=int(self.get_time()+self.application_to_place.duration)).add_to_queue()
             return deployment_times, deployed_onto_devices
 
         try:
-            device = env.getDeviceByID(self.deployment_starting_point)
+            device = env.get_device_by_id(self.deployment_starting_point)
         except:
             device = env.get_random_device()
             logging.debug(f"Placement procedure from other device {device.id}")
@@ -183,13 +185,13 @@ class Placement(Event):
         for proc in self.application_to_place.processus_list:
             pref_proc[proc.id] = list()
             for dev_id,dev_latency in sorted_distance_from_device:
-                device = env.getDeviceByID(dev_id)
+                device = env.get_device_by_id(dev_id)
                 if self.deployable_proc(proc, device):
                     pref_proc[proc.id].append((dev_id, dev_latency))
 
         matching = dict()
         matching_latency = dict()
-        to_match  = self.application_to_place.getAppProcsIDs()
+        to_match  = self.application_to_place.get_app_procs_ids()
 
         while len(to_match)!=0:
             proc_id = to_match.pop(0)
@@ -204,15 +206,15 @@ class Placement(Event):
                 matching[proc_id] = deployed
                 matching_latency[proc_id] = deployment_latency
             else:
-                matching_procs = [self.application_to_place.getAppProcByID(proc) for proc,dev in matching.items() if dev == deployed]
-                agglomerated = sum(matching_procs)# + proc
-                if self.deployable_proc(agglomerated, env.getDeviceByID(dev_id)):
+                matching_procs = [self.application_to_place.get_app_proc_by_id(proc) for proc,dev in matching.items() if dev == deployed]
+                agglomerated = sum(matching_procs)# + proc # type: ignore
+                if self.deployable_proc(agglomerated, env.get_device_by_id(dev_id)):
                     matching[proc_id] = deployed
                     matching_latency[proc_id] = deployment_latency
                 else:
-                    min_proc_deployed = min([self.application_to_place.getAppProcByID(proc) for proc,dev in matching.items() if dev == deployed])
-                    if self.application_to_place.getAppProcByID(proc_id) > min_proc_deployed:
-                        min_proc_deployed_id = min_proc_deployed.getProcessusID()
+                    min_proc_deployed = min([self.application_to_place.get_app_proc_by_id(proc) for proc,dev in matching.items() if dev == deployed])
+                    if self.application_to_place.get_app_proc_by_id(proc_id) > min_proc_deployed:
+                        min_proc_deployed_id = min_proc_deployed.id
                         to_match.append(min_proc_deployed_id)
                         matching[proc_id] = deployed
                         matching_latency[proc_id] = deployment_latency
@@ -226,7 +228,7 @@ class Placement(Event):
             prev_time, prev_value = env.count_accepted_application[-1]
             _, prev_tentative = env.count_tentatives[-1]
 
-            for proc_id in self.application_to_place.getAppProcsIDs():
+            for proc_id in self.application_to_place.get_app_procs_ids():
                 deployed_onto_devices.append(matching[proc_id])
                 deployment_times.append(matching_latency[proc_id])
 
@@ -282,7 +284,7 @@ class Deploy_Proc(Event):
                             'mem': self.proc_to_deploy.resource_request['mem'],
                             'disk': self.proc_to_deploy.resource_request['disk']}
 
-        env.getDeviceByID(self.device_destination_id).allocateAllResources(self.time, allocation_request)
+        env.get_device_by_id(self.device_destination_id).allocate_all_resources(self.time, allocation_request)
 
         if self.last_proc:
             Sync("Synchronize", self.queue, self.app, self.devices_destinations, event_time=int(self.get_time()+self.synchronization_time)).add_to_queue()
@@ -314,13 +316,13 @@ class Sync(Event):
                 new_path.path_generation(env, device_id, self.devices_destinations[j])
                 for path_id in new_path.physical_links_path:
                     if env.physical_network_links[path_id] is not None:
-                        env.physical_network_links[path_id].useBandwidth(self.app.proc_links[i-1][j])
-                        operational_latency += env.physical_network_links[path_id].getPhysicalNetworkLinkLatency()
+                        env.physical_network_links[path_id].use_bandwidth(self.app.proc_links[i-1][j])
+                        operational_latency += env.physical_network_links[path_id].get_physical_network_link_latency()
                     else:
                         logging.error(f"Physical network link error, expexted PhysicalNetworkLink, got {env.physical_network_links[path_id]}")
 
         # Set Deployment info
-        self.app.setDeploymentInfo(self.devices_destinations)
+        self.app.set_deployment_info(self.devices_destinations)
         env.currenty_deployed_apps.append(self.app)
 
         # Run
@@ -345,7 +347,7 @@ class Undeploy(Event):
 
             release_request = {'cpu': process.resource_request['cpu'], 'gpu': process.resource_request['gpu'], 'mem': process.resource_request['mem'], 'disk': process.resource_request['disk']}
 
-            env.getDeviceByID(device_id).releaseAllResources(self.time, release_request)
+            env.get_device_by_id(device_id).release_all_resources(self.time, release_request)
 
             # undeploy links
             """
@@ -354,8 +356,8 @@ class Undeploy(Event):
                 new_path.path_generation(env, device_id, self.devices_destinations[j])
                 for path_id in new_path.physical_links_path:
                     if env.physical_network_links[path_id] is not None:
-                        env.physical_network_links[path_id].useBandwidth(self.application_to_deploy.proc_links[i-1][j])
-                        operational_latency += env.physical_network_links[path_id].getPhysicalNetworkLinkLatency()
+                        env.physical_network_links[path_id].use_bandwidth(self.application_to_deploy.proc_links[i-1][j])
+                        operational_latency += env.physical_network_links[path_id].get_physical_network_link_latency()
                     else:
                         logging.error(f"Physical network link error, expexted PhysicalNetworkLink, got {env.physical_network_links[path_id]}")
             """
@@ -377,9 +379,9 @@ class Organize(Event):
 
     def process(self, env: Environment):
 
-        dev_matrix = env.extractDevicesResources()
-        dev_weight = env.extractDecisionWeights()
-        proc_matrix = env.extractCurrentlyDeployedAppData()
+        dev_matrix = env.extract_devices_resources()
+        dev_weight = env.extract_decision_weights()
+        proc_matrix = env.extract_currently_deployed_apps_data()
         instance = CeilingUnlimitedMigration(proc_matrix, dev_matrix, dev_weight)
 
         x = instance.processing()
@@ -394,5 +396,5 @@ class FinalReport(Event):
 
     def process(self, env):
         for device in env.devices:
-            device.reportOnValue(self.get_time())
+            device.report_on_value(self.get_time())
 
