@@ -3,7 +3,7 @@ from modules.resource.Application import Application
 from modules.resource.Device import Device
 from modules.resource.PhysicalNetwork import PhysicalNetwork
 from modules.Config import Config
-from modules.CustomExceptions import (NoRouteToHost, DeviceNotFoundError)
+from modules.CustomExceptions import (NoRouteToHost, DeviceNotFoundError, ApplicationNotFoundError)
 from modules.ResourceManagement import custom_distance
 
 import logging
@@ -19,20 +19,19 @@ from typing import List, Optional
 
 class Environment(object):
     """
-    The ``Environment`` class mostly serves as a structure for storing information about the environment (configuration, device info, application info, network link...)
+    Represents the environment for the network simulation.
+
+    The `Environment` class primarily acts as a structure for storing
+    information about various network elements like configuration, device info,
+    application info, network links, etc.
 
     Attributes:
-    -----------
-    current_time: `int`
-        The date and time of the current event.
-    config: `Config`
-        Environment configuration exported from the ``Config`` class
-    devices : list of `Device`
-        List of ``Device`` objects storing device information (position, resource availability, routing table...)
-    applications: list of `Application` to deploy
-        List of ``Application`` objects storing application information (processus, virtual links... )
-    physical_network_links: list of physical network links
-        List of Physical links between devices, connectivity matrix
+        current_time (int): The date and time of the current event.
+        config (Config): Environment configuration.
+        devices (List[Device]): List of Device objects.
+        applications (List[Application]): List of Application objects to be deployed.
+        physical_network_links (List[PhysicalNetworkLink]): List of physical network links between devices.
+        ...
     """
 
     TIME_PERIOD: int = 24 * 60 * 60 * 100
@@ -43,26 +42,28 @@ class Environment(object):
         The ``Environment`` class is initialized to empty lists, None or 0 values
         """
 
-        self.current_time = 0
-
+        self.current_time: int = 0
         self.config = None
 
-        self.applications = []
-        self.currenty_deployed_apps = []
+        self.applications: List[Application] = []
+        self.currently_deployed_apps: List[Application] = []
         self.devices = []
-        self.devices_links = []
-        self.physical_network = PhysicalNetwork()
-        self.count_rejected_application=[[0,0]]
-        self.count_accepted_application=[[0,0]]
-        self.count_tentatives=[[0,0]]
 
-        self.list_devices_data = None
-        self.list_currently_deployed_app_data = None
+        self.devices_links: List[dict[str, int]] = []
+        self.physical_network: PhysicalNetwork = PhysicalNetwork()
+
+        # Counts the numbers of applications, first value is time, second is value
+        self.count_rejected_application: List[List[int]] = [[0, 0]]
+        self.count_accepted_application: List[List[int]] = [[0, 0]]
+        self.count_tentatives: List[List[int]] = [[0, 0]]
+
+        self.list_devices_data: Optional[dict] = None
+        self.list_currently_deployed_app_data: Optional[List] = None
+
 
     @property
-    def config(self) ->  Optional[Config]:
-        """
-        Get the Config object for the environment.
+    def config(self) -> Optional[Config]:
+        """Get the Config object for the environment.
 
         Returns:
             Optional[Config]: The Config object, or None if not set.
@@ -70,33 +71,43 @@ class Environment(object):
         return self._config
 
     @config.setter
-    def config(self, config:  Optional[Config]) -> None:
+    def config(self, config: Optional[Config]) -> None:
         """Sets the configuration based on a given instanciated `Config` class.
 
         Args:
-            config (Config): Environment configuration generated in the `Config` module
+            Optional[Config]: Environment configuration generated in the `Config` module
         """
         self._config = config
 
 
     @property
     def devices(self) -> List[Device]:
+        """Get the list of Device objects in the environment.
+
+        Returns:
+            List[Device]: The list of Device objects representing network devices.
+        """
         return self._devices
 
     @devices.setter
     def devices(self, devices: List[Device]):
+        """Set the list of Device objects for the environment.
+
+        Args:
+            devices (List[Device]): A list of Device objects to represent network devices in the environment.
+        """
         self._devices = devices
 
 
-    def getDeviceByID(self, dev_id) -> Device:
-        """
-        Gets the first `Device` which ID matches `dev_id`.
+    def getDeviceByID(self, dev_id: int) -> Device:
+        """Gets the `Device` whose ID matches `dev_id`.
         `Device` IDs are supposed to be unique by construction.
 
         Args:
-        -----
-        dev_id: `int`
-            device identifier
+            dev_id (int): Device identifier.
+
+        Returns:
+            Device: The device with the matching ID.
         """
         for device in self.devices:
             if device.id == int(dev_id):
@@ -104,43 +115,93 @@ class Environment(object):
         raise DeviceNotFoundError
 
 
-    def getRandomDevice(self):
+    def getRandomDevice(self) -> Device:
+        """Get a random `Device` from the list of devices.
+
+        Returns:
+            Optional[Device]: A random `Device` object, or None if no devices are available.
+
+        Raises:
+            DeviceNotFoundError: If no devices are available.
+        """
         return random.choice(self.devices)
 
 
-    def addDevice(self, device):
-        """ Adds a new `Device` to the devices list"""
+    def addDevice(self, device: Device):
+        """Adds a new `Device` to the devices list.
+
+        Args:
+            device (Device): The `Device` object to be added.
+        """
         self.devices.append(device)
 
 
-    def getApplicationByID(self, app_id):
-        """
-        Gets the first `Application` which ID matches `app_id`.
+    def getApplicationByID(self, app_id: int) -> Application:
+        """Gets the `Application` whose ID matches `app_id`.
         `Application` IDs are supposed to be unique by construction.
+
+        Args:
+            app_id (int): Application identifier.
+
+        Returns:
+            Optional[Application]: The Application object with the matching ID, or None if not found.
+
+        Raises:
+            ApplicationNotFoundError: If no application is found
         """
         for application in self.applications:
             if application.id == app_id:
                 return application
+        raise ApplicationNotFoundError
 
 
-    def addApplication(self, application):
-        """ Adds a new `Application` to the applications list"""
+    def addApplication(self, application: Application):
+        """Adds a new `Application` to the list of applications.
+
+        Args:
+            application (Application): The `Application` object to be added.
+        """
         self.applications.append(application)
 
 
-    def removeApplication(self, app_id):
+    def removeApplication(self, app_id: int) -> bool:
         """
-        Removes all `Application` with given `app_id`
-        `Application` IDs are supposed to be unique, so only one app should be removed
-        """
-        self.applications = [application for application in self.applications if application.id != app_id]
+        Removes the `Application` with the given `app_id` from the list of applications.
 
-    def generateApplicationList(self):
+        Uses getApplicationByID to locate application to remove.
+
+        `Application` IDs are supposed to be unique, so only one application should be removed.
+
+        Args:
+            app_id (int): The ID of the `Application` to be removed.
+
+        Returns:
+            bool: True if an application was removed, False otherwise.
+        """
+        try:
+            application_to_remove = self.getApplicationByID(app_id)
+
+        except ApplicationNotFoundError:
+            return False
+
+        self.applications.remove(application_to_remove)
+        return True
+
+
+    def generateApplicationList(self) -> None:
+        """
+        Generates a list of `Application` objects and appends them to `self.applications`.
+
+        The number of applications to be generated is retrieved from `self.config.number_of_applications`.
+        """
+        if self.config is None:
+            raise ValueError("Config is not initialized.")
+
         for i in tqdm(range(self.config.number_of_applications)):
-            # Generating 1 random application
             application = Application()
             application.randomAppInit()
             application.setAppID(i)
+
             if self.config.app_duration != 0:
                 application.setAppDuration(self.config.app_duration)
 
@@ -222,6 +283,12 @@ class Environment(object):
 
 
     def importDevices(self):
+        if self.config is None:
+            raise ValueError("Config is not initialized.")
+
+        if self.config.devices_file is None:
+            raise ImportError("No device list to process")
+
         try:
             with open(self.config.devices_file) as file:
                 devices_list = json.load(file)
@@ -234,19 +301,28 @@ class Environment(object):
 
 
     def importApplications(self):
+        if self.config is None:
+            raise ValueError("Config is not initialized.")
+
+        if self.config.applications_file is None:
+            raise ImportError("No application list to process")
+
         try:
             with open(self.config.applications_file) as file:
                 applications_list = json.load(file)
         except FileNotFoundError:
             raise FileNotFoundError("Please add application list in argument, default value is applications.json in current directory")
         except json.decoder.JSONDecodeError:
-            pass
+            raise
 
         for application in applications_list:
             self.applications.append(Application(data=application))
 
 
     def importLinks(self):
+        if self.config is None:
+            raise ValueError("Config is not initialized.")
+
         with open(self.config.devices_template_filename) as file:
             json_data = json.load(file)
         try :
@@ -302,6 +378,9 @@ class Environment(object):
 
 
     def generateDeviceList(self):
+        if self.config is None:
+            raise ValueError("Config is not initialized.")
+
         with open(self.config.devices_template_filename) as file:
             json_data = json.load(file)
 
@@ -374,7 +453,7 @@ class Environment(object):
         # Set the labels
         ax.set_xlabel('X')
         ax.set_ylabel('Y')
-        ax.set_zlim(0, 50)
+        ax.set_zlim(0, 50) # type: ignore
         # Title
         ax.set_title(f'Undirected Graph of Devices and links')
 
@@ -412,7 +491,7 @@ class Environment(object):
 
     def extractCurrentlyDeployedAppData(self, resources = ['cpu', 'gpu', 'mem', 'disk'], filename = "apps_data.json"):
         extracted_data = []
-        for app in self.currenty_deployed_apps:
+        for app in self.currently_deployed_apps:
             app_data = dict()
             for resource in resources:
                 app_data[resource] = []
@@ -441,6 +520,9 @@ class Environment(object):
 
 
     def importResults(self):
+        if self.config is None:
+            raise ValueError("Config is not initialized.")
+
         with open(self.config.results_filename) as file:
             json_data = json.load(file)
         try :
