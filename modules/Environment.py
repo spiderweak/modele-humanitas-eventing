@@ -593,6 +593,7 @@ class Environment(object):
             raise ValueError("Config is not initialized.")
 
         with open(self.config.results_filename) as file:
+            print(self.config.results_filename)
             json_data = json.load(file)
         try :
             for device in json_data['devices']:

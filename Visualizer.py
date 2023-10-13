@@ -40,7 +40,7 @@ def parse_args():
                         default='config.yaml')
     parser.add_argument('--results',
                         help='results file to process',
-                        default=True)
+                        default='results.json')
     options = parser.parse_args()
 
     return options

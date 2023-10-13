@@ -12,6 +12,7 @@ import json
 
 from typing import List, Dict, Union, Optional
 from modules.resource.Processus import Processus
+import logging
 
 # Number of group of 10 ms
 TIME_PERIOD = 8640000 # 24 * 60 * 60 * 100
@@ -102,7 +103,6 @@ class Application:
             raise RuntimeError(f"Failed to initialize from dict: {e}") from e
 
 
-
     def __json__(self) -> dict:
         """
         Returns a JSON string that represents the Application object.
@@ -127,6 +127,29 @@ class Application:
             "proc_list" : self.processus_list,
             "proc_links" : proc_links
         }
+
+    @property
+    def id(self) -> int:
+        """
+        Retrieves the application's ID.
+
+        Returns:
+            int: The application ID.
+        """
+        return self._id
+
+    @id.setter
+    def id(self, id: int) -> None:
+        """Sets the application's ID.
+
+        Args:
+            id (int): The new application ID to be set.
+        """
+        # Set the new ID
+        self._id = id
+
+        # Log the change
+        logging.debug(f"Application ID changed to {id}")
 
 
     def set_app_id(self, id: int) -> None:
