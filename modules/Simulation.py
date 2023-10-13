@@ -14,7 +14,11 @@ from tqdm import tqdm
 from modules.resource.Application import Application
 from modules.Environment import Environment
 from modules.EventQueue import EventQueue
-from modules.events.Event import (Event, Placement, Deploy_Proc, Sync, Organize, FinalReport)
+
+from modules.events.Placement import Placement
+from modules.events.Organize import Organize
+from modules.events.FinalReport import FinalReport
+
 from modules.Visualization import Visualizer
 
 from modules.ResourceManagement import custom_distance

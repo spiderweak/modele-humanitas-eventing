@@ -9,7 +9,6 @@ Usage:
 """
 
 from modules.Config import Config
-from modules.resource.Device import Device
 from modules.Environment import Environment
 
 import argparse

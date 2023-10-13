@@ -16,7 +16,6 @@ from modules.resource.Processus import Processus
 from modules.resource.Path import Path
 from modules.EventQueue import EventQueue
 from modules.Environment import Environment
-from modules.events.Event import (Event, Placement, Deploy_Proc, Sync)
 from modules.Visualization import Visualizer
 
 from modules.Simulation import Simulation

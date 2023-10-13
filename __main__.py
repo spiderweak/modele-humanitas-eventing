@@ -17,7 +17,6 @@ from modules.resource.Processus import Processus
 from modules.resource.Path import Path
 from modules.EventQueue import EventQueue
 from modules.Environment import Environment
-from modules.events.Event import (Event, Placement, Deploy_Proc, Sync)
 
 
 from modules.Simulation import Simulation
@@ -49,23 +48,23 @@ def main():
 
     environment = Environment()
 
-    config = Config(options, environment)
+    config = Config(options=options)
 
     environment.config = config
 
-    environment.generateDeviceList()
-    environment.importLinks()
-    environment.plotDeviceNetwork()
-    environment.generateRoutingTable()
+    environment.generate_device_list()
+    environment.import_links()
+    environment.plot_device_network()
+    environment.generate_routing_table()
 
-    environment.generateApplicationList()
+    environment.generate_application_list()
 
     if options.simulate:
 
         logging.info("Running complete simulation")
         simulation = Simulation(environment)
 
-        simulation.initSimulation()
+        simulation.init_simulation()
 
         simulation.simulate()
 
