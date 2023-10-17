@@ -11,6 +11,5 @@ today/
 env/
 stress_test/
 *.json
-*.sh
 output
 input
