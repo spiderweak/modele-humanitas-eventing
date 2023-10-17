@@ -1,13 +1,13 @@
-loglevel : debug
+loglevel : info
 
-logfile : log.txt
+logfile : latest/log.txt
 
 database_url:
     device: db.sqlite
 
 template_files:
-    applications: example/tests/applications/applications.json
-    devices: example/tests/devices/15-fancy_star.json
+    applications: input/applications/1-applications.json
+    devices: input/devices/1-random5050/devices.json
 
 device_positionning:
     x_min: 0
@@ -17,7 +17,7 @@ device_positionning:
     z_min: 0
     z_max: 30
 
-application_number : 5000
+application_number : 8500
 
 device_number : 200
 
