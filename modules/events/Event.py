@@ -1,9 +1,11 @@
 import logging
 from modules.EventQueue import EventQueue
 
+from abc import ABC, abstractmethod
+
 from typing import Optional
 
-class Event():
+class Event(ABC):
     """An event that has a name, time, and priority.
 
     Attributes:
@@ -110,5 +112,7 @@ class Event():
         """
         self._priority = priority_value
 
+    @abstractmethod
     def process(self, env):
-        raise ValueError("Please set an event type")
+        """Abstract method to be overridden by subclasses for event processing."""
+        pass
