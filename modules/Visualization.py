@@ -28,6 +28,13 @@ class Visualizer():
 
 
     def apps_visualiser(self, env: Environment):
+
+        if env.config is None:
+            raise ValueError
+
+        with open("external_logging.txt", "a") as external_file:
+            external_file.write(f"Testing a deployment of {env.config.number_of_applications}")
+
         times, values = zip(*env.count_rejected_application)
 
         plt.clf()
@@ -39,6 +46,8 @@ class Visualizer():
 
         plt.savefig("latest/rejected.png")
         logging.info(f"Cumulative number of rejected applications {values[-1]}")
+        with open("external_logging.txt", "a") as external_file:
+            external_file.write(f"Cumulative number of rejected applications {values[-1]}")
 
         times, values = zip(*env.count_accepted_application)
 
@@ -51,6 +60,8 @@ class Visualizer():
 
         plt.savefig("latest/accepted.png")
         logging.info(f"Number of accpted applications {values[-1]}")
+        with open("external_logging.txt", "a") as external_file:
+            external_file.write(f"Number of accpted applications {values[-1]}")
 
         times, values = zip(*env.count_tentatives)
 

@@ -55,6 +55,9 @@ def parse_args():
     parser.add_argument('--output',
                         help='output file',
                         default='latest/results.json')
+    parser.add_argument('--app_number_override',
+                        help='output file',
+                        default=None)
     options = parser.parse_args()
 
     return options
@@ -91,6 +94,17 @@ def main():
     visu = Visualizer()
 
     visu.apps_visualiser(environment)
+
+    # Increase num devices for stress test
+
+    if options.app_number_override:
+        with open(options.app_number_override, 'r') as app_numbers:
+            data = yaml.safe_load(app_numbers)
+        number_of_applications = int(data['application_number'])
+
+        with open(options.app_number_override, 'w') as app_numbers:
+            app_numbers.write(f"application_number: {number_of_applications+100}")
+
 
     #visu.visualize_environment(self.__env)
     #visu.final_results(self.__env)
