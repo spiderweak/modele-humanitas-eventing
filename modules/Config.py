@@ -119,11 +119,14 @@ class Config:
         self._set_attribute_from_yaml('number_of_devices', ['device_number'], int)
         self._set_attribute_from_yaml('wifi_range', ['wifi_range'], float)
 
-        if options.app_number_override:
-            with open(options.app_number_override, 'r') as app_numbers:
-                data = yaml.safe_load(app_numbers)
-            self.number_of_applications = int(data['application_number'])
-            print(f"override detected, stress testing with {self.number_of_applications} applications")
+        try:
+            if options.app_number_override:
+                with open(options.app_number_override, 'r') as app_numbers:
+                    data = yaml.safe_load(app_numbers)
+                self.number_of_applications = int(data['application_number'])
+                print(f"override detected, stress testing with {self.number_of_applications} applications")
+        except AttributeError:
+            pass
 
     # Simulated 2D/3D space
         for boundary in self._3D_space.keys():
