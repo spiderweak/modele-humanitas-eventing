@@ -81,7 +81,7 @@ class SimplaDistancePlacement(PlacementCalculation):
             logging.info(f"Placement Module : application id : {self.application_to_place.id} , {self.application_to_place.num_procs} processus deployed on {deployed_onto_devices}")
 
             for i in range(len(deployed_onto_devices)):
-                Deploy_Proc("Deployment Proc", self.queue, self.application_to_place, deployed_onto_devices, i, event_time=int((self.get_time()+deployment_times[i])/10)*10, last=(i+1==len(deployed_onto_devices))).add_to_queue()
+                Deploy_Proc("Deployment Proc", self.queue, self.application_to_place, deployed_onto_devices, i, event_time=int((self.time+deployment_times[i])/10)*10, last=(i+1==len(deployed_onto_devices))).add_to_queue()
 
             if env.current_time == prev_time:
                 env.count_accepted_application[-1][1] += 1
@@ -102,8 +102,8 @@ class SimplaDistancePlacement(PlacementCalculation):
 
             # We could ask for a retry after 15 mins
 
-            logging.info(f"Placement set back to future time, from {self.get_time()} to {int((self.get_time()+15*60*1000)/10)*10}")
-            self.retry(event_time=int((self.get_time()+15*60*1000)/10)*10)
+            logging.info(f"Placement set back to future time, from {self.time} to {int((self.time+15*60*1000)/10)*10}")
+            self.retry(event_time=int((self.time+15*60*1000)/10)*10)
 
         return deployment_times, deployed_onto_devices
 

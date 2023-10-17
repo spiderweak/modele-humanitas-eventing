@@ -28,7 +28,7 @@ class DeployProc(Event):
         env.get_device_by_id(int(self.device_destination_id)).allocate_all_resources(self.time, allocation_request) # Error here, TODO: Better handling of ids types
 
         if self.last_proc:
-            Sync("Synchronize", self.queue, self.app, self.devices_destinations, event_time=int(self.get_time()+self.synchronization_time)).add_to_queue()
+            Sync("Synchronize", self.queue, self.app, self.devices_destinations, event_time=int(self.time+self.synchronization_time)).add_to_queue()
 
 
         return True

@@ -7,5 +7,5 @@ class FinalReport(Event):
 
     def process(self, env):
         for device in env.devices:
-            device.report_on_value(self.get_time())
+            device.report_on_value(self.time)
 

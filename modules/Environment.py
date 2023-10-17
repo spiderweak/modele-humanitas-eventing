@@ -301,7 +301,7 @@ class Environment(object):
         if self.config is None:
             raise ValueError("Config is not initialized.")
 
-        for i in range(self.config.number_of_applications):
+        for i in tqdm(range(self.config.number_of_applications)):
             application = Application()
             application.random_app_init()
             application.id = i

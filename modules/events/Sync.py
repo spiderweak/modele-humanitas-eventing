@@ -35,5 +35,5 @@ class Sync(Event):
         env.currently_deployed_apps.append(self.app)
 
         # Run
-        Undeploy("Release", self.queue, self.app, event_time=int(self.get_time()+self.app.duration)).add_to_queue()
+        Undeploy("Release", self.queue, self.app, event_time=int(self.time+self.app.duration)).add_to_queue()
 

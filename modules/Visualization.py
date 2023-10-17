@@ -38,6 +38,7 @@ class Visualizer():
         plt.ylabel("Number of Rejected Applications")
 
         plt.savefig("latest/rejected.png")
+        logging.info(f"Cumulative number of rejected applications {values[-1]}")
 
         times, values = zip(*env.count_accepted_application)
 
@@ -49,6 +50,7 @@ class Visualizer():
         plt.ylabel("Number of Accepted Applications")
 
         plt.savefig("latest/accepted.png")
+        logging.info(f"Number of accpted applications {values[-1]}")
 
         times, values = zip(*env.count_tentatives)
 
