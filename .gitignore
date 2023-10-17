@@ -9,7 +9,7 @@ data/
 latest/
 today/
 env/
-stress_test/)
+stress_test/
 *.json
 *.sh
 output
