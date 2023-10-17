@@ -30,9 +30,6 @@ def parse_args():
     parser.add_argument('--output',
                         help='output file',
                         default='latest/applications.json')
-    parser.add_argument('--app_number_override',
-                        help='output file',
-                        default=None)
     options = parser.parse_args()
 
     return options
