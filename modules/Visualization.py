@@ -33,8 +33,8 @@ class Visualizer():
             raise ValueError
 
         with open("external_logging.txt", "a") as external_file:
-            external_file.write(f"=== New execution ===")
-            external_file.write(f"Testing a deployment of {env.config.number_of_applications}")
+            external_file.write(f"\n=== New execution ===\n")
+            external_file.write(f"Testing a deployment of {env.config.number_of_applications}\n")
 
         times, values = zip(*env.count_rejected_application)
 
@@ -48,7 +48,7 @@ class Visualizer():
         plt.savefig("latest/rejected.png")
         logging.info(f"Cumulative number of rejected applications {values[-1]}")
         with open("external_logging.txt", "a") as external_file:
-            external_file.write(f"Cumulative number of rejected applications {values[-1]}")
+            external_file.write(f"Cumulative number of rejected applications {values[-1]}\n")
 
         times, values = zip(*env.count_accepted_application)
 
@@ -62,7 +62,7 @@ class Visualizer():
         plt.savefig("latest/accepted.png")
         logging.info(f"Number of accpted applications {values[-1]}")
         with open("external_logging.txt", "a") as external_file:
-            external_file.write(f"Number of accpted applications {values[-1]}")
+            external_file.write(f"Number of accpted applications {values[-1]}\n")
 
         times, values = zip(*env.count_tentatives)
 
@@ -76,7 +76,7 @@ class Visualizer():
         plt.savefig("latest/tentatives_with_success.png")
 
         with open("external_logging.txt", "a") as external_file:
-            external_file.write(f"=== End of execution ===")
+            external_file.write(f"=== End of execution ===\n")
 
 
     def final_results(self, env):
