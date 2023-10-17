@@ -33,6 +33,7 @@ class Visualizer():
             raise ValueError
 
         with open("external_logging.txt", "a") as external_file:
+            external_file.write(f"=== New execution ===")
             external_file.write(f"Testing a deployment of {env.config.number_of_applications}")
 
         times, values = zip(*env.count_rejected_application)
@@ -73,6 +74,9 @@ class Visualizer():
         plt.ylabel("Number of Tentatives with success")
 
         plt.savefig("latest/tentatives_with_success.png")
+
+        with open("external_logging.txt", "a") as external_file:
+            external_file.write(f"=== End of execution ===")
 
 
     def final_results(self, env):
