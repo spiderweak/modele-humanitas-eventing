@@ -1,12 +1,31 @@
 import logging
 
+from modules.EventQueue import EventQueue
+
 from modules.events.Event import Event
 from modules.events.Sync import Sync
 
+from modules.resource.Application import Application
+
+from typing import Optional, Dict, Any, List
+
 class DeployProc(Event):
 
-    def __init__(self, event_name, queue, app, deployed_onto_devices, index, event_time=None, last=False, synchronization_time = 10):
+    DEFAULT_SYNCRONIZATION_TIME = 10
+
+    def __init__(self, event_name: str, queue: EventQueue, app: Application, deployed_onto_devices: List, index: int, event_time: Optional[int] =None, last: bool=False, synchronization_time = DEFAULT_SYNCRONIZATION_TIME):
+        """
+        Initializes a DeployProc object to manage the placement of an application.
+
+        Args:
+            event_name (str): Name of the event.
+            queue (EventQueue): The event queue to which this event belongs.
+            app (Application): The application to place.
+            event_time (Optional[int]): Time at which the event occurs. Defaults to None.
+        """
+
         super().__init__(event_name, queue, event_time)
+
         self.app = app
         self.devices_destinations = deployed_onto_devices
         self.proc_to_deploy = self.app.processus_list[index]
