@@ -29,7 +29,7 @@ class Placement(Event):
 
         Args:
             event_name (str): Name of the event.
-            queue (Any): The event queue to which this event belongs.
+            queue (EventQueue): The event queue to which this event belongs.
             app (Application): The application to place.
             device_id (int): ID of the first device to try for placement, referred to as the "Placement Request Receptor" device.
             event_time (Optional[int]): Time at which the event occurs. Defaults to None.
