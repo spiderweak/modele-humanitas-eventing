@@ -78,8 +78,6 @@ class Simulation(object):
 
         previous_time=0
 
-        time.sleep(1)
-
         while not isinstance(current_event,FinalReport):
 
             event_time, event_index, current_event = self.__queue.pop()
@@ -92,8 +90,6 @@ class Simulation(object):
             logging.debug("process_event: {}".format(process_event))
 
             previous_time = event_time
-
-        time.sleep(1)
 
         logging.info("\n***************\nEND OF SIMULATION\n***************")
 
