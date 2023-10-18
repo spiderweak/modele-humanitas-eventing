@@ -1,5 +1,6 @@
 import yaml
 import logging
+import os
 from typing import Any, Dict, Union
 
 import argparse
@@ -89,6 +90,7 @@ class Config:
             self.log_level = logging.INFO
 
         self.log_filename = self.parsed_yaml.get('logfile', 'log.txt')
+        os.makedirs(self.parsed_yaml.get('logfile'), exist_ok=True)
 
         logging.basicConfig(filename=self.log_filename, encoding='utf-8', level=self.log_level)
         logging.info('\n')
