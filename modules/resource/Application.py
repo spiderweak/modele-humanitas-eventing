@@ -43,7 +43,7 @@ class Application:
 
 
     @classmethod
-    def _generate_id(cls):
+    def _generate_id(cls) -> int:
         """
         Class method for ID generation.
         Generates a unique ID for a new Application object.
