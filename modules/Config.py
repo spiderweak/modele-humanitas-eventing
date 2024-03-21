@@ -90,7 +90,12 @@ class Config:
             self.log_level = logging.INFO
 
         self.log_filename = self.parsed_yaml.get('logfile', 'log.txt')
-        os.makedirs(self.parsed_yaml.get('logfile'), exist_ok=True)
+        try:
+            os.makedirs(os.path.dirname(self.log_filename), exist_ok=True)
+        except FileNotFoundError:
+            if os.path.dirname(self.log_filename):
+                # Raise if os.path.dirname(self.log_filename) is True, do nothing if equals to ""
+                raise
 
         logging.basicConfig(filename=self.log_filename, encoding='utf-8', level=self.log_level)
         logging.info('\n')
