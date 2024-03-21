@@ -8,7 +8,7 @@ log.txt
 data/
 latest/
 today/
-env/
+.venv/
 stress_test/
 *.json
 output
