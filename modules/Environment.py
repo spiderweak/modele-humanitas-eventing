@@ -489,11 +489,13 @@ class Environment(object):
         G = nx.Graph()
 
         position_list = []
+        color_list = []
         # We add the nodes, our devices, to our graph
         for device in self.devices:
             position = [device.position['x'], device.position['y'], device.position['z']]
             G.add_node(device.id, pos=position)
             position_list.append(position)
+            color_list.append(device.color)
 
         # We add the edges, to our graph, which correspond to wifi reachability
 
@@ -510,7 +512,8 @@ class Environment(object):
 
         # Lets trace the graph by hand
         ## Placing the nodes
-        ax.scatter(x_coords, y_coords, z_coords, c='b')
+        ax.scatter(x_coords, y_coords, z_coords, c=color_list)
+
         ## Placing the edges by hand
         for i, j in G.edges():
             device_i = self.get_device_by_id(i)
