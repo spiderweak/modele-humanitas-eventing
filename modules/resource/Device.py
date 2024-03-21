@@ -104,6 +104,8 @@ class Device:
         # Value externally set
         self.closeness_centrality = 0.0
 
+        self.color = random.choice(['red','green','blue','yellow','purple','orange','cyan'])
+
 
     def __json__(self) -> Dict[str, Any]:
         """
