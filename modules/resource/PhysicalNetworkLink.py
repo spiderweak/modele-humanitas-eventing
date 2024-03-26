@@ -1,3 +1,6 @@
+from typing import Optional
+from . import Device
+
 """
 Physical Network Link module, defines the physical link constraints and capabilities for inter-devices links
 
@@ -32,22 +35,34 @@ class PhysicalNetworkLink:
         return result
 
 
-    def __init__(self, device_1_id: int = -1, device_2_id: int = -1, size: int = -1, delay: float = DEFAULT_DELAY) -> None:
+    def __init__(self, device_1: Optional[Device] = None, device_2: Optional[Device] = None, size: int = -1, delay: float = DEFAULT_DELAY) -> None:
         """
         Initializes the device with basic values
         Assigns ID, initial position, resource values, routing table and resource limits
         """
         # ID setting
         self.id = PhysicalNetworkLink._generate_id()
-        self.device_1_id: int = device_1_id
-        self.device_2_id: int = device_2_id
+
+        self.device_1 = device_1
+        self.device_2 = device_2
+
+        if self.device_1:
+            self.device_1_id: int = self.device_1.id
+        else:
+            self.device_1_id = -1
+
+        if self.device_2:
+            self.device_2_id: int = self.device_2.id
+        else:
+            self.device_2_id = -1
+
 
         self.bandwidth: float = PhysicalNetworkLink.DEFAULT_BANDWIDTH # Bandwidth in KB/s
         self.delay: float = delay # Additionnal Delay, defined when creating the link, needs to be defined as a distance function
         self.bandwidth_use: float = 0.0
 
         if size > 0:
-            self.set_link_id(device_1_id*size + device_2_id)
+            self.set_link_id(self.device_1_id*size + self.device_2_id)
 
 
     def set_link_id(self, id):
@@ -144,7 +159,7 @@ class PhysicalNetworkLink:
         self.bandwidth_use = max(self.bandwidth_use-free_bandwidth_request, 0)
 
 
-    def check_physical_lLink(self, device_1_id: int, device_2_id: int) -> bool:
+    def check_physical_link(self, device_1_id: int, device_2_id: int) -> bool:
         """
         Check if the associated link actually links the two given devices
 

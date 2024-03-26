@@ -152,19 +152,6 @@ class Application:
         logging.debug(f"Application ID changed to {id}")
 
 
-    def set_app_id(self, id: int) -> None:
-        """
-        Used to set an application's ID by hand if necessary
-
-        Args:
-        -----
-        id : `int`
-            New application ID
-        """
-
-        self.id = id
-
-
     def random_app_init(self, num_procs: int = 3, num_proc_random: bool = True) -> None:
         """
         Random initialization of the application.
@@ -301,7 +288,7 @@ class Application:
         None
         """
 
-        self.set_app_id(data['app_id'])
+        self.id = data['app_id']
 
         self.set_app_duration(data['duration'])
 
