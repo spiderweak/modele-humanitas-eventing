@@ -1,7 +1,7 @@
 class PlacementCalculation:
     raise NotImplementedError
 
-class SimplaDistancePlacement(PlacementCalculation):
+class SimpleDistancePlacement(PlacementCalculation):
 
     def process(self, env):
         """
@@ -30,42 +30,42 @@ class SimplaDistancePlacement(PlacementCalculation):
         pref_proc = dict()
         for proc in self.application_to_place.processus_list:
             pref_proc[proc.id] = list()
-            for dev_id,dev_latency in sorted_distance_from_device:
+            for dev_id,dev_delay in sorted_distance_from_device:
                 device = env.getDeviceByID(dev_id)
                 if self.deployable_proc(proc, device):
-                    pref_proc[proc.id].append((dev_id, dev_latency))
+                    pref_proc[proc.id].append((dev_id, dev_delay))
 
         matching = dict()
-        matching_latency = dict()
+        matching_delay = dict()
         to_match  = self.application_to_place.getAppProcsIDs()
 
         while len(to_match)!=0:
             proc_id = to_match.pop(0)
 
             try:
-                deployed, deployment_latency  = pref_proc[proc_id].pop(0)
+                deployed, deployment_delay  = pref_proc[proc_id].pop(0)
             except IndexError:
                 deployment_success = False
                 break
 
             if deployed not in matching.values():
                 matching[proc_id] = deployed
-                matching_latency[proc_id] = deployment_latency
+                matching_delay[proc_id] = deployment_delay
             else:
                 matching_procs = [self.application_to_place.getAppProcByID(proc) for proc,dev in matching.items() if dev == deployed]
                 agglomerated = sum(matching_procs)# + proc
                 if self.deployable_proc(agglomerated, env.getDeviceByID(dev_id)):
                     matching[proc_id] = deployed
-                    matching_latency[proc_id] = deployment_latency
+                    matching_delay[proc_id] = deployment_delay
                 else:
                     min_proc_deployed = min([self.application_to_place.getAppProcByID(proc) for proc,dev in matching.items() if dev == deployed])
                     if self.application_to_place.getAppProcByID(proc_id) > min_proc_deployed:
                         min_proc_deployed_id = min_proc_deployed.getProcessusID()
                         to_match.append(min_proc_deployed_id)
                         matching[proc_id] = deployed
-                        matching_latency[proc_id] = deployment_latency
+                        matching_delay[proc_id] = deployment_delay
                         matching.pop(min_proc_deployed_id, None)
-                        matching_latency.pop(min_proc_deployed_id, None)
+                        matching_delay.pop(min_proc_deployed_id, None)
                     else:
                         to_match.append(proc_id)
 
@@ -76,7 +76,7 @@ class SimplaDistancePlacement(PlacementCalculation):
 
             for proc_id in self.application_to_place.getAppProcsIDs():
                 deployed_onto_devices.append(matching[proc_id])
-                deployment_times.append(matching_latency[proc_id])
+                deployment_times.append(matching_delay[proc_id])
 
             logging.info(f"Placement Module : application id : {self.application_to_place.id} , {self.application_to_place.num_procs} processus deployed on {deployed_onto_devices}")
 

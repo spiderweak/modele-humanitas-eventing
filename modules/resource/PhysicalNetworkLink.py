@@ -15,7 +15,7 @@ class PhysicalNetworkLink:
 
     next_id = 0
     DEFAULT_BANDWIDTH = 1000 * 1024  # in KB/s
-    DEFAULT_LATENCY = 10.0
+    DEFAULT_DELAY = 10.0 # in ms
 
 
     @classmethod
@@ -32,7 +32,7 @@ class PhysicalNetworkLink:
         return result
 
 
-    def __init__(self, device_1_id: int = -1, device_2_id: int = -1, size: int = -1, latency: float = DEFAULT_LATENCY) -> None:
+    def __init__(self, device_1_id: int = -1, device_2_id: int = -1, size: int = -1, delay: float = DEFAULT_DELAY) -> None:
         """
         Initializes the device with basic values
         Assigns ID, initial position, resource values, routing table and resource limits
@@ -43,7 +43,7 @@ class PhysicalNetworkLink:
         self.device_2_id: int = device_2_id
 
         self.bandwidth: float = PhysicalNetworkLink.DEFAULT_BANDWIDTH # Bandwidth in KB/s
-        self.latency: float = latency # Additionnal Latency, defined when creating the link, needs to be defined as a distance function
+        self.delay: float = delay # Additionnal Delay, defined when creating the link, needs to be defined as a distance function
         self.bandwidth_use: float = 0.0
 
         if size > 0:
@@ -80,26 +80,26 @@ class PhysicalNetworkLink:
         self.bandwidth = bandwidth
 
 
-    def set_physical_network_link_latency(self, latency: float):
+    def set_physical_network_link_delay(self, delay: float):
         """
-        Sets a Physical Link's associated latency
+        Sets a Physical Link's associated delay
 
         Args:
-            latency : float
-                Physical link's latency
+            delay : float
+                Physical link's delay
         """
-        self.latency = latency
+        self.delay = delay
 
 
-    def get_physical_network_link_latency(self) -> float:
+    def get_physical_network_link_delay(self) -> float:
         """
-        Returns the Physical Link's associated latency
+        Returns the Physical Link's associated delay
 
         Returns:
-            latency : float
-                Physical link's latency
+            delay : float
+                Physical link's delay
         """
-        return self.latency
+        return self.delay
 
 
     def available_bandwidth(self) -> float:

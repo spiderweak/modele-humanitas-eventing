@@ -110,7 +110,7 @@ class PhysicalNetwork:
                         new_physical_network_link = PhysicalNetworkLink(device_1_id, device_2_id)
                         new_physical_network_link.setLinkID(new_physical_network_link_id)
                         if device_1_id == device_2_id:
-                            new_physical_network_link.setPhysicalNetworkLinkLatency(0)
+                            new_physical_network_link.setPhysicalNetworkLinkDelay(0)
                         env.physical_network_links[new_physical_network_link_id] = new_physical_network_link
                         link = {"source": device_1_id, "target": device_2_id, "weight": distance, "id": new_physical_network_link_id}
                         env.devices_links.append(link)
@@ -119,6 +119,7 @@ class PhysicalNetwork:
                         env.physical_network_links[new_physical_network_link_id] = None
         """
         raise NotImplementedError
+
 
     def extract_network_matrix(self, filename = None) -> npt.NDArray:
         """
@@ -143,15 +144,15 @@ class PhysicalNetwork:
         return export_arr
 
 
-    def extract_latency_matrix(self, filename = None) -> npt.NDArray:
+    def extract_delay_matrix(self, filename = None) -> npt.NDArray:
         """
-        Extracts a matrix representing the latency of links.
+        Extracts a matrix representing the delay of links.
 
         Args:
             filename (str, optional): The filename to save the extracted matrix. Defaults to None.
 
         Returns:
-            np.array: Matrix representing the latency of links.
+            np.array: Matrix representing the delay of links.
         """
         export_arr = np.empty(self.links.shape, dtype=float)
 
@@ -159,7 +160,7 @@ class PhysicalNetwork:
             if link is None:
                 export_arr[index] = -1
             else:
-                export_arr[index] = link.latency
+                export_arr[index] = link.delay
 
         if filename:
             np.savetxt(filename, export_arr, fmt='%.2f', delimiter=',')
@@ -213,13 +214,13 @@ class PhysicalNetwork:
 
 
     def extract_networkx_graph(self) -> Any:
-        nxlinks: List[Tuple[int, int]] = []
+        nxlinks: List[Tuple[int, int, dict[str, float]]] = []
         for column in self.links:
             for link in column:
                 origin = link.get_origin()
                 destination = link.get_destination()
                 if origin != -1 and destination != -1:
-                    nxlinks.append((link.get_origin(), link.get_destination()))
+                    nxlinks.append((link.get_origin(), link.get_destination(), {'delay': link.delay, 'bandwidth': link.bandwidth}))
 
         return nx.Graph(nxlinks)
 

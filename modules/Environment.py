@@ -474,9 +474,9 @@ class Environment(object):
                             device_1.add_to_routing_table(device_2_id, device_2_id, distance)
                             device_2.add_to_routing_table(device_1_id, device_1_id, distance)
 
-                            new_physical_network_link = PhysicalNetworkLink(device_1_id, device_2_id, size=number_of_devices, latency=distance)
+                            new_physical_network_link = PhysicalNetworkLink(device_1_id, device_2_id, size=number_of_devices, delay=distance)
                             if device_1_id == device_2_id:
-                                new_physical_network_link.set_physical_network_link_latency(0)
+                                new_physical_network_link.set_physical_network_link_delay(0)
                             self.physical_network.add_link(new_physical_network_link)
                             link = {"source": device_1_id, "target": device_2_id, "weight": distance, "id": new_physical_network_link.id}
                             self.devices_links.append(link)
