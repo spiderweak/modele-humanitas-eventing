@@ -40,6 +40,24 @@ class Path:
         # Physical Links path is a list of all the physicalNetworkLink IDs corresponding to the path from source device to destination device
         self.physical_links_path: List[int] = []
 
+    def __eq__(self, other) -> bool:
+        if self.source_id == -1 or self.destination_id == -1:
+            return False
+
+        return ((
+                (self.source_id == other.source_id and
+                self.destination_id == other.destination_id)
+                or
+                (self.source_id == other.destination_id and
+                self.destination_id == other.source_id)
+                )
+                and
+                set(self.devices_path) == set(other.devices_path)
+                and
+                set(self.physical_links_path) == set(other.physical_links_path)
+                )
+
+
     def set_source_id(self, device_source_id: int) -> None:
         """
         Set the source device ID for the path.

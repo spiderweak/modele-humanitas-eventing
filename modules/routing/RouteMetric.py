@@ -12,10 +12,19 @@ class RouteMetric(ABC):
         self.distance = distance
         self.total = self.calculate_total()
 
+    def __lt__(self, other) -> bool:
+        return self.total < other.total
+
+
+    def __eq__(self, other) -> bool:
+        return self.total == other.total
+
+
     @abstractmethod
     def calculate_total(self) -> float:
         """Add or update a route to a destination."""
         pass
+
 
 class OSPFRouteMetric (RouteMetric):
     def __init__(self, bandwidth: float, distance: float = 0, delay: float = 0):
