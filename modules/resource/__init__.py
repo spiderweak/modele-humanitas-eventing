@@ -6,4 +6,6 @@ from .Application import Application
 from .PhysicalNetworkLink import PhysicalNetworkLink
 from .PhysicalNetwork import PhysicalNetwork
 
-from .Path import Path
+from .Path import Path, path_append_left
+
+from .LinkMetric import LinkMetric, OSPFLinkMetric

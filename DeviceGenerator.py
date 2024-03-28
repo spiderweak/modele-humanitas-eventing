@@ -14,9 +14,9 @@ Usage::
     python3 DeviceGenerator.py
 
 """
+from __future__ import annotations
 
 from modules.Config import Config
-from modules.resource.Device import Device
 from modules.Environment import Environment
 
 import argparse
@@ -65,6 +65,7 @@ def main():
     environment.process_closeness_centrality()
 
     environment.plot_device_network()
+    environment.generate_other_routing_table(k_param=2)
     environment.generate_routing_table()
 
     # Exporting devices list

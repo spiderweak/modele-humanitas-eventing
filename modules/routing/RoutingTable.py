@@ -1,6 +1,6 @@
 from typing import List, Dict, Tuple
 from abc import ABC, abstractmethod
-from . import Route
+from modules.routing.Route import Route
 
 class RoutingTable(ABC):
     @abstractmethod

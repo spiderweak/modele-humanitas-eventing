@@ -5,12 +5,12 @@ A path is necessary when allocating network resources between two physical devic
 Usage:
 
 """
+from collections import deque
 
-from modules.resource.Device import Device
 from modules.resource.PhysicalNetworkLink import PhysicalNetworkLink
 from modules.Environment import Environment
 
-from typing import List, Dict, Any, Union, Tuple
+from typing import List, Dict, Any, Union, Tuple, Optional
 
 # Will need to refactor this to replace with number of devices
 MAX_HOPS = 100
@@ -35,10 +35,10 @@ class Path:
         self.destination_id: int = -1
 
         # Devices path is a list of all the devices from source to destination, including source and destination
-        self.devices_path: List[int] = []
+        self.devices_path: deque[int] = deque()
 
         # Physical Links path is a list of all the physicalNetworkLink IDs corresponding to the path from source device to destination device
-        self.physical_links_path: List[int] = []
+        self.physical_links_path: deque[int] = deque()
 
     def __eq__(self, other) -> bool:
         if self.source_id == -1 or self.destination_id == -1:
@@ -125,3 +125,24 @@ class Path:
         """
         min_bandwidth_available = min(env.physical_network.links[path_id].available_bandwidth() for path_id in self.physical_links_path)
         return min_bandwidth_available
+
+def path_append_left(physical_link: PhysicalNetworkLink, old_path: Optional[Path]):
+    new_path = Path()
+
+    if old_path is None:
+        new_path.destination_id = physical_link.get_destination()
+    else:
+        new_path.destination_id = old_path.destination_id
+
+    new_path.source_id = physical_link.get_origin()
+
+    if old_path is None:
+        new_path.devices_path.appendleft(new_path.source_id)
+    else:
+        new_path.devices_path = old_path.devices_path
+
+    new_path.devices_path.appendleft(new_path.source_id)
+
+    new_path.physical_links_path.appendleft(physical_link.id)
+
+    return new_path

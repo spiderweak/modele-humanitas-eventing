@@ -4,6 +4,9 @@ Physical Network Link module, defines the physical link constraints and capabili
 Usage:
 
 """
+from __future__ import annotations
+
+from modules.resource.LinkMetric import LinkMetric, OSPFLinkMetric
 
 class PhysicalNetworkLink:
     """
@@ -16,7 +19,7 @@ class PhysicalNetworkLink:
     next_id = 0
     DEFAULT_BANDWIDTH = 1000 * 1024  # in KB/s
     DEFAULT_DELAY = 10.0 # in ms
-
+    DEFAULT_DISTANCE = 0.0
 
     @classmethod
     def _generate_id(cls) -> int:
@@ -32,7 +35,7 @@ class PhysicalNetworkLink:
         return result
 
 
-    def __init__(self, device_1_id: int = -1, device_2_id: int = -1, size: int = -1, delay: float = DEFAULT_DELAY) -> None:
+    def __init__(self, metric_type = LinkMetric, device_1_id: int = -1, device_2_id: int = -1, size: int = -1, distance: float = DEFAULT_DISTANCE, delay: float = DEFAULT_DELAY) -> None:
         """
         Initializes the device with basic values
         Assigns ID, initial position, resource values, routing table and resource limits
@@ -49,6 +52,10 @@ class PhysicalNetworkLink:
         if size > 0:
             self.set_link_id(device_1_id*size + device_2_id)
 
+        try:
+            self.metric = metric_type(self.bandwidth, distance, self.delay, 0.0) # type:ignore
+        except:
+            raise
 
     def set_link_id(self, id):
         """

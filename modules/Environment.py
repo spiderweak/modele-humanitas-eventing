@@ -1,10 +1,12 @@
-from modules.resource.PhysicalNetworkLink import PhysicalNetworkLink
+from modules.resource.PhysicalNetworkLink import PhysicalNetworkLink, OSPFLinkMetric
 from modules.resource.Application import Application
 from modules.resource.Device import Device
 from modules.resource.PhysicalNetwork import PhysicalNetwork
 from modules.Config import Config
 from modules.CustomExceptions import (NoRouteToHost, DeviceNotFoundError, ApplicationNotFoundError)
 from modules.ResourceManagement import custom_distance
+
+from .routing import OSPFRoutingTable
 
 import logging
 import json
@@ -185,7 +187,7 @@ class Environment(object):
 
         try:
             for device in json_data['devices']:
-                dev = Device(data=device)
+                dev = Device(data=device, routing_table_type=OSPFRoutingTable)
                 self.add_device(dev)
         except KeyError:
             n_devices = self.config.number_of_devices # Number of devices
@@ -340,6 +342,8 @@ class Environment(object):
                     device_i = self.get_device_by_id(i)
                     device_j = self.get_device_by_id(j)
 
+                    print(device_i.routing_table)
+
                     try:
                         next_hop,distance = device_i.get_route_info(device_j.id)
                     except NoRouteToHost:
@@ -373,6 +377,39 @@ class Environment(object):
                         device_i.add_to_routing_table(device_j.id, min_nh, min_array)
 
 
+    def generate_other_routing_table(self, k_param = -1):
+        """
+        Generates a routing table on each device in `self.devices`
+        The function first lists the neighboring device, then iterate on the list to build a routing table based on shortest distance among links
+        This is bruteforcing the shortest path betweend devices, we can probably create a better algorithm, but this is not the point for now.
+        TODO : Fix duplicated entries in routing table
+        """
+
+        number_of_devices = len(self.devices)
+
+        for device in self.devices:
+            device.initialize_routing_table(self.physical_network)
+
+        ## We iterate on the matrix:
+
+        changes = True
+
+        # Approximative number of loops
+        logging.info("Generating routing table")
+        print("Generating Routing Table, (maximal value is arbitrary)")
+        progress_bar = tqdm(total=int(number_of_devices*number_of_devices*1.5))
+
+        while(changes):
+            ## As long as the values change
+            changes = False
+            for device in self.devices:
+                if device.ospf_routing_table is None:
+                    raise ValueError("Initialisation error")
+                changes = changes or device.ospf_routing_table.append_neighboring_routes(k_param)
+                print(changes)
+                print(device.ospf_routing_table)
+
+
     def export_devices(self, filename = "devices.json"):
         output_string = {"devices" : self.devices, "links" : self.devices_links}
         json_string = json.dumps(output_string, default=lambda o: o.__json__(), indent=4)
@@ -401,7 +438,7 @@ class Environment(object):
             raise FileNotFoundError("Please add devices list in argument, default value is devices.json in current directory")
 
         for device in devices_list['devices']:
-            dev = Device(data=device)
+            dev = Device(data=device, routing_table_type=OSPFRoutingTable)
             self.add_device(dev)
 
 
@@ -454,7 +491,7 @@ class Environment(object):
                     source_device.add_to_routing_table(target_device.id, target_device.id,distance)
                 # target_device.add_to_routing_table(source_device.id, source_device.id,link['weight'])
 
-                new_physical_network_link = PhysicalNetworkLink(source_device.id, target_device.id, size=number_of_devices)
+                new_physical_network_link = PhysicalNetworkLink(OSPFLinkMetric,source_device.id, target_device.id, size=number_of_devices)
                 try:
                     if link['id'] != new_physical_network_link.id:
                         new_physical_network_link.set_link_id(int(link['id']))
@@ -474,7 +511,10 @@ class Environment(object):
                             device_1.add_to_routing_table(device_2_id, device_2_id, distance)
                             device_2.add_to_routing_table(device_1_id, device_1_id, distance)
 
-                            new_physical_network_link = PhysicalNetworkLink(device_1_id, device_2_id, size=number_of_devices, delay=distance)
+                            device_1.neighboring_device[device_2.id] = distance
+                            device_2.neighboring_device[device_1.id] = distance
+
+                            new_physical_network_link = PhysicalNetworkLink(OSPFLinkMetric,device_1_id, device_2_id, size=number_of_devices, delay=distance)
                             if device_1_id == device_2_id:
                                 new_physical_network_link.set_physical_network_link_delay(0)
                             self.physical_network.add_link(new_physical_network_link)
@@ -600,7 +640,7 @@ class Environment(object):
             json_data = json.load(file)
         try :
             for device in json_data['devices']:
-                dev = Device(data=device)
+                dev = Device(data=device, routing_table_type=OSPFRoutingTable)
                 self.add_device(dev)
         except:
             raise NotImplementedError
