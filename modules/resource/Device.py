@@ -15,8 +15,6 @@ from typing import List, Dict, Any, Union, Tuple, Optional
 from modules.CustomExceptions import NoRouteToHost
 from modules.ResourceManagement import fit_resource
 
-from modules.routing import OSPFRoutingTable
-
 class Device:
     """Represents a computing device with limited resources and network capabilities.
 
