@@ -11,7 +11,7 @@ import numpy.typing as npt
 import networkx as nx
 
 from typing import List, Tuple, Any
-from modules.resource import PhysicalNetworkLink, OSPFLinkMetric
+from modules.resource.PhysicalNetworkLink import PhysicalNetworkLink, OSPFLinkMetric
 from modules.ResourceManagement import custom_distance
 
 class PhysicalNetwork:
@@ -67,8 +67,8 @@ class PhysicalNetwork:
             None
         """
 
-        origin_device_id = physical_network_link.get_origin()
-        destination_device_id = physical_network_link.get_destination()
+        origin_device_id = physical_network_link.origin
+        destination_device_id = physical_network_link.destination
 
         self.links[origin_device_id][destination_device_id] = physical_network_link
 
@@ -217,10 +217,10 @@ class PhysicalNetwork:
         nxlinks: List[Tuple[int, int, dict[str, float]]] = []
         for column in self.links:
             for link in column:
-                origin = link.get_origin()
-                destination = link.get_destination()
+                origin = link.origin
+                destination = link.destination
                 if origin != -1 and destination != -1:
-                    nxlinks.append((link.get_origin(), link.get_destination(), {'weight': link.metric.total}))
+                    nxlinks.append((link.origin, link.destination, {'weight': link.metric.total}))
 
         return nx.Graph(nxlinks)
 

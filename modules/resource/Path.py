@@ -8,7 +8,6 @@ Usage:
 from collections import deque
 
 from modules.resource.PhysicalNetworkLink import PhysicalNetworkLink
-from modules.Environment import Environment
 
 from typing import List, Dict, Any, Union, Tuple, Optional
 
@@ -77,7 +76,7 @@ class Path:
         """
         self.destination_id = device_destination_id
 
-    def path_generation(self, env: Environment, device_source_id: int, device_destination_id: int):
+    def path_generation(self, env, device_source_id: int, device_destination_id: int):
         """
         Generates the list of devices and links on the path from source to destination.
 
@@ -110,7 +109,7 @@ class Path:
         if self.devices_path[-1] != device_destination_id:
             self.devices_path.append(device_destination_id)
 
-    def min_bandwidth_available_on_path(self, env: Environment):
+    def min_bandwidth_available_on_path(self, env):
         """
         Calculates the minimum available bandwidth on the path.
 
@@ -130,11 +129,11 @@ def path_append_left(physical_link: PhysicalNetworkLink, old_path: Optional[Path
     new_path = Path()
 
     if old_path is None:
-        new_path.destination_id = physical_link.get_destination()
+        new_path.destination_id = physical_link.destination
     else:
         new_path.destination_id = old_path.destination_id
 
-    new_path.source_id = physical_link.get_origin()
+    new_path.source_id = physical_link.origin
 
     if old_path is None:
         new_path.devices_path.appendleft(new_path.source_id)

@@ -26,7 +26,7 @@ class Sync(Event):
                 for path_id in new_path.physical_links_path:
                     if env.physical_network_links[path_id] is not None:
                         env.physical_network_links[path_id].use_bandwidth(self.app.proc_links[i-1][j])
-                        operational_delay += env.physical_network_links[path_id].get_physical_network_link_delay()
+                        operational_delay += env.physical_network_links[path_id].delay
                     else:
                         logging.error(f"Physical network link error, expexted PhysicalNetworkLink, got {env.physical_network_links[path_id]}")
 

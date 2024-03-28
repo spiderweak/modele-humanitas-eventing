@@ -1,5 +1,6 @@
 
 from abc import ABC, abstractmethod
+import math
 
 OSPF_REFERENCE_BANDWIDTH = 1024 # Mb/s
 
@@ -42,13 +43,16 @@ class OSPFLinkMetric (LinkMetric):
         # Default value is OSPF Metric with a reference value of 1024 Mb/s, adjusted with delay and distance
         # Default delay value is 0, I advise to pick values less than 1 to keep bandwidth the main discriminant
         # Distance would probably be better as distance / MAX_RANGE to normalize between 0 and 1
+        if self.bandwidth == math.inf:
+            return 0
+
         return max(1, OSPF_REFERENCE_BANDWIDTH / self.bandwidth) + self.delay + self.distance + self.arbitrary_delay
 
     def __add__(self, other):
-        if other.isinstance(int):
+        if isinstance(other, int):
             return OSPFLinkMetric(self.bandwidth, self.distance, self.delay, self.arbitrary_delay + other)
 
-        if other.isinstance(LinkMetric):
+        if isinstance(other, LinkMetric):
             return OSPFLinkMetric(min(self.bandwidth, other.bandwidth),
                                   self.distance + other.distance,
                                   self.delay + other.delay,
