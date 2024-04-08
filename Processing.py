@@ -72,7 +72,7 @@ def main():
     environment.import_devices()
     environment.import_links()
 
-    environment.generate_other_routing_table(k_param=2)
+    environment.generate_other_routing_table(k_param=10)
 
     environment.import_applications()
 
