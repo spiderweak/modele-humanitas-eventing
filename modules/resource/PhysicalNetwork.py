@@ -56,6 +56,18 @@ class PhysicalNetwork:
         return physical_links
 
 
+    def select_link_by_id(self, link_id):
+        physical_links: List[PhysicalNetworkLink] = []
+
+        for column in self.links:
+            for link in column:
+                if link.id == link_id:
+                    physical_links.append(link)
+
+        return physical_links[0]
+
+
+
     def add_link(self, physical_network_link: PhysicalNetworkLink) -> None:
         """
         Adds a physical network link to the links 2D array.

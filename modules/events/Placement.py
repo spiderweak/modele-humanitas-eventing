@@ -99,18 +99,24 @@ class Placement(Event):
             device = env.get_random_device()
             logging.debug(f"Placement procedure from other device {device.id}")
 
-
-
-
-        deployment_success = True
-        # Get ordered device distance
-
         deployed_onto_devices = list()
         deployment_times = list()
         deployment_success = True
+        link_success = False
 
+        distance_from_device = dict()
 
-        distance_from_device = {i: device.routing_table[i][1] for i in device.routing_table}
+        if device.ospf_routing_table is None:
+            logging.error("OSPF Routing Table Init error, swapping to default routing table if any")
+            distance_from_device = {i: device.routing_table[i][1] for i in device.routing_table}
+        else:
+            for k,v in device.ospf_routing_table.routes.items():
+                if v == []:
+                    if k.id == device.id:
+                        distance_from_device[k.id] = 0
+                else:
+                    distance_from_device[k.id] = v[0].metric if isinstance(v[0].metric, (float,int)) else v[0].metric.total
+
         sorted_distance_from_device = sorted(distance_from_device.items(), key=lambda x: x[1])
 
         pref_proc = dict()
@@ -157,6 +163,41 @@ class Placement(Event):
 
         if deployment_success:
 
+            link_success = True
+            temp_deployed_onto_devices = list()
+            for proc_id in self.application_to_place.get_app_procs_ids():
+                temp_deployed_onto_devices.append(matching[proc_id])
+
+            temp_link_allocation = dict()
+
+            for i in range(self.application_to_place.num_procs):
+                for j in range(i+1, self.application_to_place.num_procs):
+                    link_value = self.application_to_place.proc_links[i][j]
+                    source = env.get_device_by_id(temp_deployed_onto_devices[i])
+                    destination = env.get_device_by_id(temp_deployed_onto_devices[j])
+                    if link_value > 0:
+
+                        routes = source.ospf_routing_table.routes[destination]
+                        for route in routes:
+                            if self.reservable_bandwidth(env, route.path, link_value):
+                                route.path.allocate_bandwidth_on_path(env, link_value)
+                                temp_link_allocation[(i,j)] = route.path
+                                break
+                            link_success = False
+
+                    if not link_success:
+                        break
+                if not link_success:
+                    break
+
+            if not link_success:
+                for value in temp_link_allocation.values():
+                    value.free_bandwidth_on_path(env, link_value)
+
+        if link_success:
+
+            link_allocation = temp_link_allocation
+
             prev_time, prev_value = env.count_accepted_application[-1]
             _, prev_tentative = env.count_tentatives[-1]
 
@@ -164,10 +205,10 @@ class Placement(Event):
                 deployed_onto_devices.append(matching[proc_id])
                 deployment_times.append(matching_delay[proc_id])
 
-            logging.info(f"Placement Module : application id : {self.application_to_place.id} , {self.application_to_place.num_procs} processus deployed on {deployed_onto_devices}")
+            logging.info(f"Placement Module : application id : {self.application_to_place.id} , {self.application_to_place.num_procs} processus deployed on {deployed_onto_devices}, links successfully mapped")
 
             for i in range(len(deployed_onto_devices)):
-                DeployProc("Deployment Proc", self.queue, self.application_to_place, deployed_onto_devices, i, event_time=int((self.time+deployment_times[i])/10)*10, last=(i+1==len(deployed_onto_devices))).add_to_queue()
+                DeployProc("Deployment Proc", self.queue, self.application_to_place, deployed_onto_devices, link_allocation, i, event_time=int((self.time+deployment_times[i])/10)*10, last=(i+1==len(deployed_onto_devices))).add_to_queue()
 
             if env.current_time == prev_time:
                 env.count_accepted_application[-1][1] += 1
@@ -179,7 +220,10 @@ class Placement(Event):
         else:
             prev_time, prev_value = env.count_rejected_application[-1]
 
-            logging.info(f"Placement Module : application id : {self.application_to_place.id} , {self.application_to_place.num_procs} processus not deployed")
+            if deployment_success :
+                logging.info(f"Placement Module : application id : {self.application_to_place.id} , {self.application_to_place.num_procs} processus deployed on {deployed_onto_devices} - Link failure, no route between hosts")
+            else:
+                logging.info(f"Placement Module : application id : {self.application_to_place.id} , {self.application_to_place.num_procs} processus not deployed")
 
             if env.current_time == prev_time:
                 env.count_rejected_application[-1][1] += 1
@@ -222,7 +266,7 @@ class Placement(Event):
         return True
 
 
-    def reservable_bandwidth(self, env: Environment, path, bandwidth_needed):
+    def reservable_bandwidth(self, env: Environment, path: Path, bandwidth_needed):
         """
         Checks if a given bandwidth can be reserved along a given path.
 

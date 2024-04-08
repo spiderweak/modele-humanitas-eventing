@@ -22,9 +22,15 @@ class Route:
         self.path = path
 
     def __lt__(self, other):
+        if isinstance(other, (float, int)):
+            return self.metric < other
+
         return self.metric < other.metric
 
     def __eq__(self, other):
+        if isinstance(other, (float, int)):
+            return False
+
         if self.destination != other.destination or self.path != other.path:
             return False
         return True

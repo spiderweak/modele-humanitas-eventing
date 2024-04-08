@@ -86,6 +86,7 @@ class Application:
         self.proc_links: np.ndarray = np.zeros((num_procs, num_procs))
 
         self.deployment_info: Dict[Processus, int] = {}
+        self.links_deployment_info: np.ndarray = np.zeros((num_procs, num_procs))
 
         self.priority = 1
 
@@ -196,7 +197,7 @@ class Application:
             for j in range(i+1, num_procs):
                 # Generate a random link with between processus i and processus j, j>i
                 link_value = random.choice([0,1]) if j != i+1 else 1
-                link_value *= random.choice([10,20,30,40,50]) * 1024
+                link_value *= random.choice([10,20,30,40,50])
                 proc_links[i][j] = proc_links[j][i] = link_value
 
         # Sets the generated value as part of the device creation
@@ -242,6 +243,10 @@ class Application:
         for i, device_id in enumerate(deployed_onto_device):
             self.deployment_info[self.processus_list[i]] = device_id
 
+    def set_links_allocation_info(self, link_allocation):
+        for k,v in link_allocation.items():
+            self.links_deployment_info[k[0]][k[1]] = v
+            self.links_deployment_info[k[1]][k[0]] = v
 
     def get_app_procs_ids(self) -> List[int]:
         """

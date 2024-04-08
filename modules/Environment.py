@@ -381,11 +381,9 @@ class Environment(object):
         Generates a routing table on each device in `self.devices`
         The function first lists the neighboring device, then iterate on the list to build a routing table based on shortest distance among links
         This is bruteforcing the shortest path betweend devices, we can probably create a better algorithm, but this is not the point for now.
-        TODO : Fix duplicated entries in routing table
         """
         import time
         import datetime
-
 
         for device in self.devices:
             device.initialize_routing_table(self.physical_network, k_param)
@@ -399,7 +397,6 @@ class Environment(object):
         # Approximative number of loops
         logging.info("Generating routing table")
         print("Generating Routing Table, (maximal value is arbitrary)")
-
 
         tst = time.time()
         while(changes):

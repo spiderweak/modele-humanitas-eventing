@@ -53,14 +53,20 @@ class PhysicalNetworkLink:
         self.bandwidth_use: float = 0.0
 
         if size > 0:
-            self.set_link_id(device_1_id*size + device_2_id)
+            self.id = device_1_id*size + device_2_id
 
         try:
             self.metric = self.metric_type(self.bandwidth, self.distance, self.delay) # type:ignore
         except:
             raise
 
-    def set_link_id(self, id):
+
+    @property
+    def id(self) -> int:
+        return self._id
+
+    @id.setter
+    def id(self, id):
         """
         Sets a Physical Link's ID by hand if necessary.
         Args:
@@ -69,12 +75,12 @@ class PhysicalNetworkLink:
         Returns:
             None
         """
-        self.id = id
+        self._id = id
 
     @property
     def origin(self) -> int:
         return self._origin
-    
+
     @origin.setter
     def origin(self, origin):
         self._origin = origin
@@ -82,7 +88,7 @@ class PhysicalNetworkLink:
     @property
     def destination(self) -> int:
         return self._destination
-    
+
     @destination.setter
     def destination(self, destination):
         self._destination = destination
@@ -181,6 +187,6 @@ class PhysicalNetworkLink:
             device_1_id : int
             device_2_id : int
         """
-        if self.device_1_id == device_1_id and self.device_2_id == device_2_id:
+        if self.origin == device_1_id and self.destination == device_2_id:
             return True
         return False

@@ -128,8 +128,18 @@ class Path:
         Returns:
             float: The minimum available bandwidth on the path.
         """
-        min_bandwidth_available = min(env.physical_network.links[path_id].available_bandwidth() for path_id in self.physical_links_path)
+        min_bandwidth_available = min(env.physical_network.select_link_by_id(link_id).available_bandwidth() for link_id in self.physical_links_path)
         return min_bandwidth_available
+
+
+    def allocate_bandwidth_on_path(self, env, bandwidth_needed):
+        for link_id in self.physical_links_path:
+            env.physical_network.select_link_by_id(link_id).use_bandwidth(bandwidth_needed)
+
+
+    def free_bandwidth_on_path(self, env, free_bandwidth_needed):
+        for link_id in self.physical_links_path:
+            env.physical_network.select_link_by_id(link_id).free_bandwidth(free_bandwidth_needed)
 
 def path_append_left(physical_link: PhysicalNetworkLink, old_path: Optional[Path]):
     if physical_link.origin == physical_link.destination:

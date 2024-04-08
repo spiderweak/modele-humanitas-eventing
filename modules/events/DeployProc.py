@@ -13,7 +13,7 @@ class DeployProc(Event):
 
     DEFAULT_SYNCRONIZATION_TIME = 10
 
-    def __init__(self, event_name: str, queue: EventQueue, app: Application, deployed_onto_devices: List, index: int, event_time: Optional[int] =None, last: bool=False, synchronization_time = DEFAULT_SYNCRONIZATION_TIME):
+    def __init__(self, event_name: str, queue: EventQueue, app: Application, deployed_onto_devices: List, link_allocation: Dict, index: int, event_time: Optional[int] =None, last: bool=False, synchronization_time = DEFAULT_SYNCRONIZATION_TIME):
         """
         Initializes a DeployProc object to manage the placement of an application.
 
@@ -28,6 +28,7 @@ class DeployProc(Event):
 
         self.app = app
         self.devices_destinations = deployed_onto_devices
+        self.link_allocation = link_allocation
         self.proc_to_deploy = self.app.processus_list[index]
         self.device_destination_id = self.devices_destinations[index]
         self.last_proc = last
@@ -47,7 +48,7 @@ class DeployProc(Event):
         env.get_device_by_id(int(self.device_destination_id)).allocate_all_resources(self.time, allocation_request) # Error here, TODO: Better handling of ids types
 
         if self.last_proc:
-            Sync("Synchronize", self.queue, self.app, self.devices_destinations, event_time=int(self.time+self.synchronization_time)).add_to_queue()
+            Sync("Synchronize", self.queue, self.app, self.devices_destinations, self.link_allocation, event_time=int(self.time+self.synchronization_time)).add_to_queue()
 
 
         return True

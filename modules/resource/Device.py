@@ -493,3 +493,4 @@ class Device:
 
     def initialize_routing_table(self, physical_network, k_param: int = -1):
         self.ospf_routing_table = OSPFRoutingTable(self, physical_network, k_param)
+

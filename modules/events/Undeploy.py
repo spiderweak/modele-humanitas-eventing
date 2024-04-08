@@ -22,6 +22,13 @@ class Undeploy(Event):
 
             env.get_device_by_id(int(device_id)).release_all_resources(self.time, release_request) # Error here, TODO: Better handling of ids types
 
+        if self.application_to_undeploy.num_procs > 1:
+            print(self.application_to_undeploy.num_procs)
+            print(self.application_to_undeploy.links_deployment_info)
+            print(self.application_to_undeploy.proc_links)
+            for i in range(self.application_to_undeploy.num_procs):
+                for j in range(i+1, self.application_to_undeploy.num_procs):
+                    self.application_to_undeploy.links_deployment_info[(i,j)].free_bandwidth(self.application_to_undeploy.proc_links[i][j])
             # undeploy links
             """
             for j in range(i):

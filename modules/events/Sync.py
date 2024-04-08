@@ -8,10 +8,11 @@ from modules.resource.Path import Path
 
 
 class Sync(Event):
-    def __init__(self, event_name, queue, app, deployed_onto_devices, event_time=None):
+    def __init__(self, event_name, queue, app, deployed_onto_devices, link_allocation, event_time=None):
         super().__init__(event_name, queue, event_time)
         self.app = app
         self.devices_destinations = deployed_onto_devices
+        self.link_allocation = link_allocation
         self.priority = 4
 
     def process(self, env):
@@ -32,6 +33,7 @@ class Sync(Event):
 
         # Set Deployment info
         self.app.set_deployment_info(self.devices_destinations)
+        self.app.set_links_allocation_info(self.link_allocation)
         env.currently_deployed_apps.append(self.app)
 
         # Run
