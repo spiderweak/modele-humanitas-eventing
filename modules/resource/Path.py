@@ -25,13 +25,13 @@ class Path:
         physical_links_path (List[int]): List of physical link IDs forming the path from source to destination.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, device_source_id: int = -1, device_destination_id: int = -1) -> None:
         """
         Initializes the Path object with default attributes.
         """
 
-        self.source_id: int = -1
-        self.destination_id: int = -1
+        self.source_id = device_source_id
+        self.destination_id = device_destination_id
 
         # Devices path is a list of all the devices from source to destination, including source and destination
         self.devices_path: deque[int] = deque()
@@ -46,9 +46,6 @@ class Path:
         return ((
                 (self.source_id == other.source_id and
                 self.destination_id == other.destination_id)
-                or
-                (self.source_id == other.destination_id and
-                self.destination_id == other.source_id)
                 )
                 and
                 set(self.devices_path) == set(other.devices_path)
@@ -56,17 +53,26 @@ class Path:
                 set(self.physical_links_path) == set(other.physical_links_path)
                 )
 
+    @property
+    def source_id(self):
+        return self._source_id
 
-    def set_source_id(self, device_source_id: int) -> None:
+    @source_id.setter
+    def source_id(self, device_source_id: int):
         """
         Set the source device ID for the path.
 
         Args:
             device_source_id (int): The ID of the source device.
         """
-        self.source_id = device_source_id
+        self._source_id = device_source_id
 
-    def set_destination_id(self, device_destination_id: int):
+    @property
+    def destination_id(self):
+        return self._destination_id
+
+    @destination_id.setter
+    def destination_id(self, device_destination_id: int):
         """
         Set the destination device ID for the path.
 
@@ -74,7 +80,7 @@ class Path:
             device_destination_id (int): The ID of the destination device.
 
         """
-        self.destination_id = device_destination_id
+        self._destination_id = device_destination_id
 
     def path_generation(self, env, device_source_id: int, device_destination_id: int):
         """
@@ -90,8 +96,8 @@ class Path:
         """
         # get Route from source to destination
 
-        self.set_source_id(device_source_id)
-        self.set_destination_id(device_destination_id)
+        self.source_id = device_source_id
+        self.destination_id = device_destination_id
         self.devices_path.append(device_source_id)
 
         device_source = env.get_device_by_id(device_source_id)
@@ -126,22 +132,23 @@ class Path:
         return min_bandwidth_available
 
 def path_append_left(physical_link: PhysicalNetworkLink, old_path: Optional[Path]):
-    new_path = Path()
+    if physical_link.origin == physical_link.destination:
+        return old_path
 
     if old_path is None:
-        new_path.destination_id = physical_link.destination
-    else:
-        new_path.destination_id = old_path.destination_id
-
-    new_path.source_id = physical_link.origin
-
-    if old_path is None:
+        new_path = Path(physical_link.origin, physical_link.destination)
+        new_path.devices_path.appendleft(new_path.destination_id)
         new_path.devices_path.appendleft(new_path.source_id)
+        new_path.physical_links_path.appendleft(physical_link.id)
     else:
-        new_path.devices_path = old_path.devices_path
+        new_path = Path(physical_link.origin, old_path.destination_id)
+        new_path.devices_path = old_path.devices_path.copy()
+        new_path.devices_path.appendleft(new_path.source_id)
+        new_path.physical_links_path.appendleft(physical_link.id)
 
-    new_path.devices_path.appendleft(new_path.source_id)
-
-    new_path.physical_links_path.appendleft(physical_link.id)
+    if new_path.source_id == new_path.destination_id:
+        new_path.devices_path = deque([new_path.source_id])
+        new_path.physical_links_path = deque()
+        print(f"Updated : {new_path.devices_path}")
 
     return new_path

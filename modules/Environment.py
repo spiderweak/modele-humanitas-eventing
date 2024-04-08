@@ -343,8 +343,6 @@ class Environment(object):
                     device_i = self.get_device_by_id(i)
                     device_j = self.get_device_by_id(j)
 
-                    print(device_i.routing_table)
-
                     try:
                         next_hop,distance = device_i.get_route_info(device_j.id)
                     except NoRouteToHost:
@@ -385,39 +383,42 @@ class Environment(object):
         This is bruteforcing the shortest path betweend devices, we can probably create a better algorithm, but this is not the point for now.
         TODO : Fix duplicated entries in routing table
         """
-
-        from pprint import pprint
         import time
+        import datetime
+
 
         for device in self.devices:
-            device.initialize_routing_table(self.physical_network)
+            device.initialize_routing_table(self.physical_network, k_param)
             if device.ospf_routing_table is not None:
                 device.ospf_routing_table.initialize_routing_table_content()
 
         ## We iterate on the matrix:
 
         changes = True
-
+        loop = 0
         # Approximative number of loops
         logging.info("Generating routing table")
         print("Generating Routing Table, (maximal value is arbitrary)")
 
+
+        tst = time.time()
         while(changes):
+            st = time.time()
+
+            loop +=1
             ## As long as the values change
             changes = False
+            count = 0
             for device in self.devices:
                 if device.ospf_routing_table is None:
                     raise ValueError("Initialisation error")
                 output = False
-                output = device.ospf_routing_table.append_neighboring_routes(k_param)
+                output = device.ospf_routing_table.append_neighboring_routes()
                 changes = changes or output
-                if output:
-                    print(f"{device.id} : {device}")
-                #print(changes)
-                #pprint(device.ospf_routing_table.routes)
-            for device in self.devices:
-                print(device.ospf_routing_table.content())
-                time.sleep(1)
+                count += 1 if output else 0
+            et = time.time()
+            logging.debug(f"Loop count : {loop}, Loop duration : {str(datetime.timedelta(seconds=et-st))}, Duration from start {str(datetime.timedelta(seconds=et-tst))}, Number of RT modified this round : {count}")
+            print(f"Loop count : {loop}, Loop duration : {str(datetime.timedelta(seconds=et-st))}, Duration from start {str(datetime.timedelta(seconds=et-tst))}, Number of RT modified this round : {count}")
 
 
     def export_devices(self, filename = "devices.json"):
@@ -495,13 +496,14 @@ class Environment(object):
                 source_device = self.get_device_by_id(int(link['source'])) # Error here, TODO: Better handling of ids types
                 target_device = self.get_device_by_id(int(link['target'])) # Error here, TODO: Better handling of ids types
                 try:
-                    source_device.add_to_routing_table(target_device.id, target_device.id, float(link['weight']))
+                    distance = float(link['weight'])
                 except KeyError as ke:
                     distance = custom_distance(source_device.position.values(),target_device.position.values())
-                    source_device.add_to_routing_table(target_device.id, target_device.id,distance)
+
+                source_device.add_to_routing_table(target_device.id, target_device.id, distance)
                 # target_device.add_to_routing_table(source_device.id, source_device.id,link['weight'])
 
-                new_physical_network_link = PhysicalNetworkLink(OSPFLinkMetric, source_device.id, target_device.id, size=number_of_devices)
+                new_physical_network_link = PhysicalNetworkLink(OSPFLinkMetric, source_device.id, target_device.id, size=number_of_devices, distance=distance)
 
                 if source_device.id == target_device.id:
                     new_physical_network_link.delay = 0
@@ -529,7 +531,7 @@ class Environment(object):
                             device_1.add_to_routing_table(device_2_id, device_2_id, distance)
                             device_2.add_to_routing_table(device_1_id, device_1_id, distance)
 
-                            new_physical_network_link = PhysicalNetworkLink(OSPFLinkMetric,device_1_id, device_2_id, size=number_of_devices, delay=distance)
+                            new_physical_network_link = PhysicalNetworkLink(OSPFLinkMetric,device_1_id, device_2_id, size=number_of_devices, distance=distance)
                             if device_1_id == device_2_id:
                                 new_physical_network_link.delay = 0
 

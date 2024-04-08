@@ -2,18 +2,17 @@
 from abc import ABC, abstractmethod
 import math
 
-OSPF_REFERENCE_BANDWIDTH = 1024 # Mb/s
-
+OSPF_REFERENCE_BANDWIDTH = 1000 # Mb/s
+DEFAULT_WIFI_RANGE = 6
 
 class LinkMetric(ABC):
-    def __init__(self, bandwidth: float, distance: float = 0, delay: float = 0, arbitrary_delay: float = 0):
+    def __init__(self, bandwidth: float, distance: float = 0, delay: float = 0):
         """
         Bandwidth in Mb/s
         """
         self.delay = delay
         self.bandwidth = bandwidth
         self.distance = distance
-        self.arbitrary_delay = arbitrary_delay
         self.total = self.calculate_total()
 
     def __lt__(self, other) -> bool:
@@ -35,8 +34,8 @@ class LinkMetric(ABC):
 
 
 class OSPFLinkMetric (LinkMetric):
-    def __init__(self, bandwidth: float, distance: float = 0, delay: float = 0, arbitrary_delay: float = 0):
-        super().__init__(bandwidth, distance, delay, arbitrary_delay)
+    def __init__(self, bandwidth: float, distance: float = 0, delay: float = 0):
+        super().__init__(bandwidth, distance, delay)
 
     def calculate_total(self) -> float:
         # Route Metric will be computed as follow :
@@ -46,14 +45,14 @@ class OSPFLinkMetric (LinkMetric):
         if self.bandwidth == math.inf:
             return 0
 
-        return max(1, OSPF_REFERENCE_BANDWIDTH / self.bandwidth) + self.delay + self.distance + self.arbitrary_delay
+        return max(1, OSPF_REFERENCE_BANDWIDTH / self.bandwidth) + self.distance/DEFAULT_WIFI_RANGE + self.delay
 
     def __add__(self, other):
-        if isinstance(other, int):
-            return OSPFLinkMetric(self.bandwidth, self.distance, self.delay, self.arbitrary_delay + other)
+        if isinstance(other, float) or isinstance(other, int):
+            return self.total + other
 
         if isinstance(other, LinkMetric):
-            return OSPFLinkMetric(min(self.bandwidth, other.bandwidth),
-                                  self.distance + other.distance,
-                                  self.delay + other.delay,
-                                  self.arbitrary_delay + other.arbitrary_delay)
+            return self.total + other.total
+
+        if other is None:
+            return self.total

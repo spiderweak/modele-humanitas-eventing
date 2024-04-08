@@ -130,7 +130,7 @@ class Device:
             "closeness_centrality": self.closeness_centrality,
             "resource_limit": self.resource_limit,
             "resource_usage_history": self.resource_usage_history,
-            "routing_table": self.routing_table
+            "routing_table": self.ospf_routing_table
         }
 
     @property
@@ -491,5 +491,5 @@ class Device:
         """
         self._closeness_centrality = float(cc)
 
-    def initialize_routing_table(self, physical_network):
-        self.ospf_routing_table = OSPFRoutingTable(self, physical_network)
+    def initialize_routing_table(self, physical_network, k_param: int = -1):
+        self.ospf_routing_table = OSPFRoutingTable(self, physical_network, k_param)

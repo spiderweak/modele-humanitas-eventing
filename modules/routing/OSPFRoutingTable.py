@@ -6,13 +6,17 @@ from modules.resource.PhysicalNetworkLink import LinkMetric
 
 import bisect
 import time
+
 class OSPFRoutingTable(RoutingTable):
-    def __init__(self, device, physical_network):
+    def __init__(self, device, physical_network, k_param : int = -1):
         self.physical_network = physical_network
         self.device = device
         self.routes : Dict[Device,List[Route]]= {} # type:ignore  # noqa: F821
+        self.routing_table_size_limit = k_param
         # Maps destinations to Route objects
 
+    def __json__(self):
+        return {key.id if key is not None else -1: value[:10] for key, value in self.routes.items()}
 
     def initialize_routing_table_content(self):
         for device, physical_link in self.device.neighboring_devices.items():
@@ -22,21 +26,37 @@ class OSPFRoutingTable(RoutingTable):
             if new_route not in self.routes[device] and new_route.destination != self.device.id:
                 bisect.insort(self.routes[device], new_route)
 
-    def append_neighboring_routes(self, k_param:int = -1) -> bool:
+    def append_neighboring_routes(self) -> bool:
         change = False
         for device, physical_link in self.device.neighboring_devices.items():
+            # Get all neighbors and their associated links
             if device.ospf_routing_table is not None:
+                # Ignore empty routing tables in neighbors
                 if self.device.id != device.id:
+                    # Self can appear in neighbor list, ignore self
                     for destination_device, destination_device_routes in device.ospf_routing_table.routes.items():
+                        # Get all routes announced by neighbors
                         if self.device.id != destination_device.id:
+                            # Ignore routes to ourselves (prevents loops)
                             for destination_device_route in destination_device_routes:
-                                new_route = route_generation(physical_link, destination_device_route)
-                                if destination_device not in self.routes:
-                                    self.routes[destination_device] = []
-                                if new_route not in self.routes[destination_device]:
-                                    bisect.insort(self.routes[destination_device], new_route)
-                                    if new_route in self.routes[destination_device][:k_param]:
-                                        change = True
+                                # Get all routes one by one
+                                if self.device.id not in destination_device_route.path.devices_path:
+                                    # Ignore routes that countain ourselves (prevents loops)
+                                    new_route = route_generation(physical_link, destination_device_route)
+                                    # Generate a new route from announcement, appends the link from self to neighbor to their announced route to third party
+                                    if destination_device not in self.routes:
+                                        # Previous destination unknown, creates entry in dictionary
+                                        self.routes[destination_device] = []
+                                    if new_route not in self.routes[destination_device]:
+                                        # Should be tested with route.__eq__ operator, which tests for path __eq__ which tests set equality on devices on the path and links on the path
+                                        bisect.insort(self.routes[destination_device], new_route)
+                                        # Inserts route based on sorted metric
+                                        if new_route in self.routes[destination_device][:self.routing_table_size_limit]:
+                                            change = True
+                                            # if route appended in the first k, signal updated route
+                                        if len(self.routes[destination_device]) >= 5*self.routing_table_size_limit:
+                                            # filter to only keep 5k routes
+                                            self.routes[destination_device] = self.routes[destination_device][:3*self.routing_table_size_limit]
         return change
 
     def add_route(self, destination, route: Route):

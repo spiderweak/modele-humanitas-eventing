@@ -17,8 +17,8 @@ class PhysicalNetworkLink:
     """
 
     next_id = 0
-    DEFAULT_BANDWIDTH = 1000 * 1024  # in KB/s
-    DEFAULT_DELAY = 10.0 # in ms
+    DEFAULT_BANDWIDTH = 100  # in MB/s
+    DEFAULT_DELAY = 0.0 # in ms
     DEFAULT_DISTANCE = 0.0
 
     @classmethod
@@ -48,7 +48,7 @@ class PhysicalNetworkLink:
         self.destination = device_2_id
 
         self.distance = distance
-        self.bandwidth = PhysicalNetworkLink.DEFAULT_BANDWIDTH # Bandwidth in KB/s
+        self.bandwidth = PhysicalNetworkLink.DEFAULT_BANDWIDTH # Bandwidth in MB/s
         self.delay = delay # Additionnal Delay, defined when creating the link, needs to be defined as a distance function
         self.bandwidth_use: float = 0.0
 
@@ -56,7 +56,7 @@ class PhysicalNetworkLink:
             self.set_link_id(device_1_id*size + device_2_id)
 
         try:
-            self.metric = self.metric_type(self.bandwidth, self.distance, self.delay, 0.0) # type:ignore
+            self.metric = self.metric_type(self.bandwidth, self.distance, self.delay) # type:ignore
         except:
             raise
 
@@ -102,7 +102,7 @@ class PhysicalNetworkLink:
         """
         self._bandwidth = bandwidth
         try:
-            self.metric = self.metric_type(bandwidth, self.distance, self.delay, 0.0) # type:ignore
+            self.metric = self.metric_type(bandwidth, self.distance, self.delay) # type:ignore
         except AttributeError:
             pass
         except:
@@ -124,7 +124,7 @@ class PhysicalNetworkLink:
         """
         self._delay = delay
         try:
-            self.metric = self.metric_type(self.bandwidth, self.distance, delay, 0.0) # type:ignore
+            self.metric = self.metric_type(self.bandwidth, self.distance, delay) # type:ignore
         except AttributeError:
             pass
         except:
