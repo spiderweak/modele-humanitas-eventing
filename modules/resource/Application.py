@@ -12,6 +12,7 @@ import json
 
 from typing import List, Dict, Union, Optional
 from modules.resource.Processus import Processus
+from modules.resource.Path import Path
 import logging
 
 # Number of group of 10 ms
@@ -74,7 +75,7 @@ class Application:
         self.id = id if id is not None else Application._generate_id()
 
         # Application duration
-        self.duration: int = 0
+        self.duration = 0
 
         # Initializes the number of processus required by the application
         self.num_procs: int = num_procs
@@ -86,6 +87,7 @@ class Application:
         self.proc_links: np.ndarray = np.zeros((num_procs, num_procs))
 
         self.deployment_info: Dict[Processus, int] = {}
+        self.links_deployment_info: np.ndarray = np.empty((num_procs, num_procs), dtype=Path)
 
         self.priority = 1
 
@@ -183,7 +185,7 @@ class Application:
             for j in range(i+1, num_procs):
                 # Generate a random link with between processus i and processus j, j>i
                 link_value = random.choice([0,1]) if j != i+1 else 1
-                link_value *= random.choice([10,20,30,40,50]) * 1024
+                link_value *= random.choice([10,20,30,40,50])
                 proc_links[i][j] = proc_links[j][i] = link_value
 
         # Sets the generated value as part of the device creation
@@ -229,6 +231,10 @@ class Application:
         for i, device_id in enumerate(deployed_onto_device):
             self.deployment_info[self.processus_list[i]] = device_id
 
+    def set_links_allocation_info(self, link_allocation):
+        for k,v in link_allocation.items():
+            self.links_deployment_info[k[0]][k[1]] = v
+            self.links_deployment_info[k[1]][k[0]] = v
 
     def get_app_procs_ids(self) -> List[int]:
         """
@@ -288,14 +294,16 @@ class Application:
         None
         """
 
-        self.id = data['app_id']
+        self.id = int(data['app_id'])
 
-        self.set_app_duration(data['duration'])
+        self.duration = int(data['duration'])
 
         for proc in data.get("proc_list", []):
             self.processus_list.append(Processus(data=proc))
 
+        self.num_procs = len(self.processus_list)
         self.proc_links = np.array(data.get("proc_links", []))
+        self.links_deployment_info: np.ndarray = np.empty((self.num_procs, self.num_procs), dtype=Path)
 
 
     @property
@@ -307,3 +315,11 @@ class Application:
         for proc in self.processus_list:
             proc.priority = priority_level
         self._priority = priority_level
+
+    @property
+    def duration(self) -> int:
+        return self._duration
+    
+    @duration.setter
+    def duration(self, duration : int) -> None:
+        self._duration = duration

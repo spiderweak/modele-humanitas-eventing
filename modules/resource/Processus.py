@@ -23,8 +23,8 @@ class Processus:
     RANDOMIZER_DEFAULT_RESOURCE: Dict[str, Dict[str, Any]] = {
         'cpu': {'choices': [0.5, 1, 2, 3, 4]},
         'gpu': {'choices': [0, 0, 0, 0, 0.5, 1, 2, 4]},
-        'mem': {'range': (0.025, 1), 'factor': 4 * 1024},
-        'disk': {'range': (1, 10), 'factor': 10 * 1024},
+        'mem': {'range': (0.0125, 1), 'factor': 8 * 1024},
+        'disk': {'range': (1, 10), 'factor': 100 * 1024},
     }
 
     # Arbitrary resource order

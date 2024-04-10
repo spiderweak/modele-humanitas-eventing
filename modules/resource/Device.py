@@ -6,6 +6,8 @@ Usage:
     dev = Device()
 """
 
+from __future__ import annotations
+
 import logging
 import random
 import json
@@ -14,6 +16,12 @@ from typing import List, Dict, Any, Union, Tuple, Optional
 
 from modules.CustomExceptions import NoRouteToHost
 from modules.ResourceManagement import fit_resource
+
+from modules.resource.PhysicalNetworkLink import PhysicalNetworkLink
+
+from modules.routing.RoutingTable import RoutingTable
+from modules.routing.OSPFRoutingTable import OSPFRoutingTable
+
 
 class Device:
     """Represents a computing device with limited resources and network capabilities.
@@ -66,7 +74,7 @@ class Device:
         return result
 
 
-    def __init__(self, data: Dict) -> None:
+    def __init__(self, data: Dict, routing_table_type = RoutingTable) -> None:
         """Initialize the Device with basic values.
 
         Args:
@@ -83,8 +91,7 @@ class Device:
             self.current_resource_usage = data.get('current_resource_usage', {key: 0 for key in self.resource_limit})
             self.theoretical_resource_usage = data.get('theoretical_resource_usage', {key: 0 for key in self.resource_limit})
             self.resource_usage_history = data.get('resource_usage_history', {key: [(0, 0)] for key in self.resource_limit})
-            self.routing_table = data.get('routing_table', {self.id: (self.id, 0.0)})
-
+            #self.routing_table = data.get('routing_table', {self.id: (self.id, 0)})
         else:
             self.id = Device._generate_id()
             self.position = self.DEFAULT_POSITION.copy()
@@ -92,10 +99,14 @@ class Device:
             self.current_resource_usage: Dict[str, Union[int, float]] = {key: 0 for key in self.resource_limit}
             self.theoretical_resource_usage: Dict[str, Union[int, float]] = {key: 0 for key in self.resource_limit}
             self.resource_usage_history = {key: [(0, 0)] for key in self.resource_limit}
+            #self.routing_table = {self.id: (self.id, 0)}
 
             # Routing table, dict {destination:(next_hop, distance)}
             ## Initialized to {self.id:(self.id,0)} as route to self is considered as distance 0
-            self.routing_table: Dict[int, Tuple[int, float]] = {self.id: (self.id, 0.0)}
+
+        self.neighboring_devices: Dict[Device, PhysicalNetworkLink] = {}
+
+        self.ospf_routing_table = None
 
         # TODO : Define a setter and a getter
         self.proc: List = []
@@ -119,7 +130,7 @@ class Device:
             "closeness_centrality": self.closeness_centrality,
             "resource_limit": self.resource_limit,
             "resource_usage_history": self.resource_usage_history,
-            "routing_table": self.routing_table
+            "routing_table": self.ospf_routing_table
         }
 
     @property
@@ -479,3 +490,10 @@ class Device:
             cc (float): The new closeness centrality value.
         """
         self._closeness_centrality = float(cc)
+
+    def initialize_routing_table(self, physical_network, k_param: int = -1):
+        self.ospf_routing_table = OSPFRoutingTable(self, physical_network, k_param)
+
+    def initialize_routing_table_from_dict(self, env, routing_table_dict):
+        if self.ospf_routing_table:
+            self.ospf_routing_table.initialize_routing_table_from_dict(env, routing_table_dict)

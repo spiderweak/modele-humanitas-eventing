@@ -7,6 +7,9 @@ Physical Network Link module, defines the physical link constraints and capabili
 Usage:
 
 """
+from __future__ import annotations
+
+from modules.resource.LinkMetric import LinkMetric, OSPFLinkMetric
 
 class PhysicalNetworkLink:
     """
@@ -17,9 +20,9 @@ class PhysicalNetworkLink:
     """
 
     next_id = 0
-    DEFAULT_BANDWIDTH = 1000 * 1024  # in KB/s
-    DEFAULT_DELAY = 10.0 # in ms
-
+    DEFAULT_BANDWIDTH = 100  # in MB/s
+    DEFAULT_DELAY = 0.0 # in ms
+    DEFAULT_DISTANCE = 0.0
 
     @classmethod
     def _generate_id(cls) -> int:
@@ -35,37 +38,38 @@ class PhysicalNetworkLink:
         return result
 
 
-    def __init__(self, device_1: Optional[Device] = None, device_2: Optional[Device] = None, size: int = -1, delay: float = DEFAULT_DELAY) -> None:
+    def __init__(self, metric_type = LinkMetric, device_1_id: int = -1, device_2_id: int = -1, size: int = -1, distance: float = DEFAULT_DISTANCE, delay: float = DEFAULT_DELAY) -> None:
         """
         Initializes the device with basic values
         Assigns ID, initial position, resource values, routing table and resource limits
         """
+        self.metric_type = metric_type
+
         # ID setting
         self.id = PhysicalNetworkLink._generate_id()
+        self.origin = device_1_id
+        self.destination = device_2_id
 
-        self.device_1 = device_1
-        self.device_2 = device_2
-
-        if self.device_1:
-            self.device_1_id: int = self.device_1.id
-        else:
-            self.device_1_id = -1
-
-        if self.device_2:
-            self.device_2_id: int = self.device_2.id
-        else:
-            self.device_2_id = -1
-
-
-        self.bandwidth: float = PhysicalNetworkLink.DEFAULT_BANDWIDTH # Bandwidth in KB/s
-        self.delay: float = delay # Additionnal Delay, defined when creating the link, needs to be defined as a distance function
+        self.distance = distance
+        self.bandwidth = PhysicalNetworkLink.DEFAULT_BANDWIDTH # Bandwidth in MB/s
+        self.delay = delay # Additionnal Delay, defined when creating the link, needs to be defined as a distance function
         self.bandwidth_use: float = 0.0
 
         if size > 0:
-            self.set_link_id(self.device_1_id*size + self.device_2_id)
+            self.id = device_1_id*size + device_2_id
+
+        try:
+            self.metric = self.metric_type(self.bandwidth, self.distance, self.delay) # type:ignore
+        except:
+            raise
 
 
-    def set_link_id(self, id):
+    @property
+    def id(self) -> int:
+        return self._id
+
+    @id.setter
+    def id(self, id):
         """
         Sets a Physical Link's ID by hand if necessary.
         Args:
@@ -74,17 +78,30 @@ class PhysicalNetworkLink:
         Returns:
             None
         """
-        self.id = id
+        self._id = id
 
+    @property
+    def origin(self) -> int:
+        return self._origin
 
-    def get_origin(self) -> int:
-        return self.device_1_id
+    @origin.setter
+    def origin(self, origin):
+        self._origin = origin
 
-    def get_destination(self) -> int:
-        return self.device_2_id
+    @property
+    def destination(self) -> int:
+        return self._destination
 
+    @destination.setter
+    def destination(self, destination):
+        self._destination = destination
 
-    def set_physical_network_link_bandwidth(self, bandwidth: float):
+    @property
+    def bandwidth(self) -> float:
+        return self._bandwidth
+
+    @bandwidth.setter
+    def bandwidth(self, bandwidth: float):
         """
         Sets a Physical Link's Bandwidth (in kBytes/s)
 
@@ -92,10 +109,21 @@ class PhysicalNetworkLink:
             bandwidth : float
                 Physical link's bandwidth (in kBytes/s)
         """
-        self.bandwidth = bandwidth
+        self._bandwidth = bandwidth
+        try:
+            self.metric = self.metric_type(bandwidth, self.distance, self.delay) # type:ignore
+        except AttributeError:
+            pass
+        except:
+            raise
 
 
-    def set_physical_network_link_delay(self, delay: float):
+    @property
+    def delay(self) -> float:
+        return self._delay
+
+    @delay.setter
+    def delay(self, delay:float):
         """
         Sets a Physical Link's associated delay
 
@@ -103,18 +131,13 @@ class PhysicalNetworkLink:
             delay : float
                 Physical link's delay
         """
-        self.delay = delay
-
-
-    def get_physical_network_link_delay(self) -> float:
-        """
-        Returns the Physical Link's associated delay
-
-        Returns:
-            delay : float
-                Physical link's delay
-        """
-        return self.delay
+        self._delay = delay
+        try:
+            self.metric = self.metric_type(self.bandwidth, self.distance, delay) # type:ignore
+        except AttributeError:
+            pass
+        except:
+            raise
 
 
     def available_bandwidth(self) -> float:
@@ -167,6 +190,6 @@ class PhysicalNetworkLink:
             device_1_id : int
             device_2_id : int
         """
-        if self.device_1_id == device_1_id and self.device_2_id == device_2_id:
+        if self.origin == device_1_id and self.destination == device_2_id:
             return True
         return False

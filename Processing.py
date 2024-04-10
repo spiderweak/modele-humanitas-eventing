@@ -70,6 +70,10 @@ def main():
     environment.config = config
 
     environment.import_devices()
+    environment.import_links()
+
+    environment.import_ospf_routing_table()
+    #environment.generate_other_routing_table(k_param=10)
 
     environment.import_applications()
 

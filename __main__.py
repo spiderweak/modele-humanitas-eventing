@@ -55,7 +55,7 @@ def main():
     environment.generate_device_list()
     environment.import_links()
     environment.plot_device_network()
-    environment.generate_routing_table()
+    environment.generate_other_routing_table(k_param=10)
 
     environment.generate_application_list()
 

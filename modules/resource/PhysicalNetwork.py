@@ -11,7 +11,7 @@ import numpy.typing as npt
 import networkx as nx
 
 from typing import List, Tuple, Any
-from modules.resource.PhysicalNetworkLink import PhysicalNetworkLink
+from modules.resource.PhysicalNetworkLink import PhysicalNetworkLink, OSPFLinkMetric
 from modules.ResourceManagement import custom_distance
 
 class PhysicalNetwork:
@@ -30,7 +30,7 @@ class PhysicalNetwork:
             size (int, optional): Size of the 2D array for physical network links. Defaults to 1.
         """
 
-        self.links: npt.NDArray = np.array([[PhysicalNetworkLink() for _ in range(size)] for _ in range(size)])
+        self.links: npt.NDArray = np.array([[PhysicalNetworkLink(metric_type=OSPFLinkMetric) for _ in range(size)] for _ in range(size)])
         # Links need to be a matrix of Physical Network Links
 
 
@@ -48,12 +48,27 @@ class PhysicalNetwork:
 
         physical_links: List[PhysicalNetworkLink] = []
 
+        if self.links[source_id][destination_id].check_physical_link(source_id, destination_id): # type:ignore
+            return [self.links[source_id][destination_id]]
+
         for column in self.links:
             for link in column:
                 if link.check_physical_link(source_id, destination_id):
                     physical_links.append(link)
 
         return physical_links
+
+
+    def select_link_by_id(self, link_id):
+        physical_links: List[PhysicalNetworkLink] = []
+
+        for column in self.links:
+            for link in column:
+                if link.id == link_id:
+                    physical_links.append(link)
+
+        return physical_links[0]
+
 
 
     def add_link(self, physical_network_link: PhysicalNetworkLink) -> None:
@@ -67,8 +82,8 @@ class PhysicalNetwork:
             None
         """
 
-        origin_device_id = physical_network_link.get_origin()
-        destination_device_id = physical_network_link.get_destination()
+        origin_device_id = physical_network_link.origin
+        destination_device_id = physical_network_link.destination
 
         self.links[origin_device_id][destination_device_id] = physical_network_link
 
@@ -107,7 +122,7 @@ class PhysicalNetwork:
                     if distance < env.config.wifi_range:
                         device_1.addToRoutingTable(device_2_id, device_2_id, distance)
                         device_2.addToRoutingTable(device_1_id, device_1_id, distance)
-                        new_physical_network_link = PhysicalNetworkLink(device_1_id, device_2_id)
+                        new_physical_network_link = PhysicalNetworkLink(OSPFLinkMetric, device_1_id, device_2_id)
                         new_physical_network_link.setLinkID(new_physical_network_link_id)
                         if device_1_id == device_2_id:
                             new_physical_network_link.setPhysicalNetworkLinkDelay(0)
@@ -217,10 +232,10 @@ class PhysicalNetwork:
         nxlinks: List[Tuple[int, int, dict[str, float]]] = []
         for column in self.links:
             for link in column:
-                origin = link.get_origin()
-                destination = link.get_destination()
+                origin = link.origin
+                destination = link.destination
                 if origin != -1 and destination != -1:
-                    nxlinks.append((link.get_origin(), link.get_destination(), {'delay': link.delay, 'bandwidth': link.bandwidth}))
+                    nxlinks.append((link.origin, link.destination, {'weight': link.metric.total}))
 
         return nx.Graph(nxlinks)
 

@@ -1,10 +1,12 @@
-from modules.resource.PhysicalNetworkLink import PhysicalNetworkLink
+from modules.resource.PhysicalNetworkLink import PhysicalNetworkLink, OSPFLinkMetric
 from modules.resource.Application import Application
 from modules.resource.Device import Device
 from modules.resource.PhysicalNetwork import PhysicalNetwork
 from modules.Config import Config
 from modules.CustomExceptions import (NoRouteToHost, DeviceNotFoundError, ApplicationNotFoundError)
 from modules.ResourceManagement import custom_distance
+
+from modules.routing.OSPFRoutingTable import OSPFRoutingTable
 
 import logging
 import json
@@ -14,6 +16,9 @@ import networkx as nx
 import os
 import matplotlib.pyplot as plt
 import numpy as np
+import math
+import time
+import datetime
 
 from typing import List, Dict, Optional, Union
 
@@ -185,7 +190,7 @@ class Environment(object):
 
         try:
             for device in json_data['devices']:
-                dev = Device(data=device)
+                dev = Device(data=device, routing_table_type=OSPFRoutingTable)
                 self.add_device(dev)
         except KeyError:
             n_devices = self.config.number_of_devices # Number of devices
@@ -373,6 +378,49 @@ class Environment(object):
                         device_i.add_to_routing_table(device_j.id, min_nh, min_array)
 
 
+    def generate_other_routing_table(self, k_param = -1):
+        """
+        Generates a routing table on each device in `self.devices`
+        The function first lists the neighboring device, then iterate on the list to build a routing table based on shortest distance among links
+        This is bruteforcing the shortest path betweend devices, we can probably create a better algorithm, but this is not the point for now.
+        """
+
+        if k_param == -1 and self.config:
+            k_param = self.config.k_param
+
+        for device in self.devices:
+            device.initialize_routing_table(self.physical_network, k_param)
+            if device.ospf_routing_table is not None:
+                device.ospf_routing_table.initialize_routing_table_content()
+
+        ## We iterate on the matrix:
+
+        changes = True
+        loop = 0
+        # Approximative number of loops
+        logging.info("Generating routing table")
+        print("Generating Routing Table, (maximal value is arbitrary)")
+
+        tst = time.time()
+        while(changes):
+            st = time.time()
+
+            loop +=1
+            ## As long as the values change
+            changes = False
+            count = 0
+            for device in self.devices:
+                if device.ospf_routing_table is None:
+                    raise ValueError("Initialisation error")
+                output = False
+                output = device.ospf_routing_table.append_neighboring_routes()
+                changes = changes or output
+                count += 1 if output else 0
+            et = time.time()
+            logging.debug(f"Loop count : {loop}, Loop duration : {str(datetime.timedelta(seconds=et-st))}, Duration from start {str(datetime.timedelta(seconds=et-tst))}, Number of RT modified this round : {count}")
+            print(f"Loop count : {loop}, Loop duration : {str(datetime.timedelta(seconds=et-st))}, Duration from start {str(datetime.timedelta(seconds=et-tst))}, Number of RT modified this round : {count}")
+
+
     def export_devices(self, filename = "devices.json"):
         output_string = {"devices" : self.devices, "links" : self.devices_links}
         json_string = json.dumps(output_string, default=lambda o: o.__json__(), indent=4)
@@ -401,9 +449,35 @@ class Environment(object):
             raise FileNotFoundError("Please add devices list in argument, default value is devices.json in current directory")
 
         for device in devices_list['devices']:
-            dev = Device(data=device)
+            dev = Device(data=device, routing_table_type=OSPFRoutingTable)
             self.add_device(dev)
 
+
+    def import_ospf_routing_table(self):
+        if self.config is None:
+            raise ValueError("Config is not initialized.")
+
+        if self.config.devices_file is None:
+            raise ImportError("No device list to process")
+
+        try:
+            with open(self.config.devices_file) as file:
+                devices_list = json.load(file)
+        except FileNotFoundError:
+            raise FileNotFoundError("Please add devices list in argument, default value is devices.json in current directory")
+
+        # Exporting placements list
+        print("Importing routing tables")
+        logging.info(f"{datetime.datetime.now().isoformat(timespec='minutes')}:Importing routing tables")
+
+        for device_data in tqdm(devices_list['devices']):
+            device_id = device_data.get('id')
+            device_routing_table = device_data.get('routing_table')
+            device = self.get_device_by_id(device_id)
+            device.initialize_routing_table(self.physical_network, self.config.k_param)
+            if device.ospf_routing_table is not None:
+                device.ospf_routing_table.initialize_routing_table_content()
+            device.initialize_routing_table_from_dict(self, device_routing_table)
 
     def import_applications(self):
         if self.config is None:
@@ -448,19 +522,28 @@ class Environment(object):
                 source_device = self.get_device_by_id(int(link['source'])) # Error here, TODO: Better handling of ids types
                 target_device = self.get_device_by_id(int(link['target'])) # Error here, TODO: Better handling of ids types
                 try:
-                    source_device.add_to_routing_table(target_device.id, target_device.id, float(link['weight']))
+                    distance = float(link['weight'])
                 except KeyError as ke:
                     distance = custom_distance(source_device.position.values(),target_device.position.values())
-                    source_device.add_to_routing_table(target_device.id, target_device.id,distance)
+
+                source_device.add_to_routing_table(target_device.id, target_device.id, distance)
                 # target_device.add_to_routing_table(source_device.id, source_device.id,link['weight'])
 
-                new_physical_network_link = PhysicalNetworkLink(source_device, target_device, size=number_of_devices)
+                new_physical_network_link = PhysicalNetworkLink(OSPFLinkMetric, source_device.id, target_device.id, size=number_of_devices, distance=distance)
+
+                if source_device.id == target_device.id:
+                    new_physical_network_link.delay = 0
+                    new_physical_network_link.bandwidth = math.inf
+
+                source_device.neighboring_devices[target_device] = new_physical_network_link
+
                 try:
                     if link['id'] != new_physical_network_link.id:
-                        new_physical_network_link.set_link_id(int(link['id']))
+                        new_physical_network_link.id = int(link['id'])
                 except KeyError as ke:
                     pass
                 self.physical_network.add_link(new_physical_network_link)
+
 
         except KeyError as ke:
             if ke.args[0] == 'links':
@@ -474,10 +557,14 @@ class Environment(object):
                             device_1.add_to_routing_table(device_2_id, device_2_id, distance)
                             device_2.add_to_routing_table(device_1_id, device_1_id, distance)
 
-                            new_physical_network_link = PhysicalNetworkLink(device_1, device_2, size=number_of_devices, delay=distance)
+                            new_physical_network_link = PhysicalNetworkLink(OSPFLinkMetric,device_1_id, device_2_id, size=number_of_devices, distance=distance)
                             if device_1_id == device_2_id:
-                                new_physical_network_link.set_physical_network_link_delay(0)
+                                new_physical_network_link.delay = 0
+
                             self.physical_network.add_link(new_physical_network_link)
+
+                            device_1.neighboring_devices[device_2] = new_physical_network_link
+
                             link = {"source": device_1_id, "target": device_2_id, "weight": distance, "id": new_physical_network_link.id}
                             self.devices_links.append(link)
 
@@ -600,7 +687,7 @@ class Environment(object):
             json_data = json.load(file)
         try :
             for device in json_data['devices']:
-                dev = Device(data=device)
+                dev = Device(data=device, routing_table_type=OSPFRoutingTable)
                 self.add_device(dev)
         except:
             raise NotImplementedError

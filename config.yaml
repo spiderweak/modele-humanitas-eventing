@@ -24,3 +24,5 @@ device_number : 200
 wifi_range : 6
 
 app_duration : 0
+
+k_param : 10

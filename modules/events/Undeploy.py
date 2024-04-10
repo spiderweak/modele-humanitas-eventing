@@ -22,6 +22,12 @@ class Undeploy(Event):
 
             env.get_device_by_id(int(device_id)).release_all_resources(self.time, release_request) # Error here, TODO: Better handling of ids types
 
+        if self.application_to_undeploy.num_procs > 1:
+            for i in range(self.application_to_undeploy.num_procs):
+                for j in range(i+1, self.application_to_undeploy.num_procs):
+                    if self.application_to_undeploy.links_deployment_info[(i,j)]:
+                        self.application_to_undeploy.links_deployment_info[(i,j)].free_bandwidth_on_path(env,self.application_to_undeploy.proc_links[i][j])
+
             # undeploy links
             """
             for j in range(i):
@@ -30,7 +36,7 @@ class Undeploy(Event):
                 for path_id in new_path.physical_links_path:
                     if env.physical_network_links[path_id] is not None:
                         env.physical_network_links[path_id].use_bandwidth(self.application_to_deploy.proc_links[i-1][j])
-                        operational_delay += env.physical_network_links[path_id].get_physical_network_link_delay()
+                        operational_delay += env.physical_network_links[path_id].delay
                     else:
                         logging.error(f"Physical network link error, expexted PhysicalNetworkLink, got {env.physical_network_links[path_id]}")
             """
