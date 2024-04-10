@@ -3,6 +3,7 @@ from typing import Dict, List
 from modules.routing.Route import Route, route_generation
 from modules.routing.RoutingTable import RoutingTable
 from modules.resource.PhysicalNetworkLink import LinkMetric
+from modules.resource.Path import Path
 
 import bisect
 import time
@@ -58,6 +59,22 @@ class OSPFRoutingTable(RoutingTable):
                                             # filter to only keep 5k routes
                                             self.routes[destination_device] = self.routes[destination_device][:3*self.routing_table_size_limit]
         return change
+
+
+    def initialize_routing_table_from_dict(self, env, routing_table_dict):
+        for device_id, routes in routing_table_dict.items():
+            device = env.get_device_by_id(int(device_id))
+            if device not in self.routes:
+                self.routes[device] = []
+            for route in routes:
+                if route:
+                    first_device, last_device = route['path'][0], route['path'][-1]
+                    new_path = Path(first_device, last_device)
+                    new_path.generate_path_from_intermediate_devices(env, route['path'])
+                    new_route = Route(route['origin'], route['destination'], route['metric'], new_path)
+                if new_route not in self.routes[device] and new_route.destination != self.device.id:
+                    bisect.insort(self.routes[device], new_route)
+
 
     def add_route(self, destination, route: Route):
         if destination not in self.routes:

@@ -12,6 +12,7 @@ import json
 
 from typing import List, Dict, Union, Optional
 from modules.resource.Processus import Processus
+from modules.resource.Path import Path
 import logging
 
 # Number of group of 10 ms
@@ -74,7 +75,7 @@ class Application:
         self.id = id if id is not None else Application._generate_id()
 
         # Application duration
-        self.duration: int = 0
+        self.duration = 0
 
         # Initializes the number of processus required by the application
         self.num_procs: int = num_procs
@@ -86,7 +87,7 @@ class Application:
         self.proc_links: np.ndarray = np.zeros((num_procs, num_procs))
 
         self.deployment_info: Dict[Processus, int] = {}
-        self.links_deployment_info: np.ndarray = np.zeros((num_procs, num_procs))
+        self.links_deployment_info: np.ndarray = np.empty((num_procs, num_procs), dtype=Path)
 
         self.priority = 1
 
@@ -151,19 +152,6 @@ class Application:
 
         # Log the change
         logging.debug(f"Application ID changed to {id}")
-
-
-    def set_app_id(self, id: int) -> None:
-        """
-        Used to set an application's ID by hand if necessary
-
-        Args:
-        -----
-        id : `int`
-            New application ID
-        """
-
-        self.id = id
 
 
     def random_app_init(self, num_procs: int = 3, num_proc_random: bool = True) -> None:
@@ -306,14 +294,16 @@ class Application:
         None
         """
 
-        self.set_app_id(data['app_id'])
+        self.id = int(data['app_id'])
 
-        self.set_app_duration(data['duration'])
+        self.duration = int(data['duration'])
 
         for proc in data.get("proc_list", []):
             self.processus_list.append(Processus(data=proc))
 
+        self.num_procs = len(self.processus_list)
         self.proc_links = np.array(data.get("proc_links", []))
+        self.links_deployment_info: np.ndarray = np.empty((self.num_procs, self.num_procs), dtype=Path)
 
 
     @property
@@ -325,3 +315,11 @@ class Application:
         for proc in self.processus_list:
             proc.priority = priority_level
         self._priority = priority_level
+
+    @property
+    def duration(self) -> int:
+        return self._duration
+    
+    @duration.setter
+    def duration(self, duration : int) -> None:
+        self._duration = duration

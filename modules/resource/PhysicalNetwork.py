@@ -48,6 +48,9 @@ class PhysicalNetwork:
 
         physical_links: List[PhysicalNetworkLink] = []
 
+        if self.links[source_id][destination_id].check_physical_link(source_id, destination_id): # type:ignore
+            return [self.links[source_id][destination_id]]
+
         for column in self.links:
             for link in column:
                 if link.check_physical_link(source_id, destination_id):

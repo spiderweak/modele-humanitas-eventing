@@ -10,6 +10,7 @@ from collections import deque
 from modules.resource.PhysicalNetworkLink import PhysicalNetworkLink
 
 from typing import List, Dict, Any, Union, Tuple, Optional
+import math
 
 # Will need to refactor this to replace with number of devices
 MAX_HOPS = 100
@@ -128,7 +129,10 @@ class Path:
         Returns:
             float: The minimum available bandwidth on the path.
         """
-        min_bandwidth_available = min(env.physical_network.select_link_by_id(link_id).available_bandwidth() for link_id in self.physical_links_path)
+        try:
+            min_bandwidth_available = min(env.physical_network.select_link_by_id(link_id).available_bandwidth() for link_id in self.physical_links_path)
+        except ValueError:
+            min_bandwidth_available = math.inf
         return min_bandwidth_available
 
 
@@ -140,6 +144,12 @@ class Path:
     def free_bandwidth_on_path(self, env, free_bandwidth_needed):
         for link_id in self.physical_links_path:
             env.physical_network.select_link_by_id(link_id).free_bandwidth(free_bandwidth_needed)
+
+    def generate_path_from_intermediate_devices(self, env, devices_list: list):
+        self.devices_path = deque(devices_list)
+        for first, second in zip(devices_list, devices_list[1:]):
+            self.devices_path.append(env.physical_network.select_link(first, second)[0].id)
+
 
 def path_append_left(physical_link: PhysicalNetworkLink, old_path: Optional[Path]):
     if physical_link.origin == physical_link.destination:
@@ -162,3 +172,4 @@ def path_append_left(physical_link: PhysicalNetworkLink, old_path: Optional[Path
         print(f"Updated : {new_path.devices_path}")
 
     return new_path
+

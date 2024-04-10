@@ -13,3 +13,7 @@ stress_test/
 *.json
 output
 input
+update_docs.sh
+_build/
+_static/
+_templates/

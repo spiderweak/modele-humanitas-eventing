@@ -15,6 +15,7 @@ class Config:
     DEFAULT_NUMBER_OF_DEVICES: int = 40
     DEFAULT_WIFI_RANGE: float = 6.0
     DEFAULT_APP_DURATION: int = 0
+    DEFAULT_K_PARAM: int = 10
     DEFAULT_3D_SPACE: Dict[str,Union[int,float]] = {"x_min": 0, "x_max": 40, "y_min": 0, "y_max": 40, "z_min": 0, "z_max": 0}
 
     def __init__(self, *, options: argparse.Namespace):
@@ -56,6 +57,8 @@ class Config:
         self.wifi_range: float = self.DEFAULT_WIFI_RANGE
 
         self._3D_space: Dict[str,Union[int,float]] = self.DEFAULT_3D_SPACE
+
+        self.k_param: int = self.DEFAULT_K_PARAM
 
         self.app_duration: int = self.DEFAULT_APP_DURATION
 
@@ -130,6 +133,7 @@ class Config:
         for boundary in self._3D_space.keys():
             self._set_attribute_from_yaml(f'_3D_space["{boundary}"]', ['device_positionning', boundary], float)
 
+        self._set_attribute_from_yaml('k_param', ['k_param'], int)
         self._set_attribute_from_yaml('app_duration', ['app_duration'], float)
 
         # Setting options

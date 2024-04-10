@@ -65,7 +65,7 @@ def main():
     environment.process_closeness_centrality()
 
     environment.plot_device_network()
-    environment.generate_other_routing_table(k_param=10)
+    environment.generate_other_routing_table()
     #environment.generate_routing_table()
 
     # Exporting devices list

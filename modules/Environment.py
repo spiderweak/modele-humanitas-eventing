@@ -17,6 +17,8 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 import math
+import time
+import datetime
 
 from typing import List, Dict, Optional, Union
 
@@ -382,8 +384,9 @@ class Environment(object):
         The function first lists the neighboring device, then iterate on the list to build a routing table based on shortest distance among links
         This is bruteforcing the shortest path betweend devices, we can probably create a better algorithm, but this is not the point for now.
         """
-        import time
-        import datetime
+
+        if k_param == -1 and self.config:
+            k_param = self.config.k_param
 
         for device in self.devices:
             device.initialize_routing_table(self.physical_network, k_param)
@@ -450,6 +453,32 @@ class Environment(object):
             self.add_device(dev)
 
 
+    def import_ospf_routing_table(self):
+        if self.config is None:
+            raise ValueError("Config is not initialized.")
+
+        if self.config.devices_file is None:
+            raise ImportError("No device list to process")
+
+        try:
+            with open(self.config.devices_file) as file:
+                devices_list = json.load(file)
+        except FileNotFoundError:
+            raise FileNotFoundError("Please add devices list in argument, default value is devices.json in current directory")
+
+        # Exporting placements list
+        print("Importing routing tables")
+        logging.info(f"{datetime.datetime.now().isoformat(timespec='minutes')}:Importing routing tables")
+
+        for device_data in tqdm(devices_list['devices']):
+            device_id = device_data.get('id')
+            device_routing_table = device_data.get('routing_table')
+            device = self.get_device_by_id(device_id)
+            device.initialize_routing_table(self.physical_network, self.config.k_param)
+            if device.ospf_routing_table is not None:
+                device.ospf_routing_table.initialize_routing_table_content()
+            device.initialize_routing_table_from_dict(self, device_routing_table)
+
     def import_applications(self):
         if self.config is None:
             raise ValueError("Config is not initialized.")
@@ -510,7 +539,7 @@ class Environment(object):
 
                 try:
                     if link['id'] != new_physical_network_link.id:
-                        new_physical_network_link.set_link_id(int(link['id']))
+                        new_physical_network_link.id = int(link['id'])
                 except KeyError as ke:
                     pass
                 self.physical_network.add_link(new_physical_network_link)

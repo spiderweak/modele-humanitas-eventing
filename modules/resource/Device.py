@@ -91,7 +91,7 @@ class Device:
             self.current_resource_usage = data.get('current_resource_usage', {key: 0 for key in self.resource_limit})
             self.theoretical_resource_usage = data.get('theoretical_resource_usage', {key: 0 for key in self.resource_limit})
             self.resource_usage_history = data.get('resource_usage_history', {key: [(0, 0)] for key in self.resource_limit})
-            self.routing_table = data.get('routing_table', {self.id: (self.id, 0)})
+            #self.routing_table = data.get('routing_table', {self.id: (self.id, 0)})
         else:
             self.id = Device._generate_id()
             self.position = self.DEFAULT_POSITION.copy()
@@ -99,7 +99,7 @@ class Device:
             self.current_resource_usage: Dict[str, Union[int, float]] = {key: 0 for key in self.resource_limit}
             self.theoretical_resource_usage: Dict[str, Union[int, float]] = {key: 0 for key in self.resource_limit}
             self.resource_usage_history = {key: [(0, 0)] for key in self.resource_limit}
-            self.routing_table = {self.id: (self.id, 0)}
+            #self.routing_table = {self.id: (self.id, 0)}
 
             # Routing table, dict {destination:(next_hop, distance)}
             ## Initialized to {self.id:(self.id,0)} as route to self is considered as distance 0
@@ -494,3 +494,6 @@ class Device:
     def initialize_routing_table(self, physical_network, k_param: int = -1):
         self.ospf_routing_table = OSPFRoutingTable(self, physical_network, k_param)
 
+    def initialize_routing_table_from_dict(self, env, routing_table_dict):
+        if self.ospf_routing_table:
+            self.ospf_routing_table.initialize_routing_table_from_dict(env, routing_table_dict)
