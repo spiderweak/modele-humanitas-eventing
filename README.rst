@@ -21,7 +21,7 @@ Running the overall simulation is possible with the following commands::
 
 If the program is downloaded from the repo, it comes with a default config.yaml file and example files that gives default values for various parameters, allowing a complete simulation run.
 
-The global simulation creates a graph saved under *fig/graph.png* and plots successful and rejected application deployment, as well as latency, on a given plot under the *fig/results.png* file
+The global simulation creates a graph saved under *fig/graph.png* and plots successful and rejected application deployment, as well as delay, on a given plot under the *fig/results.png* file
 
 Step by step execution
 ++++++++++++++++++++++

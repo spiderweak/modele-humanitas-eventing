@@ -50,7 +50,7 @@ class Simulation(object):
             # Generating 1 random application
             application = Application()
             application.random_app_init()
-            application.set_app_id(i)
+            application.id = i
             if self.__env.config.app_duration != 0:
                 application.set_app_duration(self.__env.config.app_duration)
 
