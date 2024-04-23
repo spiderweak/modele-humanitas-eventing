@@ -1,4 +1,4 @@
-Welcome to the Embedded Application Choreography Simulation's documentation
+Welcome to the Humanitas Network and Services Simulator's documentation
 ===========================================================================
 
 This program was designed as a simulation tool to experiment around application placement under operational constraint for HEAVEN.
@@ -85,3 +85,14 @@ It extracts data stored in the *latest* folder and saves it to a dated folder, d
    python Archiver.py --date=data/{date_string}
 
 Thus in our case the written files usually go to *data/YYYY-MM-DDTHH-m0*
+
+
+Features
+--------
+
+Document features
+
+TODO
+----
+
+Document TODO
