@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Welcome to the Humanitas Network and Services Simulator’s documentation &#8212; Humanitas Network and Services Simulator v0.5 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Modules Documentation" href="modules.html" />
+    <link rel="prev" title="Welcome to Humanitas Network and Services Simulator’s documentation!" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="welcome-to-the-humanitas-network-and-services-simulator-s-documentation">
+<h1>Welcome to the Humanitas Network and Services Simulator’s documentation<a class="headerlink" href="#welcome-to-the-humanitas-network-and-services-simulator-s-documentation" title="Permalink to this heading">¶</a></h1>
+<p>This program is designed as a simulation tool to experiment with application placement under operational constraints for HEAVEN.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this heading">¶</a></h2>
+<p>The Humanitas Network and Services Simulator is built with modularity in mind, allowing replaceable building blocks that can interoperate with other Humanitas tools. Key modules include device generation, application generation, application arrivals generation, simulation processing, and archival of results.</p>
+</section>
+<section id="running-the-program">
+<h2>Running the Program<a class="headerlink" href="#running-the-program" title="Permalink to this heading">¶</a></h2>
+<p>The program can be executed either as a whole or step-by-step. It is typically run using an automation tool like Airflow.</p>
+<section id="global-simulation">
+<h3>Global Simulation<a class="headerlink" href="#global-simulation" title="Permalink to this heading">¶</a></h3>
+<p>To run the overall simulation, use the following command:</p>
+<blockquote>
+<div><p>python __main__.py</p>
+</div></blockquote>
+<p>This command uses the default <cite>config.yaml</cite> file and example files, which provide default values for various parameters. The simulation generates a graph saved as <em>fig/graph.png</em> and plots deployment results in <em>fig/results.png</em>.</p>
+</section>
+<section id="step-by-step-execution">
+<h3>Step-by-Step Execution<a class="headerlink" href="#step-by-step-execution" title="Permalink to this heading">¶</a></h3>
+<p>For more granular control, you can execute each component individually. This approach facilitates exports and allows concurrent runs of different placement algorithms for testing and comparison.</p>
+<p>Execute the following commands in sequence:</p>
+<blockquote>
+<div><p>python DeviceGenerator.py
+python AppGenerator.py
+python PlacementGenerator.py
+python Processing.py
+python Archiver.py</p>
+</div></blockquote>
+</section>
+</section>
+<section id="modules">
+<h2>Modules<a class="headerlink" href="#modules" title="Permalink to this heading">¶</a></h2>
+<section id="devicegenerator">
+<h3>DeviceGenerator<a class="headerlink" href="#devicegenerator" title="Permalink to this heading">¶</a></h3>
+<p>The <strong>DeviceGenerator</strong> uses the <cite>config.yaml</cite> device files, specifically from <em>template_files/devices</em> and <em>device_number</em>, to generate a device graph. The generated device information is stored in a JSON file (defaults to <em>latest/devices.json</em>) with device characteristics and a routing table.</p>
+</section>
+<section id="appgenerator">
+<h3>AppGenerator<a class="headerlink" href="#appgenerator" title="Permalink to this heading">¶</a></h3>
+<p>The <strong>AppGenerator</strong> uses the <cite>config.yaml</cite> application files, primarily from <em>template_files/application</em> and <em>application_number</em>, to generate application characteristics. Applications are defined as a list of processes (Processus) that request resources from allocated devices. The generated applications are stored in <em>latest/applications.json</em>, with a default of generating 5000 applications.</p>
+</section>
+<section id="placementgenerator">
+<h3>PlacementGenerator<a class="headerlink" href="#placementgenerator" title="Permalink to this heading">¶</a></h3>
+<p>The <strong>PlacementGenerator</strong> creates a queue of <em>Placement</em> events that simulate application arrivals. Each event includes the event time, application ID, and device requester ID, and is exported to a JSON file for the Processing algorithm.</p>
+</section>
+<section id="processing">
+<h3>Processing<a class="headerlink" href="#processing" title="Permalink to this heading">¶</a></h3>
+<p>The <strong>Processing</strong> module is the core of the simulator. It loads information from previous modules, processes the simulation queue, and exports the data to a results.csv file. The processing currently uses bi-partite graphs but will be enhanced for other placement algorithms.</p>
+</section>
+<section id="visualizer">
+<h3>Visualizer<a class="headerlink" href="#visualizer" title="Permalink to this heading">¶</a></h3>
+<p>The <strong>Visualizer</strong> imports pre-processed data and generates graphs for articles. It extracts data from the <em>latest</em> folder and saves it to a dated folder, with the default date set to today. For Airflow, the date string is formatted as:</p>
+<blockquote>
+<div><p>date_string = datetime.datetime.now().isoformat(timespec=’minutes’).replace(“:”, “-“)[:-1]+”0”
+python Visualizer.py –date=data/{date_string}</p>
+</div></blockquote>
+</section>
+</section>
+<section id="features">
+<h2>Features<a class="headerlink" href="#features" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Modular design for easy replacement and integration with other tools.</p></li>
+<li><p>Comprehensive simulation with configurable parameters.</p></li>
+<li><p>Detailed logging and archival of results.</p></li>
+</ul>
+</section>
+<section id="todo">
+<h2>TODO<a class="headerlink" href="#todo" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Enhance the processing unit for additional placement algorithms.</p></li>
+</ul>
+</section>
+<section id="configuration">
+<h2>Configuration<a class="headerlink" href="#configuration" title="Permalink to this heading">¶</a></h2>
+<p>Refer to <cite>config.yaml</cite> for parameter settings and customization options.</p>
+</section>
+<section id="contact">
+<h2>Contact<a class="headerlink" href="#contact" title="Permalink to this heading">¶</a></h2>
+<p>For questions or contributions, please contact the development team at [your_contact_info].</p>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Humanitas Network and Services Simulator</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Welcome to the Humanitas Network and Services Simulator’s documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-the-program">Running the Program</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#modules">Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#features">Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#todo">TODO</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#configuration">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#contact">Contact</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Modules Documentation</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Welcome to Humanitas Network and Services Simulator’s documentation!</a></li>
+      <li>Next: <a href="modules.html" title="next chapter">Modules Documentation</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2024, Antoine BERNARD.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.0.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      
+      |
+      <a href="_sources/README.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
