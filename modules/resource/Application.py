@@ -154,7 +154,7 @@ class Application:
         logging.debug(f"Application ID changed to {id}")
 
 
-    def random_app_init(self, num_procs: int = 3, num_proc_random: bool = True) -> None:
+    def random_app_init(self, num_procs: int = 5, num_proc_random: bool = True) -> None:
         """
         Random initialization of the application.
 
@@ -181,11 +181,14 @@ class Application:
         # Generates the random link matrix between processus
         # Links will be symmetrical, link matrix initialized to zero
         proc_links = np.zeros((num_procs, num_procs))
+        rng = np.random.default_rng()
+        p_1 = 1/num_procs
+        p_0 = 1 - p_1
         for i in range(num_procs):
             for j in range(i+1, num_procs):
                 # Generate a random link with between processus i and processus j, j>i
-                link_value = random.choice([0,1]) if j != i+1 else 1
-                link_value *= random.choice([10,20,30,40,50])
+                link_value = rng.choice([0,1], p=[p_0,p_1]) if j != i+1 else 1
+                link_value *= rng.choice([5,10,15,20,25])
                 proc_links[i][j] = proc_links[j][i] = link_value
 
         # Sets the generated value as part of the device creation
@@ -319,7 +322,7 @@ class Application:
     @property
     def duration(self) -> int:
         return self._duration
-    
+
     @duration.setter
     def duration(self, duration : int) -> None:
         self._duration = duration

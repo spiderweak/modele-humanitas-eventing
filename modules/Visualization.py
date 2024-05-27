@@ -1,7 +1,9 @@
 import logging
+import os
 
 import pandas as pd
 import matplotlib.pyplot as plt
+import numpy as np
 from tqdm import tqdm
 from modules.Environment import Environment
 
@@ -13,6 +15,15 @@ class Visualizer():
 
     def visualize_environment(self, env: Environment):
 
+        # List deployed apps
+        logging.info("Successfully deployed apps : ")
+        logging.info(env.list_accepted_application)
+
+        logging.info("Application deployment failures: ")
+        logging.info(env.rejected_application_by_reason)
+
+        logging.info(f"Number of rejection : {sum([len(reason) for reason in env.rejected_application_by_reason.values()])} ")
+
         data = env.get_device_by_id(12).resource_usage_history['cpu']
 
         x,y = zip(*data)
@@ -23,24 +34,11 @@ class Visualizer():
         plt.xlabel("Time (in s)")
         plt.ylabel("Theoretical CPU usage")
 
-        logging.info(data)
-        plt.savefig("fig/results.png")
+        logging.debug(data)
+        plt.savefig(os.path.join(env.config.output_folder, "results.png"))
 
 
     def apps_visualiser(self, env: Environment):
-        times, values = zip(*env.count_rejected_application)
-
-        plt.clf()
-        # Set the labels
-        plt.plot(times, values)
-        plt.title("Rejected Applications Over Time")
-        plt.xlabel("Time (in s)")
-        plt.ylabel("Number of Rejected Applications")
-
-        plt.savefig("latest/rejected.png")
-
-        logging.info(f"Number of rejected applications : {values[-1]}")
-
         times, values = zip(*env.count_accepted_application)
 
         plt.clf()
@@ -50,7 +48,8 @@ class Visualizer():
         plt.xlabel("Time (in s)")
         plt.ylabel("Number of Accepted Applications")
 
-        plt.savefig("latest/accepted.png")
+        plt.savefig(os.path.join(env.config.output_folder, "accepted.png"))
+
 
         logging.info(f"Number of accepted applications : {values[-1]}")
 
@@ -63,7 +62,7 @@ class Visualizer():
         plt.xlabel("Time (in s)")
         plt.ylabel("Number of Tentatives with success")
 
-        plt.savefig("latest/tentatives_with_success.png")
+        plt.savefig(os.path.join(env.config.output_folder, "tentatives_with_success.png"))
 
 
     def final_results(self, env):
@@ -201,6 +200,56 @@ class Visualizer():
         df['mem'] = df['mem'] / sum(v for _,v in mem_limit_data.items()) * 100
         df['disk'] = df['disk'] / sum(v for _,v in disk_limit_data.items())* 100
 
-        df.to_csv("results.csv")
+        df.to_csv(os.path.join(env.config.output_folder, "results.csv"))
 
         # Can be good to keep track on deployment requests, failures, and eventually to backoff placement failures
+
+    def other_final_results(self, env):
+        # Initialize a DataFrame to store aggregated data
+        resource_types = ['cpu', 'gpu', 'mem', 'disk']
+        all_resources = pd.DataFrame()
+
+        # Iterate over each device
+        for device in tqdm(env.devices):
+            for resource in resource_types:
+                # Load resource usage into a DataFrame
+                data = pd.DataFrame(device.resource_usage_history[resource], columns=['time', resource])
+                data.set_index('time', inplace=True)
+
+                # Assume unchanged resource usage until the next change (forward fill)
+                data = data.reindex(range(data.index.min(), data.index.max() + 1), method='ffill')
+
+                # If this is the first device, initialize the DataFrame; otherwise, add the data
+                if all_resources.empty:
+                    all_resources = data
+                else:
+                    # Aggregate by adding new data to the existing sum for each resource
+                    all_resources = all_resources.add(data, fill_value=0)
+
+        # Normalize by total capacity of each resource across all devices
+        total_limits = {resource: sum(device.resource_limit[resource] for device in env.devices) for resource in resource_types}
+        for resource in resource_types:
+            all_resources[resource] /= total_limits[resource]
+            all_resources[resource] *= 100  # Convert to percentage
+
+        all_resources = all_resources.round(1)
+        
+        all_resources.to_csv(os.path.join(env.config.output_folder, "results.csv"))
+        all_resources = pd.read_csv(os.path.join(env.config.output_folder, "results.csv"))
+
+        plt.figure(figsize=(12, 8))  # Set the size of the plot
+        
+        # Plot each resource usage
+        plt.plot(all_resources['time'], all_resources['cpu'], label='CPU Usage (%)', marker='')
+        plt.plot(all_resources['time'], all_resources['disk'], label='Disk Usage (%)', marker='')
+        plt.plot(all_resources['time'], all_resources['gpu'], label='GPU Usage (%)', marker='')
+        plt.plot(all_resources['time'], all_resources['mem'], label='Memory Usage (%)', marker='')
+        
+        plt.title('Resource Usage Over Time')  # Title of the plot
+        plt.xlabel('Time')  # X-axis label
+        plt.ylabel('Usage (%)')  # Y-axis label
+        plt.legend()  # Add a legend to the plot
+        plt.grid(True)  # Add gridlines for better readability
+        
+        plt.savefig(os.path.join(env.config.output_folder, "resource_use_avg.png"))  # Display the plot
+

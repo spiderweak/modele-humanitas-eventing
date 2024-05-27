@@ -5,6 +5,8 @@ from typing import Any, Dict, Union
 
 import argparse
 
+from random import random
+
 class Config:
     DEFAULT_LOG_LEVEL = logging.INFO
     DEFAULT_LOG_FILENAME: str = 'log.txt'
@@ -17,6 +19,8 @@ class Config:
     DEFAULT_APP_DURATION: int = 0
     DEFAULT_K_PARAM: int = 10
     DEFAULT_3D_SPACE: Dict[str,Union[int,float]] = {"x_min": 0, "x_max": 40, "y_min": 0, "y_max": 40, "z_min": 0, "z_max": 0}
+
+    RANDOM_SEED_VALUE = int(100*random())
 
     def __init__(self, *, options: argparse.Namespace):
         """Initializes the application configuration with default values or values from a YAML file.
@@ -38,7 +42,7 @@ class Config:
         else:
             logging.error("config option not used, using default settings.")
 
-        self.setup_logging()
+        self.setup_logging(options)
         self.set_options(options)
 
     def set_defaults(self) -> None:
@@ -62,6 +66,8 @@ class Config:
 
         self.app_duration: int = self.DEFAULT_APP_DURATION
 
+        self.random_seed: int = self.RANDOM_SEED_VALUE
+
     def load_yaml(self, config_file_path: str) -> None:
         """Loads settings from a YAML file.
 
@@ -74,7 +80,7 @@ class Config:
         except FileNotFoundError:
             logging.error("Configuration File Not Found, using default settings.")
 
-    def setup_logging(self) -> None:
+    def setup_logging(self, options) -> None:
         """Initializes logging based on parsed YAML."""
 
         try:
@@ -92,7 +98,8 @@ class Config:
         except (KeyError, TypeError):
             self.log_level = logging.INFO
 
-        self.log_filename = self.parsed_yaml.get('logfile', 'log.txt')
+        self.log_filename = getattr(options, 'logs', self.parsed_yaml.get('logfile', 'log.txt'))
+
         try:
             os.makedirs(os.path.dirname(self.log_filename), exist_ok=True)
         except FileNotFoundError:
@@ -117,17 +124,19 @@ class Config:
             for key in yaml_path:
                 value = value[key]
             setattr(self, attr_name, value_type(value))
+
         except (KeyError, TypeError) as e:
             logging.error(f"Config Error, Default simulation value {getattr(self, attr_name)} used for entry {e}")
 
     def set_options(self, options: argparse.Namespace) -> None:
         """Sets other options based on parsed YAML and command-line options."""
 
-        self._set_attribute_from_yaml('devices_template_filename', ['template_files', 'devices'], str)
-        self._set_attribute_from_yaml('application_template_filename', ['template_files', 'applications'], str)
+        #self._set_attribute_from_yaml('devices_template_filename', ['template_files', 'devices'], str)
+        #self._set_attribute_from_yaml('application_template_filename', ['template_files', 'applications'], str)
         self._set_attribute_from_yaml('number_of_applications', ['application_number'], int)
         self._set_attribute_from_yaml('number_of_devices', ['device_number'], int)
         self._set_attribute_from_yaml('wifi_range', ['wifi_range'], float)
+
 
     # Simulated 2D/3D space
         for boundary in self._3D_space.keys():
@@ -135,14 +144,19 @@ class Config:
 
         self._set_attribute_from_yaml('k_param', ['k_param'], int)
         self._set_attribute_from_yaml('app_duration', ['app_duration'], float)
+        self._set_attribute_from_yaml('random_seed', ['seed'], int)
+
 
         # Setting options
         try:
-            self.results_filename = options.results
+            self.results_filename = options.output
         except (KeyError,AttributeError) as e:
             logging.error(f"{e}, processing output will be default {self.results_filename}")
 
         self.results_filename = getattr(options, 'results', self.results_filename)
+
+        self.output_folder = os.path.dirname(self.results_filename)
+
         self.devices_file = getattr(options, 'devices', None)
         self.applications_file = getattr(options, 'applications', None)
         self.arrivals_file = getattr(options, 'arrivals', None)

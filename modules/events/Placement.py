@@ -39,6 +39,7 @@ class Placement(Event):
         self.deployment_starting_point = device_id
         self.tentatives = 1
         self.priority = self._calculate_priority(app)
+        self.rejection_reasons = {"unknown":0, "devices": 0, "links": 0}
 
 
     def _calculate_priority(self, app: Application) -> float:
@@ -75,7 +76,10 @@ class Placement(Event):
 
     def process(self, env: Environment):
         """
-        Tries to place a multi-processus application from a given device
+        Tries to place a multi-processus application from a given device.
+
+        Really messy, code to clean
+
         Args:
             env : Environment
         Returns:
@@ -138,6 +142,7 @@ class Placement(Event):
                 deployed, deployment_delay  = pref_proc[proc_id].pop(0)
             except IndexError:
                 deployment_success = False
+                self.rejection_reasons["devices"] +=1
                 break
 
             if deployed not in matching.values():
@@ -145,8 +150,8 @@ class Placement(Event):
                 matching_delay[proc_id] = deployment_delay
             else:
                 matching_procs = [self.application_to_place.get_app_proc_by_id(proc) for proc,dev in matching.items() if dev == deployed]
-                agglomerated = sum(matching_procs)# + proc # type: ignore
-                if self.deployable_proc(agglomerated, env.get_device_by_id(int(dev_id))): # Error here, TODO: Better handling of ids types
+                agglomerated = sum(matching_procs) + self.application_to_place.get_app_proc_by_id(proc_id) # type: ignore
+                if self.deployable_proc(agglomerated, env.get_device_by_id(int(deployed))): # Error here, TODO: Better handling of ids types
                     matching[proc_id] = deployed
                     matching_delay[proc_id] = deployment_delay
                 else:
@@ -176,7 +181,6 @@ class Placement(Event):
                     source = env.get_device_by_id(temp_deployed_onto_devices[i])
                     destination = env.get_device_by_id(temp_deployed_onto_devices[j])
                     if link_value > 0:
-
                         routes = source.ospf_routing_table.routes[destination]
                         for route in routes:
                             if self.reservable_bandwidth(env, route.path, link_value):
@@ -184,6 +188,7 @@ class Placement(Event):
                                 temp_link_allocation[(i,j)] = route.path
                                 break
                             link_success = False
+                            self.rejection_reasons["links"] +=1
 
                     if not link_success:
                         break
@@ -205,7 +210,7 @@ class Placement(Event):
                 deployed_onto_devices.append(matching[proc_id])
                 deployment_times.append(matching_delay[proc_id])
 
-            logging.info(f"Placement Module : application id : {self.application_to_place.id} , {self.application_to_place.num_procs} processus deployed on {deployed_onto_devices}, links successfully mapped")
+            logging.debug(f"Placement Module : application id : {self.application_to_place.id} , {self.application_to_place.num_procs} processus deployed on {deployed_onto_devices}, links successfully mapped")
 
             for i in range(len(deployed_onto_devices)):
                 DeployProc("Deployment Proc", self.queue, self.application_to_place, deployed_onto_devices, link_allocation, i, event_time=int((self.time+deployment_times[i])/10)*10, last=(i+1==len(deployed_onto_devices))).add_to_queue()
@@ -217,13 +222,15 @@ class Placement(Event):
                 env.count_accepted_application.append([env.current_time, prev_value+1])
                 env.count_tentatives.append([env.current_time, prev_tentative+self.tentatives])
 
+            env.list_accepted_application.append(self.application_to_place.id)
+
         else:
             prev_time, prev_value = env.count_rejected_application[-1]
 
             if deployment_success :
-                logging.info(f"Placement Module : application id : {self.application_to_place.id} , {self.application_to_place.num_procs} processus deployed on {deployed_onto_devices} - Link failure, no route between hosts")
+                logging.debug(f"Placement Module : application id : {self.application_to_place.id} , {self.application_to_place.num_procs} processus deployed on {deployed_onto_devices} - Link failure, no route between hosts")
             else:
-                logging.info(f"Placement Module : application id : {self.application_to_place.id} , {self.application_to_place.num_procs} processus not deployed")
+                logging.debug(f"Placement Module : application id : {self.application_to_place.id} , {self.application_to_place.num_procs} processus not deployed")
 
             if env.current_time == prev_time:
                 env.count_rejected_application[-1][1] += 1
@@ -232,19 +239,25 @@ class Placement(Event):
 
             # We could ask for a retry after 15 mins
 
-            logging.info(f"Placement set back to future time, from {self.time} to {int((self.time+self.FIFTEEN_MINUTES_BACKOFF)/10)*10}")
-            self.retry(event_time=int((self.time+self.FIFTEEN_MINUTES_BACKOFF)/10)*10)
+            logging.debug(f"Placement set back to future time, from {self.time} to {int((self.time+self.FIFTEEN_MINUTES_BACKOFF)/10)*10}")
+            self.retry(env, event_time=int((self.time+self.FIFTEEN_MINUTES_BACKOFF)/10)*10)
 
         return deployment_times, deployed_onto_devices
 
-    def retry(self, event_time):
+    def retry(self, environment, event_time):
         if self.tentatives < self.MAX_TENTATIVES:
             self.tentatives +=1
             self.time = event_time
             self.add_to_queue()
-            logging.info(f"Placement set back to future time, from {self.time} to {int((self.time+self.FIFTEEN_MINUTES_BACKOFF)/10)*10}")
+            logging.debug(f"Placement set back to future time, from {self.time} to {int((self.time+self.FIFTEEN_MINUTES_BACKOFF)/10)*10}")
         else:
-            logging.info(f"{self.MAX_TENTATIVES} failures on placing app, dropping the placement")
+            self.rejection_reasons["unknown"] = self.MAX_TENTATIVES - sum(self.rejection_reasons.values())
+            rejection_reason = max(self.rejection_reasons, key=lambda key: self.rejection_reasons[key])
+            try:
+                environment.rejected_application_by_reason[rejection_reason].append(self.application_to_place.id)
+            except KeyError:
+                environment.rejected_application_by_reason[rejection_reason] = [self.application_to_place.id]
+            logging.debug(f"{self.MAX_TENTATIVES} failures on placing app, dropping the placement")
 
 
     # Let's define how to deploy an application on the system.

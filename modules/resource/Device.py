@@ -6,8 +6,6 @@ Usage:
     dev = Device()
 """
 
-from __future__ import annotations
-
 import logging
 import random
 import json
@@ -114,7 +112,7 @@ class Device:
         # Value externally set
         self.closeness_centrality = 0.0
 
-        self.color = random.choice(['red','green','blue','yellow','purple','orange','cyan'])
+        self.color = random.choice(['blue'])
 
 
     def __json__(self) -> Dict[str, Any]:

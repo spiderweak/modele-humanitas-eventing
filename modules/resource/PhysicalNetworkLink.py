@@ -1,5 +1,3 @@
-from typing import Optional
-from . import Device
 
 """
 Physical Network Link module, defines the physical link constraints and capabilities for inter-devices links
@@ -7,7 +5,6 @@ Physical Network Link module, defines the physical link constraints and capabili
 Usage:
 
 """
-from __future__ import annotations
 
 from modules.resource.LinkMetric import LinkMetric, OSPFLinkMetric
 

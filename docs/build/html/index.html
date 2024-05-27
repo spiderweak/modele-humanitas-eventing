@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Welcome to the Humanitas Network and Services Simulator’s documentation &#8212; Humanitas Network and Services Simulator v0.5 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="welcome-to-the-humanitas-network-and-services-simulator-s-documentation">
+<h1>Welcome to the Humanitas Network and Services Simulator’s documentation<a class="headerlink" href="#welcome-to-the-humanitas-network-and-services-simulator-s-documentation" title="Permalink to this heading">¶</a></h1>
+<p>This program was designed as a simulation tool to experiment around application placement under operational constraint for HEAVEN.</p>
+<section id="running-the-program">
+<h2>Running the program<a class="headerlink" href="#running-the-program" title="Permalink to this heading">¶</a></h2>
+<p>The program is designed around a few modules that perform device generation, application generation, application arrivals generation, simulation processing and simulation results exports and archival.</p>
+<p>The reason behind this design is to develop a simulation system with replaceable building blocks, that could be interoperable with other Humanitas tools.</p>
+<p>The program is usually run by an automation tool called Airflow. Airflow sets up the input by running all generators modules, then runs the processing module once input data is generated. Finally, the archiver exports simulation input/output to an archives folder for further studies and research articles</p>
+<section id="global-simulation">
+<h3>Global simulation<a class="headerlink" href="#global-simulation" title="Permalink to this heading">¶</a></h3>
+<p>Running the overall simulation is possible with the following commands:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">__main__</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<p>If the program is downloaded from the repo, it comes with a default config.yaml file and example files that gives default values for various parameters, allowing a complete simulation run.</p>
+<p>The global simulation creates a graph saved under <em>fig/graph.png</em> and plots successful and rejected application deployment, as well as delay, on a given plot under the <em>fig/results.png</em> file</p>
+</section>
+<section id="step-by-step-execution">
+<h3>Step by step execution<a class="headerlink" href="#step-by-step-execution" title="Permalink to this heading">¶</a></h3>
+<p>When running the program with Airflow, or in “step-by-step” mode, the overall program is splitted in all its components to facilitate exports and concurrent runs of different placement algorithms for tests and comparisons.</p>
+<p>The step-by-step execution consists in running the following commands successively:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">DeviceGenerator</span><span class="o">.</span><span class="n">py</span>
+<span class="n">python</span> <span class="n">AppGenerator</span><span class="o">.</span><span class="n">py</span>
+<span class="n">python</span> <span class="n">PlacementGenerator</span><span class="o">.</span><span class="n">py</span>
+<span class="n">python</span> <span class="n">Processing</span><span class="o">.</span><span class="n">py</span>
+<span class="n">python</span> <span class="n">Archiver</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<section id="devicegenerator">
+<h4>DeviceGenerator<a class="headerlink" href="#devicegenerator" title="Permalink to this heading">¶</a></h4>
+<p>The <strong>DeviceGenerator</strong> program takes into account the information from the config.yaml device files, mostly from <em>template_files/devices</em> and <em>device_number</em> to generate a graph of devices.</p>
+<p>The files provided as examples under the examples folder are data for a given example device placement from Humanitas, as well as a personal test with a good device random generation.</p>
+<p>Based on the device positions from either files or another random device placement file, a JSON file is written (defaults under <em>latest/devices.json</em>) with all devices characteristics as well as a single hop routing table for to determine optimal path when running the simulation.</p>
+</section>
+<section id="appgenerator">
+<h4>AppGenerator<a class="headerlink" href="#appgenerator" title="Permalink to this heading">¶</a></h4>
+<p>The <strong>AppGenerator</strong> program takes into account the information from the config.yaml applications files, mostly from <em>template_files/application</em> and <em>application_number</em> to generate applications characteristics.</p>
+<p>An Application` is defined as a List of Processus that will request resources from their allocated devices. Randomly generated application are made of a random number of distributable processus as well as link usage requests between them.</p>
+<p>The <strong>AppGenerator</strong> store an export for all generated application under <em>latest/applications.json</em>. Defaults to generating 5000 applications.</p>
+</section>
+<section id="placementgenerator">
+<h4>PlacementGenerator<a class="headerlink" href="#placementgenerator" title="Permalink to this heading">¶</a></h4>
+<p>The simulator revolves around processing a queue of Application Placement Requests, that simulate application arrivals based on the studied scenario, such as resource requests from other programs, from on-site hardware or from users.</p>
+<p>The <strong>PlacementGenerator</strong> program generates a queue of <em>Placement</em> events, each event has a event_time, application id and device requester id associated.</p>
+<p>These informations are then exported to a JSON file, in order to be loaded by the Processing algorithm.</p>
+</section>
+<section id="processing">
+<h4>Processing<a class="headerlink" href="#processing" title="Permalink to this heading">¶</a></h4>
+<p>The <strong>Processing</strong> algorithm is the core of the Simulator. The Processing unit loads the information from all previous programs through the importer functions, then process the simulation queue and export the data to a results.csv file.</p>
+<dl class="simple">
+<dt>TODO::</dt><dd><p>The Processing unit is actually made of a simulation processing unit and a Visualisation exporter. It would be better to split the program in two, considering that the exporter slow the complete execution of the program.</p>
+</dd>
+</dl>
+<p>For now, the Processing unit places devices thanks to Bi-partite graphs, but its processing unit will be enhanced to allow other placement algorithms for comparisons with the state of the art.</p>
+</section>
+<section id="archiver">
+<h4>Archiver<a class="headerlink" href="#archiver" title="Permalink to this heading">¶</a></h4>
+<p>The <strong>Archiver</strong> module saves all exports to a dedicated folder for further processing and/or other uses.</p>
+<p>It extracts data stored in the <em>latest</em> folder and saves it to a dated folder, default value for the date is <em>today</em> but it is usually used by Airflow as follow:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">date_string</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(</span><span class="n">timespec</span><span class="o">=</span><span class="s1">&#39;minutes&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">,</span><span class="s2">&quot;-&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="s2">&quot;0&quot;</span>
+<span class="n">python</span> <span class="n">Archiver</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">date</span><span class="o">=</span><span class="n">data</span><span class="o">/</span><span class="p">{</span><span class="n">date_string</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>Thus in our case the written files usually go to <em>data/YYYY-MM-DDTHH-m0</em></p>
+</section>
+</section>
+</section>
+<section id="features">
+<h2>Features<a class="headerlink" href="#features" title="Permalink to this heading">¶</a></h2>
+<p>Document features</p>
+</section>
+<section id="todo">
+<h2>TODO<a class="headerlink" href="#todo" title="Permalink to this heading">¶</a></h2>
+<p>Document TODO</p>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+</section>
+<section id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this heading">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">Humanitas Network and Services Simulator</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2024, Antoine BERNARD.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.0.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

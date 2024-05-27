@@ -63,8 +63,10 @@ class Environment(object):
         # Counts the numbers of applications, first value is time, second is value
         self.count_rejected_application: List[List[int]] = [[0, 0]]
         self.count_accepted_application: List[List[int]] = [[0, 0]]
+        self.list_accepted_application: List[int] = []
         self.count_tentatives: List[List[int]] = [[0, 0]]
 
+        self.rejected_application_by_reason = dict()
         self.list_devices_data: Optional[dict] = None
         self.list_currently_deployed_app_data: Optional[List] = None
 
@@ -185,7 +187,7 @@ class Environment(object):
         if self.config is None:
             raise ValueError("Config is not initialized.")
 
-        with open(self.config.devices_template_filename) as file:
+        with open(self.config.devices_file) as file:
             json_data = json.load(file)
 
         try:
@@ -195,7 +197,7 @@ class Environment(object):
         except KeyError:
             n_devices = self.config.number_of_devices # Number of devices
             try:
-                with open(self.config.devices_template_filename) as devices_template_file:
+                with open(self.config.devices_file) as devices_template_file:
                     devices_data = json.load(devices_template_file)
                     for device_data in devices_data['devices']:
                         device = {}
@@ -399,7 +401,7 @@ class Environment(object):
         loop = 0
         # Approximative number of loops
         logging.info("Generating routing table")
-        print("Generating Routing Table, (maximal value is arbitrary)")
+        print("Generating Routing Table")
 
         tst = time.time()
         while(changes):
@@ -502,10 +504,9 @@ class Environment(object):
         if self.config is None:
             raise ValueError("Config is not initialized.")
 
-        with open(self.config.devices_template_filename) as file:
+        with open(self.config.devices_file) as file:
             json_data = json.load(file)
         try :
-
             number_of_devices = len(self.devices)
 
             if (self.config.number_of_devices != number_of_devices):
@@ -521,6 +522,7 @@ class Environment(object):
                 self.devices_links.append(link)
                 source_device = self.get_device_by_id(int(link['source'])) # Error here, TODO: Better handling of ids types
                 target_device = self.get_device_by_id(int(link['target'])) # Error here, TODO: Better handling of ids types
+
                 try:
                     distance = float(link['weight'])
                 except KeyError as ke:

@@ -14,8 +14,6 @@ Usage::
     python3 DeviceGenerator.py
 
 """
-from __future__ import annotations
-
 from modules.Config import Config
 from modules.Environment import Environment
 

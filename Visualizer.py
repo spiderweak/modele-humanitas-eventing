@@ -58,7 +58,7 @@ def main():
 
     visu = Visualizer()
 
-    visu.final_results(environment)
+    visu.other_final_results(environment)
 
     #logging.debug(f"{datetime.datetime.now().isoformat(timespec='minutes')}:Exporting data to {options.output}")
     #shutil.copyfile(f"results.csv", f"{options.output}")

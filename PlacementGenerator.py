@@ -39,6 +39,7 @@ def parse_args():
 
     return options
 
+
 def main():
 
     options = parse_args()
@@ -49,8 +50,42 @@ def main():
 
     environment.config = config
 
-    arrival_times = [int(time) for time in np.cumsum(np.random.poisson(1/(environment.config.number_of_applications/environment.TIME_PERIOD), environment.config.number_of_applications))]
+    time = 0
+    arrival_times = []
+    rng = np.random.default_rng(seed=environment.config.random_seed)
 
+    #"""
+    ### Default
+    for _ in range(environment.config.number_of_applications):
+        lam = 1/(environment.config.number_of_applications/environment.TIME_PERIOD)
+        time+=int(rng.poisson(lam))
+        arrival_times.append(time)
+    #"""
+
+    """
+    ### 9-17
+    for _ in range(environment.config.number_of_applications):
+        if time < (9 * environment.TIME_PERIOD)/24 or time > (17 * environment.TIME_PERIOD)/24:
+            lam = 8/3 * 1/(environment.config.number_of_applications/environment.TIME_PERIOD)
+        else:
+            lam = 4/9 * 1/(environment.config.number_of_applications/environment.TIME_PERIOD)
+        time+=int(rng.poisson(lam))
+        arrival_times.append(time)
+    """
+
+    """
+    ### Lunch Break
+    for _ in range(environment.config.number_of_applications):
+        if time < (8 * environment.TIME_PERIOD)/24 or time > (18 * environment.TIME_PERIOD)/24:
+            lam = 8/3 * 1/(environment.config.number_of_applications/environment.TIME_PERIOD)
+        elif time > (12 * environment.TIME_PERIOD)/24 and time < (14 * environment.TIME_PERIOD)/24:
+            lam = 8/3 * 1/(environment.config.number_of_applications/environment.TIME_PERIOD)
+        else:
+            lam = 4/9 * 1/(environment.config.number_of_applications/environment.TIME_PERIOD)
+        time+=int(rng.poisson(lam))
+        arrival_times.append(time)
+    """
+    
     date_string = datetime.datetime.now().isoformat(timespec='minutes').replace(":","-")[:-1]+"0"
 
     placement_list = []
@@ -59,15 +94,15 @@ def main():
     print("Generating placement dataset")
     logging.info(f"{datetime.datetime.now().isoformat(timespec='minutes')}:Generating dataset")
 
+    random.seed(environment.config.random_seed)
+
     for i in tqdm(range(environment.config.number_of_applications)):
         placement = dict()
         placement["placement_time"] = arrival_times[i]
         placement["requesting_device"] = random.choice(range(environment.config.number_of_devices))
         placement["application"] = i
         placement_list.append(placement)
-
     print("Exporting data")
-
 
     logging.debug(f"{datetime.datetime.now().isoformat(timespec='minutes')}:Exporting data to {options.output}")
     os.makedirs(os.path.dirname(options.output), exist_ok=True)

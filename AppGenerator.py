@@ -39,9 +39,7 @@ def main():
     options = parse_args()
 
     environment = Environment()
-
     config = Config(options=options)
-
     environment.config = config
 
     environment.generate_application_list()

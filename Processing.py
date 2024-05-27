@@ -55,6 +55,9 @@ def parse_args():
     parser.add_argument('--output',
                         help='output file',
                         default='latest/results.json')
+    parser.add_argument('--logs',
+                        help='output file',
+                        default='latest/logs.txt')
     options = parser.parse_args()
 
     return options
@@ -94,9 +97,9 @@ def main():
 
     visu = Visualizer()
 
+    visu.visualize_environment(environment)
     visu.apps_visualiser(environment)
 
-    #visu.visualize_environment(self.__env)
     #visu.final_results(self.__env)
 
     #logging.debug(f"{datetime.datetime.now().isoformat(timespec='minutes')}:Exporting data to {options.output}")
