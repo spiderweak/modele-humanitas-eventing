@@ -39,35 +39,32 @@ Modules
 -------
 
 DeviceGenerator
-^^^^^^^^^^^^^^^
++++++++++++++++
 
 The **DeviceGenerator** uses the `config.yaml` device files, specifically from *template_files/devices* and *device_number*, to generate a device graph. The generated device information is stored in a JSON file (defaults to *latest/devices.json*) with device characteristics and a routing table.
 
 AppGenerator
-^^^^^^^^^^^^
+++++++++++++
 
 The **AppGenerator** uses the `config.yaml` application files, primarily from *template_files/application* and *application_number*, to generate application characteristics. Applications are defined as a list of processes (Processus) that request resources from allocated devices. The generated applications are stored in *latest/applications.json*, with a default of generating 5000 applications.
 
 PlacementGenerator
-^^^^^^^^^^^^^^^^^^
+++++++++++++++++++
 
 The **PlacementGenerator** creates a queue of *Placement* events that simulate application arrivals. Each event includes the event time, application ID, and device requester ID, and is exported to a JSON file for the Processing algorithm.
 
 Processing
-^^^^^^^^^^
+++++++++++
 
 The **Processing** module is the core of the simulator. It loads information from previous modules, processes the simulation queue, and exports the data to a results.csv file. The processing currently uses bi-partite graphs but will be enhanced for other placement algorithms.
 
-TODO:
-- Split the simulation processing unit and the visualization exporter to improve execution speed.
+Visualizer
+++++++++++
 
-Archiver
-^^^^^^^^
-
-The **Archiver** saves all exports to a dedicated folder for further processing. It extracts data from the *latest* folder and saves it to a dated folder, with the default date set to today. For Airflow, the date string is formatted as:
+The **Visualizer** imports pre-processed data and generates graphs for articles. It extracts data from the *latest* folder and saves it to a dated folder, with the default date set to today. For Airflow, the date string is formatted as:
 
       date_string = datetime.datetime.now().isoformat(timespec='minutes').replace(":", "-")[:-1]+"0"
-      python Archiver.py --date=data/{date_string}
+      python Visualizer.py --date=data/{date_string}
 
 
 Features
@@ -81,7 +78,6 @@ TODO
 ----
 
 - Enhance the processing unit for additional placement algorithms.
-- Improve execution speed by splitting the processing and visualization components.
 
 Configuration
 -------------

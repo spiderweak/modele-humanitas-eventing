@@ -31,78 +31,83 @@
             
   <section id="welcome-to-the-humanitas-network-and-services-simulator-s-documentation">
 <h1>Welcome to the Humanitas Network and Services Simulator’s documentation<a class="headerlink" href="#welcome-to-the-humanitas-network-and-services-simulator-s-documentation" title="Permalink to this heading">¶</a></h1>
-<p>This program was designed as a simulation tool to experiment around application placement under operational constraint for HEAVEN.</p>
+<p>This program is designed as a simulation tool to experiment with application placement under operational constraints for HEAVEN.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this heading">¶</a></h2>
+<p>The Humanitas Network and Services Simulator is built with modularity in mind, allowing replaceable building blocks that can interoperate with other Humanitas tools. Key modules include device generation, application generation, application arrivals generation, simulation processing, and archival of results.</p>
+</section>
 <section id="running-the-program">
-<h2>Running the program<a class="headerlink" href="#running-the-program" title="Permalink to this heading">¶</a></h2>
-<p>The program is designed around a few modules that perform device generation, application generation, application arrivals generation, simulation processing and simulation results exports and archival.</p>
-<p>The reason behind this design is to develop a simulation system with replaceable building blocks, that could be interoperable with other Humanitas tools.</p>
-<p>The program is usually run by an automation tool called Airflow. Airflow sets up the input by running all generators modules, then runs the processing module once input data is generated. Finally, the archiver exports simulation input/output to an archives folder for further studies and research articles</p>
+<h2>Running the Program<a class="headerlink" href="#running-the-program" title="Permalink to this heading">¶</a></h2>
+<p>The program can be executed either as a whole or step-by-step. It is typically run using an automation tool like Airflow.</p>
 <section id="global-simulation">
-<h3>Global simulation<a class="headerlink" href="#global-simulation" title="Permalink to this heading">¶</a></h3>
-<p>Running the overall simulation is possible with the following commands:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">__main__</span><span class="o">.</span><span class="n">py</span>
-</pre></div>
-</div>
-<p>If the program is downloaded from the repo, it comes with a default config.yaml file and example files that gives default values for various parameters, allowing a complete simulation run.</p>
-<p>The global simulation creates a graph saved under <em>fig/graph.png</em> and plots successful and rejected application deployment, as well as delay, on a given plot under the <em>fig/results.png</em> file</p>
+<h3>Global Simulation<a class="headerlink" href="#global-simulation" title="Permalink to this heading">¶</a></h3>
+<p>To run the overall simulation, use the following command:</p>
+<blockquote>
+<div><p>python __main__.py</p>
+</div></blockquote>
+<p>This command uses the default <cite>config.yaml</cite> file and example files, which provide default values for various parameters. The simulation generates a graph saved as <em>fig/graph.png</em> and plots deployment results in <em>fig/results.png</em>.</p>
 </section>
 <section id="step-by-step-execution">
-<h3>Step by step execution<a class="headerlink" href="#step-by-step-execution" title="Permalink to this heading">¶</a></h3>
-<p>When running the program with Airflow, or in “step-by-step” mode, the overall program is splitted in all its components to facilitate exports and concurrent runs of different placement algorithms for tests and comparisons.</p>
-<p>The step-by-step execution consists in running the following commands successively:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">DeviceGenerator</span><span class="o">.</span><span class="n">py</span>
-<span class="n">python</span> <span class="n">AppGenerator</span><span class="o">.</span><span class="n">py</span>
-<span class="n">python</span> <span class="n">PlacementGenerator</span><span class="o">.</span><span class="n">py</span>
-<span class="n">python</span> <span class="n">Processing</span><span class="o">.</span><span class="n">py</span>
-<span class="n">python</span> <span class="n">Archiver</span><span class="o">.</span><span class="n">py</span>
-</pre></div>
-</div>
+<h3>Step-by-Step Execution<a class="headerlink" href="#step-by-step-execution" title="Permalink to this heading">¶</a></h3>
+<p>For more granular control, you can execute each component individually. This approach facilitates exports and allows concurrent runs of different placement algorithms for testing and comparison.</p>
+<p>Execute the following commands in sequence:</p>
+<blockquote>
+<div><p>python DeviceGenerator.py
+python AppGenerator.py
+python PlacementGenerator.py
+python Processing.py
+python Archiver.py</p>
+</div></blockquote>
+</section>
+</section>
+<section id="modules">
+<h2>Modules<a class="headerlink" href="#modules" title="Permalink to this heading">¶</a></h2>
 <section id="devicegenerator">
-<h4>DeviceGenerator<a class="headerlink" href="#devicegenerator" title="Permalink to this heading">¶</a></h4>
-<p>The <strong>DeviceGenerator</strong> program takes into account the information from the config.yaml device files, mostly from <em>template_files/devices</em> and <em>device_number</em> to generate a graph of devices.</p>
-<p>The files provided as examples under the examples folder are data for a given example device placement from Humanitas, as well as a personal test with a good device random generation.</p>
-<p>Based on the device positions from either files or another random device placement file, a JSON file is written (defaults under <em>latest/devices.json</em>) with all devices characteristics as well as a single hop routing table for to determine optimal path when running the simulation.</p>
+<h3>DeviceGenerator<a class="headerlink" href="#devicegenerator" title="Permalink to this heading">¶</a></h3>
+<p>The <strong>DeviceGenerator</strong> uses the <cite>config.yaml</cite> device files, specifically from <em>template_files/devices</em> and <em>device_number</em>, to generate a device graph. The generated device information is stored in a JSON file (defaults to <em>latest/devices.json</em>) with device characteristics and a routing table.</p>
 </section>
 <section id="appgenerator">
-<h4>AppGenerator<a class="headerlink" href="#appgenerator" title="Permalink to this heading">¶</a></h4>
-<p>The <strong>AppGenerator</strong> program takes into account the information from the config.yaml applications files, mostly from <em>template_files/application</em> and <em>application_number</em> to generate applications characteristics.</p>
-<p>An Application` is defined as a List of Processus that will request resources from their allocated devices. Randomly generated application are made of a random number of distributable processus as well as link usage requests between them.</p>
-<p>The <strong>AppGenerator</strong> store an export for all generated application under <em>latest/applications.json</em>. Defaults to generating 5000 applications.</p>
+<h3>AppGenerator<a class="headerlink" href="#appgenerator" title="Permalink to this heading">¶</a></h3>
+<p>The <strong>AppGenerator</strong> uses the <cite>config.yaml</cite> application files, primarily from <em>template_files/application</em> and <em>application_number</em>, to generate application characteristics. Applications are defined as a list of processes (Processus) that request resources from allocated devices. The generated applications are stored in <em>latest/applications.json</em>, with a default of generating 5000 applications.</p>
 </section>
 <section id="placementgenerator">
-<h4>PlacementGenerator<a class="headerlink" href="#placementgenerator" title="Permalink to this heading">¶</a></h4>
-<p>The simulator revolves around processing a queue of Application Placement Requests, that simulate application arrivals based on the studied scenario, such as resource requests from other programs, from on-site hardware or from users.</p>
-<p>The <strong>PlacementGenerator</strong> program generates a queue of <em>Placement</em> events, each event has a event_time, application id and device requester id associated.</p>
-<p>These informations are then exported to a JSON file, in order to be loaded by the Processing algorithm.</p>
+<h3>PlacementGenerator<a class="headerlink" href="#placementgenerator" title="Permalink to this heading">¶</a></h3>
+<p>The <strong>PlacementGenerator</strong> creates a queue of <em>Placement</em> events that simulate application arrivals. Each event includes the event time, application ID, and device requester ID, and is exported to a JSON file for the Processing algorithm.</p>
 </section>
 <section id="processing">
-<h4>Processing<a class="headerlink" href="#processing" title="Permalink to this heading">¶</a></h4>
-<p>The <strong>Processing</strong> algorithm is the core of the Simulator. The Processing unit loads the information from all previous programs through the importer functions, then process the simulation queue and export the data to a results.csv file.</p>
-<dl class="simple">
-<dt>TODO::</dt><dd><p>The Processing unit is actually made of a simulation processing unit and a Visualisation exporter. It would be better to split the program in two, considering that the exporter slow the complete execution of the program.</p>
-</dd>
-</dl>
-<p>For now, the Processing unit places devices thanks to Bi-partite graphs, but its processing unit will be enhanced to allow other placement algorithms for comparisons with the state of the art.</p>
+<h3>Processing<a class="headerlink" href="#processing" title="Permalink to this heading">¶</a></h3>
+<p>The <strong>Processing</strong> module is the core of the simulator. It loads information from previous modules, processes the simulation queue, and exports the data to a results.csv file. The processing currently uses bi-partite graphs but will be enhanced for other placement algorithms.</p>
 </section>
-<section id="archiver">
-<h4>Archiver<a class="headerlink" href="#archiver" title="Permalink to this heading">¶</a></h4>
-<p>The <strong>Archiver</strong> module saves all exports to a dedicated folder for further processing and/or other uses.</p>
-<p>It extracts data stored in the <em>latest</em> folder and saves it to a dated folder, default value for the date is <em>today</em> but it is usually used by Airflow as follow:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">date_string</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(</span><span class="n">timespec</span><span class="o">=</span><span class="s1">&#39;minutes&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">,</span><span class="s2">&quot;-&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="s2">&quot;0&quot;</span>
-<span class="n">python</span> <span class="n">Archiver</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">date</span><span class="o">=</span><span class="n">data</span><span class="o">/</span><span class="p">{</span><span class="n">date_string</span><span class="p">}</span>
-</pre></div>
-</div>
-<p>Thus in our case the written files usually go to <em>data/YYYY-MM-DDTHH-m0</em></p>
-</section>
+<section id="visualizer">
+<h3>Visualizer<a class="headerlink" href="#visualizer" title="Permalink to this heading">¶</a></h3>
+<p>The <strong>Visualizer</strong> imports pre-processed data and generates graphs for articles. It extracts data from the <em>latest</em> folder and saves it to a dated folder, with the default date set to today. For Airflow, the date string is formatted as:</p>
+<blockquote>
+<div><p>date_string = datetime.datetime.now().isoformat(timespec=’minutes’).replace(“:”, “-“)[:-1]+”0”
+python Visualizer.py –date=data/{date_string}</p>
+</div></blockquote>
 </section>
 </section>
 <section id="features">
 <h2>Features<a class="headerlink" href="#features" title="Permalink to this heading">¶</a></h2>
-<p>Document features</p>
+<ul class="simple">
+<li><p>Modular design for easy replacement and integration with other tools.</p></li>
+<li><p>Comprehensive simulation with configurable parameters.</p></li>
+<li><p>Detailed logging and archival of results.</p></li>
+</ul>
 </section>
 <section id="todo">
 <h2>TODO<a class="headerlink" href="#todo" title="Permalink to this heading">¶</a></h2>
-<p>Document TODO</p>
+<ul class="simple">
+<li><p>Enhance the processing unit for additional placement algorithms.</p></li>
+</ul>
+</section>
+<section id="configuration">
+<h2>Configuration<a class="headerlink" href="#configuration" title="Permalink to this heading">¶</a></h2>
+<p>Refer to <cite>config.yaml</cite> for parameter settings and customization options.</p>
+</section>
+<section id="contact">
+<h2>Contact<a class="headerlink" href="#contact" title="Permalink to this heading">¶</a></h2>
+<p>For questions or contributions, please contact the development team at [your_contact_info].</p>
 <div class="toctree-wrapper compound">
 </div>
 </section>
