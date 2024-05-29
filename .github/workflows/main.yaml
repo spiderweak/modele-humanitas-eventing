@@ -13,7 +13,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     # Standard drop-in approach that should work for most people.
-    - uses: spiderweak/modele-humanitas-eventing@main
+    - uses: ammaraskar/sphinx-action@master
       with:
         docs-folder: "docs/"
     # Great extra actions to compose with:
