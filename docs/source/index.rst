@@ -5,11 +5,23 @@
 
 .. include:: README.rst
 
+Entry Points
+============
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
    entrypoints
+
+Modules
+=======
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Modules:
+
+   modules
 
 Indices and tables
 ==================
