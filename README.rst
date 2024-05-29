@@ -1,98 +1,90 @@
 Welcome to the Humanitas Network and Services Simulator's documentation
-===========================================================================
+=======================================================================
 
-This program was designed as a simulation tool to experiment around application placement under operational constraint for HEAVEN.
+This program is designed as a simulation tool to experiment with application placement under operational constraints for HEAVEN.
 
-Running the program
+Overview
+--------
+
+The Humanitas Network and Services Simulator is built with modularity in mind, allowing replaceable building blocks that can interoperate with other Humanitas tools. Key modules include device generation, application generation, application arrivals generation, simulation processing, and archival of results.
+
+Running the Program
 -------------------
 
-The program is designed around a few modules that perform device generation, application generation, application arrivals generation, simulation processing and simulation results exports and archival.
+The program can be executed either as a whole or step-by-step. It is typically run using an automation tool like Airflow.
 
-The reason behind this design is to develop a simulation system with replaceable building blocks, that could be interoperable with other Humanitas tools.
-
-The program is usually run by an automation tool called Airflow. Airflow sets up the input by running all generators modules, then runs the processing module once input data is generated. Finally, the archiver exports simulation input/output to an archives folder for further studies and research articles 
-
-Global simulation
+Global Simulation
 +++++++++++++++++
 
-Running the overall simulation is possible with the following commands::
+To run the overall simulation, use the following command:
 
-   python __main__.py
+      python __main__.py
 
-If the program is downloaded from the repo, it comes with a default config.yaml file and example files that gives default values for various parameters, allowing a complete simulation run.
+This command uses the default `config.yaml` file and example files, which provide default values for various parameters. The simulation generates a graph saved as *fig/graph.png* and plots deployment results in *fig/results.png*.
 
-The global simulation creates a graph saved under *fig/graph.png* and plots successful and rejected application deployment, as well as delay, on a given plot under the *fig/results.png* file
-
-Step by step execution
+Step-by-Step Execution
 ++++++++++++++++++++++
 
-When running the program with Airflow, or in "step-by-step" mode, the overall program is splitted in all its components to facilitate exports and concurrent runs of different placement algorithms for tests and comparisons.
+For more granular control, you can execute each component individually. This approach facilitates exports and allows concurrent runs of different placement algorithms for testing and comparison.
 
-The step-by-step execution consists in running the following commands successively::
+Execute the following commands in sequence:
 
-   python DeviceGenerator.py
-   python AppGenerator.py
-   python PlacementGenerator.py
-   python Processing.py
-   python Archiver.py
+      python DeviceGenerator.py
+      python AppGenerator.py
+      python PlacementGenerator.py
+      python Processing.py
+      python Archiver.py
+
+Modules
+-------
 
 DeviceGenerator
-^^^^^^^^^^^^^^^
++++++++++++++++
 
-The **DeviceGenerator** program takes into account the information from the config.yaml device files, mostly from *template_files/devices* and *device_number* to generate a graph of devices.
-
-The files provided as examples under the examples folder are data for a given example device placement from Humanitas, as well as a personal test with a good device random generation.
-
-Based on the device positions from either files or another random device placement file, a JSON file is written (defaults under *latest/devices.json*) with all devices characteristics as well as a single hop routing table for to determine optimal path when running the simulation.
-
+The **DeviceGenerator** uses the `config.yaml` device files, specifically from *template_files/devices* and *device_number*, to generate a device graph. The generated device information is stored in a JSON file (defaults to *latest/devices.json*) with device characteristics and a routing table.
 
 AppGenerator
-^^^^^^^^^^^^
+++++++++++++
 
-The **AppGenerator** program takes into account the information from the config.yaml applications files, mostly from *template_files/application* and *application_number* to generate applications characteristics.
-
-An Application` is defined as a List of Processus that will request resources from their allocated devices. Randomly generated application are made of a random number of distributable processus as well as link usage requests between them.
-
-The **AppGenerator** store an export for all generated application under *latest/applications.json*. Defaults to generating 5000 applications.
+The **AppGenerator** uses the `config.yaml` application files, primarily from *template_files/application* and *application_number*, to generate application characteristics. Applications are defined as a list of processes (Processus) that request resources from allocated devices. The generated applications are stored in *latest/applications.json*, with a default of generating 5000 applications.
 
 PlacementGenerator
-^^^^^^^^^^^^^^^^^^
+++++++++++++++++++
 
-The simulator revolves around processing a queue of Application Placement Requests, that simulate application arrivals based on the studied scenario, such as resource requests from other programs, from on-site hardware or from users.
-
-The **PlacementGenerator** program generates a queue of *Placement* events, each event has a event_time, application id and device requester id associated.
-
-These informations are then exported to a JSON file, in order to be loaded by the Processing algorithm.
+The **PlacementGenerator** creates a queue of *Placement* events that simulate application arrivals. Each event includes the event time, application ID, and device requester ID, and is exported to a JSON file for the Processing algorithm.
 
 Processing
-^^^^^^^^^^
+++++++++++
 
-The **Processing** algorithm is the core of the Simulator. The Processing unit loads the information from all previous programs through the importer functions, then process the simulation queue and export the data to a results.csv file.
+The **Processing** module is the core of the simulator. It loads information from previous modules, processes the simulation queue, and exports the data to a results.csv file. The processing currently uses bi-partite graphs but will be enhanced for other placement algorithms.
 
-TODO::
-   The Processing unit is actually made of a simulation processing unit and a Visualisation exporter. It would be better to split the program in two, considering that the exporter slow the complete execution of the program.
+Visualizer
+++++++++++
 
-For now, the Processing unit places devices thanks to Bi-partite graphs, but its processing unit will be enhanced to allow other placement algorithms for comparisons with the state of the art.
+The **Visualizer** imports pre-processed data and generates graphs for articles. It extracts data from the *latest* folder and saves it to a dated folder, with the default date set to today. For Airflow, the date string is formatted as:
 
-Archiver
-^^^^^^^^
-
-The **Archiver** module saves all exports to a dedicated folder for further processing and/or other uses.
-
-It extracts data stored in the *latest* folder and saves it to a dated folder, default value for the date is *today* but it is usually used by Airflow as follow::
-
-   date_string = datetime.datetime.now().isoformat(timespec='minutes').replace(":","-")[:-1]+"0"
-   python Archiver.py --date=data/{date_string}
-
-Thus in our case the written files usually go to *data/YYYY-MM-DDTHH-m0*
+      date_string = datetime.datetime.now().isoformat(timespec='minutes').replace(":", "-")[:-1]+"0"
+      python Visualizer.py --date=data/{date_string}
 
 
 Features
 --------
 
-Document features
+- Modular design for easy replacement and integration with other tools.
+- Comprehensive simulation with configurable parameters.
+- Detailed logging and archival of results.
 
 TODO
 ----
 
-Document TODO
+- Enhance the processing unit for additional placement algorithms.
+
+Configuration
+-------------
+
+Refer to `config.yaml` for parameter settings and customization options.
+
+Contact
+-------
+
+For questions or contributions, please contact the development team at [your_contact_info].
