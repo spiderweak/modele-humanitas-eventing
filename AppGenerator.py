@@ -6,8 +6,8 @@ Usage:
     python3 AppGenerator.py
 """
 
-from modules.Config import Config
-from modules.Environment import Environment
+from .modules.Config import Config
+from .modules.Environment import Environment
 
 import argparse
 import os
