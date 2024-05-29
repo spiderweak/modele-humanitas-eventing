@@ -1,52 +1,11 @@
-.. _modules:
-
-
-Modules Documentation
-=====================
-
+modele-humanitas-event
+======================
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :maxdepth: 4
 
-   DeviceGenerator
    AppGenerator
+   DeviceGenerator
    PlacementGenerator
    Processing
    Visualizer
-   
-Device Generator
-----------------
-
-.. automodule:: DeviceGenerator
-    :members:
-    :undoc-members:
-    :show-inheritance:
-    :noindex:
-
-App Generator
--------------
-
-.. automodule:: AppGenerator
-    :members:
-    :undoc-members:
-    :show-inheritance:
-    :noindex:
-
-Placement Generator
--------------------
-
-.. automodule:: PlacementGenerator
-    :members:
-    :undoc-members:
-    :show-inheritance:
-    :noindex:
-
-Visualization
--------------
-
-.. automodule:: Visualizer
-    :members:
-    :undoc-members:
-    :show-inheritance:
-    :noindex:
