@@ -10,7 +10,7 @@ Entry Points
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Entry Points:
 
    entrypoints
 
@@ -18,7 +18,7 @@ Modules
 =======
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: Modules:
 
    modules

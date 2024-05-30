@@ -87,4 +87,4 @@ Refer to `config.yaml` for parameter settings and customization options.
 Contact
 -------
 
-For questions or contributions, please contact the development team at [your_contact_info].
+For questions or contributions, please contact the development team at pro@a-bernard.fr.

@@ -1,20 +1,6 @@
 modules package
 ===============
 
-Subpackages
------------
-
-.. toctree::
-   :maxdepth: 4
-
-   modules.clustering
-   modules.events
-   modules.fullstateprocessing
-   modules.processing
-   modules.resource
-   modules.routing
-   modules.templates
-
 Submodules
 ----------
 
@@ -25,6 +11,7 @@ modules.Config module
    :members:
    :undoc-members:
    :show-inheritance:
+   :noindex:
 
 modules.CustomExceptions module
 -------------------------------
@@ -33,6 +20,7 @@ modules.CustomExceptions module
    :members:
    :undoc-members:
    :show-inheritance:
+   :noindex:
 
 modules.Environment module
 --------------------------
@@ -41,6 +29,7 @@ modules.Environment module
    :members:
    :undoc-members:
    :show-inheritance:
+   :noindex:
 
 modules.EventQueue module
 -------------------------
@@ -49,6 +38,7 @@ modules.EventQueue module
    :members:
    :undoc-members:
    :show-inheritance:
+   :noindex:
 
 modules.ResourceManagement module
 ---------------------------------
@@ -57,6 +47,7 @@ modules.ResourceManagement module
    :members:
    :undoc-members:
    :show-inheritance:
+   :noindex:
 
 modules.Simulation module
 -------------------------
@@ -65,6 +56,7 @@ modules.Simulation module
    :members:
    :undoc-members:
    :show-inheritance:
+   :noindex:
 
 modules.Visualization module
 ----------------------------
@@ -73,6 +65,7 @@ modules.Visualization module
    :members:
    :undoc-members:
    :show-inheritance:
+   :noindex:
 
 Module contents
 ---------------
@@ -81,3 +74,18 @@ Module contents
    :members:
    :undoc-members:
    :show-inheritance:
+   :noindex:
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 2
+
+   modules/clustering
+   modules/events
+   modules/fullstateprocessing
+   modules/processing
+   modules/resource
+   modules/routing
+   modules/templates

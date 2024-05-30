@@ -1,8 +1,7 @@
-modules.clustering package
-==========================
+Clustering package
+==================
 
-Submodules
-----------
+This module provides device clustering.
 
 modules.clustering.ClusterGeneration module
 -------------------------------------------
