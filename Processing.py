@@ -2,9 +2,13 @@
 """
 Does a complete deployment test on 200 applications over 40 devices
 
-Usage:
+Usage::
 
     python3 Processing.py
+
+Example::
+
+    python3 Processing.py --devices="$device_file" --applications="$application_file" --arrivals="$placement_file" --output="output/$unique_id/results.json"
 """
 
 from modules.Config import Config
@@ -33,6 +37,12 @@ logger = logging.getLogger(__name__)
 
 
 def parse_args():
+    """
+    Parses the arguments from the configuration and generates a --help subcommand to assist the user.
+
+    Returns:
+        argparse.Namespace: Parsed command line arguments.
+    """
     parser = argparse.ArgumentParser(description='Process the processing algorithm\'s input')
     parser.add_argument('--config',
                         help='Configuration file',

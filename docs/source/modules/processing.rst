@@ -1,5 +1,5 @@
-modules.processing package
-==========================
+Processing
+==========
 
 Submodules
 ----------

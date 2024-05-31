@@ -1,5 +1,5 @@
-DeviceGenerator module
-======================
+DeviceGenerator
+===============
 
 .. automodule:: DeviceGenerator
    :members:

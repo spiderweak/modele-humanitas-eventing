@@ -1,8 +1,16 @@
 modules package
 ===============
 
-Submodules
-----------
+.. toctree::
+   :maxdepth: 1
+
+   modules/clustering
+   modules/events
+   modules/fullstateprocessing
+   modules/processing
+   modules/resource
+   modules/routing
+   modules/templates
 
 modules.Config module
 ---------------------

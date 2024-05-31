@@ -1,5 +1,5 @@
-modules.fullstateprocessing package
-===================================
+Full State Processing
+=====================
 
 Submodules
 ----------

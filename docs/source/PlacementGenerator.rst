@@ -1,5 +1,5 @@
-PlacementGenerator module
-=========================
+PlacementGenerator
+==================
 
 .. automodule:: PlacementGenerator
    :members:

@@ -5,6 +5,8 @@
 
 .. include:: README.rst
 
+Repository : https://github.com/spiderweak/modele-humanitas-eventing
+
 Entry Points
 ============
 

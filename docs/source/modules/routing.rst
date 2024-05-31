@@ -1,5 +1,5 @@
-modules.routing package
-=======================
+Routing
+=======
 
 Submodules
 ----------

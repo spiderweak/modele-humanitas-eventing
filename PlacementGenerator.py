@@ -2,7 +2,8 @@
 """
 The PlacementGenerator Module performs a complete deployment test on 200 applications over 40 devices.
 
-Usage:
+Usage::
+
     python3 PlacementGenerator.py
 """
 

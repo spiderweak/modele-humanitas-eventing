@@ -1,5 +1,5 @@
-AppGenerator module
-===================
+AppGenerator
+============
 
 .. automodule:: AppGenerator
    :members:

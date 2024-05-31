@@ -1,5 +1,5 @@
-Visualizer module
-=================
+Visualizer
+==========
 
 .. automodule:: Visualizer
    :members:

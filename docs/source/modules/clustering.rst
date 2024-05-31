@@ -1,5 +1,5 @@
-Clustering package
-==================
+Clustering
+==========
 
 This module provides device clustering.
 

@@ -1,5 +1,5 @@
-modules.templates package
-=========================
+Templates
+=========
 
 Submodules
 ----------

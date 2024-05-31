@@ -1,5 +1,5 @@
-modules.resource package
-========================
+Resource
+========
 
 Submodules
 ----------
