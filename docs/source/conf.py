@@ -34,6 +34,11 @@ autodoc_default_options = {
 templates_path = ['_templates']
 exclude_patterns = []
 
-html_theme = 'alabaster'
+html_theme = 'nature'
 html_static_path = ['_static']
+html_css_files = ['custom.css']
 
+html_theme_options = {
+    'body_max_width': 'none',
+    'sidebarwidth': '450px',
+}
