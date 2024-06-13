@@ -218,8 +218,6 @@ class Placement(Event):
             for i in range(len(deployed_onto_devices)):
                 DeployProc("Deployment Proc", self.queue, self.application_to_place, deployed_onto_devices, link_allocation, i, event_time=int((self.time+deployment_times[i])/10)*10, last=(i+1==len(deployed_onto_devices))).add_to_queue()
 
-            
-            
             if self.tentatives > 1:
                 self.update_app_waiting(env, -1)
 
@@ -240,8 +238,8 @@ class Placement(Event):
 
             # We could ask for a retry after 15 mins
 
-            logging.debug(f"Placement set back to future time, from {self.time} to {int((self.time+self.FIFTEEN_MINUTES_BACKOFF)/10)*10}")
-            self.retry(env, event_time=int((self.time+self.FIFTEEN_MINUTES_BACKOFF)/10)*10)
+            logging.debug(f"Placement set back to future time, from {self.time} to {int(self.time+(self.FIFTEEN_MINUTES_BACKOFF)/10)}")
+            self.retry(env, event_time=int(self.time+(self.FIFTEEN_MINUTES_BACKOFF)/10))
 
         return deployment_times, deployed_onto_devices
 
@@ -252,7 +250,7 @@ class Placement(Event):
             self.tentatives +=1
             self.time = event_time
             self.add_to_queue()
-            logging.debug(f"Placement set back to future time, from {self.time} to {int((self.time+self.FIFTEEN_MINUTES_BACKOFF)/10)*10}")
+            logging.debug(f"Placement set back to future time, from {self.time} to {int(self.time+(self.FIFTEEN_MINUTES_BACKOFF)/10)}")
         else:
             self.rejection_reasons["unknown"] = self.MAX_TENTATIVES - sum(self.rejection_reasons.values())
             rejection_reason = max(self.rejection_reasons, key=lambda key: self.rejection_reasons[key])

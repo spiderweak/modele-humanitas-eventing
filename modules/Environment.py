@@ -2,6 +2,8 @@ from modules.resource.PhysicalNetworkLink import PhysicalNetworkLink, OSPFLinkMe
 from modules.resource.Application import Application
 from modules.resource.Device import Device
 from modules.resource.PhysicalNetwork import PhysicalNetwork
+from modules.resource.Data import Data
+
 from modules.Config import Config
 from modules.CustomExceptions import (NoRouteToHost, DeviceNotFoundError, ApplicationNotFoundError)
 from modules.ResourceManagement import custom_distance
@@ -69,6 +71,8 @@ class Environment(object):
         self.rejected_application_by_reason = dict()
         self.list_devices_data: Optional[dict] = None
         self.list_currently_deployed_app_data: Optional[List] = None
+
+        self.data = Data()
 
 
     @property
@@ -217,6 +221,16 @@ class Environment(object):
                     device['position']['y'] = round(random.random() * (self.config._3D_space['y_max'] - self.config._3D_space['y_min']) + self.config._3D_space['y_min'],2)
                     device['position']['z'] = round(random.random() * (self.config._3D_space['z_max'] - self.config._3D_space['z_min']) + self.config._3D_space['z_min'],2)
                     device['resource'] = {"cpu": 8, "gpu": 8, "mem": 8192, "disk": 1024000}
+
+    def set_data_max(self):
+
+        max_data = {}
+        for device in self.devices:
+            for resource,value in device.resource_limit.items():
+                max_data[resource] = max_data.get(resource, 0) + value
+
+        self.data.set_max_values(max_data['cpu'], max_data['gpu'], max_data['mem'], max_data['disk'])
+
 
 
     @property
