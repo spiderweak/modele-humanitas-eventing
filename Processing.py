@@ -90,6 +90,8 @@ def main():
 
     environment.import_applications()
 
+    environment.set_data_max()
+
     logging.info("Running complete simulation")
     simulation = Simulation(environment)
 

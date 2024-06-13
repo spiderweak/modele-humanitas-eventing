@@ -16,7 +16,7 @@ class Organize(Event):
 
         dev_matrix = env.extract_devices_resources()
         dev_weight = env.extract_decision_weights()
-        proc_matrix = env.extract_currently_deployed_apps_data()
+        proc_matrix = env.extract_apps_data_in_batch()
         instance = CeilingUnlimitedMigration(proc_matrix, dev_matrix, dev_weight)
 
         x = instance.processing()

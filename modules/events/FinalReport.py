@@ -9,3 +9,4 @@ class FinalReport(Event):
         for device in env.devices:
             device.report_on_value(self.time)
 
+        env.data.report()

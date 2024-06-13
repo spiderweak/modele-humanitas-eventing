@@ -41,5 +41,36 @@ class Undeploy(Event):
                         logging.error(f"Physical network link error, expexted PhysicalNetworkLink, got {env.physical_network_links[path_id]}")
             """
         env.currently_deployed_apps.remove(self.application_to_undeploy)
+
+        self.update_global_data(env)
+
         return True
 
+    def update_global_data(self, env) -> None:
+        """Update global data based on the environment state and allocation request."""
+
+        env.data.integrity_check(self.time)
+
+        for process,_ in self.application_to_undeploy.deployment_info.items():
+
+            release_request = {'cpu': process.resource_request['cpu'],
+                               'gpu': process.resource_request['gpu'],
+                               'mem': process.resource_request['mem'],
+                               'disk': process.resource_request['disk']}
+
+            # Update the current row with the new allocation request
+            env.data.data.at[self.time, 'cpu_current'] -= release_request['cpu']
+            env.data.data.at[self.time, 'gpu_current'] -= release_request['gpu']
+            env.data.data.at[self.time, 'memory_current'] -= release_request['mem']
+            env.data.data.at[self.time, 'disk_current'] -= release_request['disk']
+
+        env.data.data.at[self.time, 'cumulative_app_departure'] += 1
+
+        # Decrease the number of currently hosted procs by num_procs
+        env.data.data.at[self.time, 'currently_hosted_procs'] -= self.application_to_undeploy.num_procs
+
+        # Decrease the number of currently hosted applications by 1
+        env.data.data.at[self.time, 'currently_hosted_apps'] -= 1
+
+
+        # TODO : Implement bandwidth deallocation report

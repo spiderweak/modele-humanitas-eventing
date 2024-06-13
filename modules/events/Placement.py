@@ -97,6 +97,9 @@ class Placement(Event):
             Undeploy("Release", self.queue, self.application_to_place, event_time=int(self.time+self.application_to_place.duration)).add_to_queue()
             return [], []
 
+        if self.tentatives == 1 :
+            self.update_app_arrival(env)
+
         try:
             device = env.get_device_by_id(self.deployment_starting_point)
         except DeviceNotFoundError:
@@ -215,14 +218,12 @@ class Placement(Event):
             for i in range(len(deployed_onto_devices)):
                 DeployProc("Deployment Proc", self.queue, self.application_to_place, deployed_onto_devices, link_allocation, i, event_time=int((self.time+deployment_times[i])/10)*10, last=(i+1==len(deployed_onto_devices))).add_to_queue()
 
-            if env.current_time == prev_time:
-                env.count_accepted_application[-1][1] += 1
-                env.count_tentatives[-1][1] += self.tentatives
-            else:
-                env.count_accepted_application.append([env.current_time, prev_value+1])
-                env.count_tentatives.append([env.current_time, prev_tentative+self.tentatives])
+            
+            
+            if self.tentatives > 1:
+                self.update_app_waiting(env, -1)
 
-            env.list_accepted_application.append(self.application_to_place.id)
+            self.update_cumulative_accepted_app(env, prev_time, prev_value, prev_tentative)
 
         else:
             prev_time, prev_value = env.count_rejected_application[-1]
@@ -246,6 +247,8 @@ class Placement(Event):
 
     def retry(self, environment, event_time):
         if self.tentatives < self.MAX_TENTATIVES:
+            if self.tentatives == 1:
+                self.update_app_waiting(environment, 1)
             self.tentatives +=1
             self.time = event_time
             self.add_to_queue()
@@ -258,6 +261,8 @@ class Placement(Event):
             except KeyError:
                 environment.rejected_application_by_reason[rejection_reason] = [self.application_to_place.id]
             logging.debug(f"{self.MAX_TENTATIVES} failures on placing app, dropping the placement")
+            self.update_app_waiting(environment, -1)
+            self.update_app_rejected(environment)
 
 
     # Let's define how to deploy an application on the system.
@@ -314,3 +319,38 @@ class Placement(Event):
                 return False
         return True
 
+
+    def update_app_arrival(self, env):
+
+        env.data.integrity_check(self.time)
+
+        env.data.update_data(self.time, 'cumulative_app_arrival', 1)
+
+
+    def update_app_waiting(self, env, value = 0):
+
+        env.data.integrity_check(self.time)
+
+        env.data.update_data(self.time, 'app_in_waiting', value)
+
+
+    def update_cumulative_accepted_app(self, env, prev_time, prev_value, prev_tentative):
+        if env.current_time == prev_time:
+            env.count_accepted_application[-1][1] += 1
+            env.count_tentatives[-1][1] += self.tentatives
+        else:
+            env.count_accepted_application.append([env.current_time, prev_value+1])
+            env.count_tentatives.append([env.current_time, prev_tentative+self.tentatives])
+
+        env.list_accepted_application.append(self.application_to_place.id)
+
+        env.data.integrity_check(self.time)
+
+        env.data.update_data(self.time, 'cumulative_app_accepted', 1)
+
+
+    def update_app_rejected(self, env):
+
+        env.data.integrity_check(self.time)
+
+        env.data.update_data(self.time, 'cumulative_app_rejected', 1)

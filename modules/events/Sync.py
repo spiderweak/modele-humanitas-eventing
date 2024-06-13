@@ -37,6 +37,16 @@ class Sync(Event):
         self.app.set_links_allocation_info(self.link_allocation)
         env.currently_deployed_apps.append(self.app)
 
+        self.update_global_data(env)
+
         # Run
         Undeploy("Release", self.queue, self.app, event_time=int(self.time+self.app.duration)).add_to_queue()
 
+
+    def update_global_data(self, env) -> None:
+        """Update global data based on the environment state and allocation request."""
+
+        env.data.integrity_check(self.time)
+
+        # Increase the number of currently hosted procs by 1
+        env.data.data.at[self.time, 'currently_hosted_apps'] += 1
