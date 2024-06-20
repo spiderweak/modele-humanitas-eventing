@@ -22,7 +22,7 @@ ROOT = "."
 
 def parse_args():
     """
-    Parses the arguments from the configuration and generates a --help subcommand to assist the user.
+    Parses command line arguments for the application generator.
 
     Returns:
         argparse.Namespace: Parsed command line arguments.
@@ -39,7 +39,10 @@ def parse_args():
 
 def main():
     """
-    Runs the core loop for the program: loads the configuration after a call to the argument parser, generates the applications, outputs to the destination file, and logs all operations.
+    Main function to run the application generator.
+
+    This function parses command line arguments, loads configuration,
+    generates application lists, and exports the applications to the specified output file.
     """
     options = parse_args()
 

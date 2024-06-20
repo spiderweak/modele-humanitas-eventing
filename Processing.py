@@ -38,7 +38,7 @@ logger = logging.getLogger(__name__)
 
 def parse_args():
     """
-    Parses the arguments from the configuration and generates a --help subcommand to assist the user.
+    Parses the arguments from the configuration and generates a -help subcommand to assist the user.
 
     Returns:
         argparse.Namespace: Parsed command line arguments.
@@ -61,32 +61,36 @@ def parse_args():
                         default="latest/applications.json")
     parser.add_argument('--arrivals',
                         help='JSON file containing application arrivals list',
-                        default="latest/placements.json")
+                        default="latest/placement.json")
     parser.add_argument('--output',
-                        help='output file',
+                        help='Output file',
                         default='latest/results.json')
     parser.add_argument('--logs',
-                        help='output file',
+                        help='Output file',
                         default='latest/logs.txt')
     options = parser.parse_args()
 
     return options
 
 def main():
+    """
+    Main function to run the processing module.
 
+    This function parses command line arguments, loads the configuration,
+    imports devices and links, runs the simulation, and exports the results.
+    """
     options = parse_args()
 
     environment = Environment()
 
     config = Config(options=options)
-
     environment.config = config
 
     environment.import_devices()
     environment.import_links()
 
     environment.import_ospf_routing_table()
-    #environment.generate_other_routing_table(k_param=10)
+    # environment.generate_other_routing_table(k_param=10)
 
     environment.import_applications()
 
@@ -102,7 +106,7 @@ def main():
     # Exporting devices list
     print("Generating dataset and exporting data")
 
-    logging.debug(f"{datetime.datetime.now().isoformat(timespec='minutes')}:Exporting data to {options.output}")
+    logging.debug(f"{datetime.datetime.now().isoformat(timespec='minutes')}: Exporting data to {options.output}")
     os.makedirs(os.path.dirname(options.output), exist_ok=True)
 
     environment.export_devices(filename=f"{options.output}")
@@ -111,12 +115,6 @@ def main():
 
     visu.visualize_environment(environment)
     visu.apps_visualiser(environment)
-
-    #visu.final_results(self.__env)
-
-    #logging.debug(f"{datetime.datetime.now().isoformat(timespec='minutes')}:Exporting data to {options.output}")
-    #shutil.copyfile(f"results.csv", f"{options.output}")
-
 
 if __name__ == '__main__':
     logger.info("MAIN")

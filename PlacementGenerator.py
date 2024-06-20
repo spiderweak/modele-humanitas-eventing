@@ -42,7 +42,8 @@ def parse_args():
 
 def main():
     """
-    Runs the core loop for the program: loads the configuration after a call to the argument parser, generates the placements, outputs to the destination file, and logs all operations.
+    Runs the core loop for the program: loads the configuration after a call to the argument parser,
+    generates the placements, outputs to the destination file, and logs all operations.
     """
     options = parse_args()
 

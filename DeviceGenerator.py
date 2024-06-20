@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """
-The DeviceGenerator Module generates a list of devices based on the information in the config file: Number of devices, their positions, their resources, etc.
+The DeviceGenerator Module generates a list of devices based on the information in the config file: 
+Number of devices, their positions, their resources, etc.
 
-Links are established either using proximity, extrapolating from possible Wi-Fi connectivity between devices, or from the information provided in the input files.
+Links are established either using proximity, extrapolating from possible Wi-Fi connectivity between devices, 
+or from the information provided in the input files.
 
 It then generates a Routing Table for the shortest single path between each device based on the links between them.
 
@@ -27,7 +29,8 @@ ROOT = "."
 
 def parse_args():
     """
-    Parses the arguments from the configuration, and generates a --help subcommand to assist the user.
+    Parses the command line arguments from the configuration, 
+    and generates a --help subcommand to assist the user.
 
     Returns:
         argparse.Namespace: Parsed command line arguments.
@@ -44,7 +47,8 @@ def parse_args():
 
 def main():
     """
-    Runs the core loop for the program: loads the configuration after a call to the argument parser, generates the devices, outputs to the destination file, and logs all operations.
+    Runs the core loop for the program: loads the configuration after a call to the argument parser, 
+    generates the devices, outputs to the destination file, and logs all operations.
     """
     options = parse_args()
 
