@@ -18,12 +18,18 @@ from queue import PriorityQueue
 import json
 
 class EventQueue(object):
+    """
+    Manages a priority queue of events.
+
+    :param env: The simulation environment or any relevant context for the events.
+    :type env: Any
+    """
     def __init__(self, env):
         """
         Initializes an EventQueue instance.
 
-        Args:
-            env: The simulation environment or any relevant context for the events.
+        :param env: The simulation environment or any relevant context for the events.
+        :type env: Any
         """
         self.__queue = PriorityQueue()
         self.__index = 0
@@ -33,8 +39,8 @@ class EventQueue(object):
         """
         Checks if the queue is empty.
 
-        Returns:
-            bool: True if the queue is empty, False otherwise.
+        :return: True if the queue is empty, False otherwise.
+        :rtype: bool
         """
         return self.__queue.empty()
 
@@ -42,8 +48,8 @@ class EventQueue(object):
         """
         Adds an event to the queue.
 
-        Args:
-            event: The event to be added to the queue. It should have a 'time' attribute.
+        :param event: The event to be added to the queue. It should have a 'time' attribute.
+        :type event: Any
         """
         self.__queue.put((event.time, self.__index, event))
         self.__index += 1
@@ -52,8 +58,8 @@ class EventQueue(object):
         """
         Pops an event from the queue based on priority (time).
 
-        Returns:
-            The event with the highest priority (earliest time).
+        :return: The event with the highest priority (earliest time).
+        :rtype: Any
         """
         return self.__queue.get()
 
@@ -61,8 +67,8 @@ class EventQueue(object):
         """
         Exports the events in the queue to a JSON file.
 
-        Args:
-            filename (str): The name of the file to export the events to. Default is "placement.json".
+        :param filename: The name of the file to export the events to. Default is "placement.json".
+        :type filename: str
         """
         json_string = json.dumps(self, default=lambda o: o.__json__(), indent=4)
         with open(filename, 'w') as file:
@@ -72,8 +78,8 @@ class EventQueue(object):
         """
         Converts the events in the queue to a JSON serializable format.
 
-        Returns:
-            list: A list of events in JSON serializable format.
+        :return: A list of events in JSON serializable format.
+        :rtype: list
         """
         json_data = []
         for event in self.__queue.queue:
