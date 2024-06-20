@@ -19,9 +19,27 @@ from typing import Any, Dict, Union
 
 import argparse
 
-from random import random
+import random
 
 class Config:
+    """
+    Manages the application's configuration settings.
+
+    Attributes:
+        parsed_yaml (Dict[str, Any]): The parsed YAML configuration.
+        log_level (int): Logging level.
+        log_filename (str): Name of the log file.
+        devices_template_filename (str): Filename for device templates.
+        application_template_filename (str): Filename for application templates.
+        results_filename (str): Filename for results.
+        number_of_applications (int): Number of applications.
+        number_of_devices (int): Number of devices.
+        wifi_range (float): WiFi range.
+        app_duration (int): Application duration.
+        k_param (int): Parameter for routing.
+        _3D_space (Dict[str, Union[int, float]]): Space dimensions.
+        random_seed (int): Random seed value.
+    """
     DEFAULT_LOG_LEVEL = logging.INFO
     DEFAULT_LOG_FILENAME: str = 'log.txt'
     DEFAULT_DEVICES_TEMPLATE_FILENAME: str = 'devices.json'
@@ -34,14 +52,14 @@ class Config:
     DEFAULT_K_PARAM: int = 10
     DEFAULT_3D_SPACE: Dict[str, Union[int, float]] = {"x_min": 0, "x_max": 40, "y_min": 0, "y_max": 40, "z_min": 0, "z_max": 0}
 
-    RANDOM_SEED_VALUE = int(100 * random())
+    RANDOM_SEED_VALUE = int(100 * rendom.random())
 
     def __init__(self, *, options: argparse.Namespace):
         """
         Initializes the application configuration with default values or values from a YAML file.
 
-        Args:
-            options (argparse.Namespace): Parsed command-line options.
+        :param options: Parsed command-line options.
+        :type options: argparse.Namespace
         """
         self.set_defaults()
 
@@ -56,7 +74,7 @@ class Config:
     def set_defaults(self) -> None:
         """Sets default values for all attributes."""
         self.parsed_yaml: Dict[str, Any] = {}
-        self.log_level : int = self.DEFAULT_LOG_LEVEL
+        self.log_level: int = self.DEFAULT_LOG_LEVEL
         self.log_filename: str = self.DEFAULT_LOG_FILENAME
 
         self.devices_template_filename: str = self.DEFAULT_DEVICES_TEMPLATE_FILENAME
@@ -79,8 +97,8 @@ class Config:
         """
         Loads settings from a YAML file.
 
-        Args:
-            config_file_path (str): Configuration File Path
+        :param config_file_path: Configuration file path.
+        :type config_file_path: str
         """
         try:
             with open(config_file_path, 'r') as config_file:
@@ -88,12 +106,12 @@ class Config:
         except FileNotFoundError:
             logging.error("Configuration File Not Found, using default settings.")
 
-    def setup_logging(self, options) -> None:
+    def setup_logging(self, options: argparse.Namespace) -> None:
         """
         Initializes logging based on parsed YAML.
 
-        Args:
-            options (argparse.Namespace): Parsed command-line options.
+        :param options: Parsed command-line options.
+        :type options: argparse.Namespace
         """
         try:
             match self.parsed_yaml.get('loglevel', 'info'):
@@ -125,17 +143,18 @@ class Config:
         """
         Helper function to set attribute from parsed YAML.
 
-        Args:
-            attr_name (str): The name of the attribute to set.
-            yaml_path (list): The list of keys to navigate the YAML dictionary.
-            value_type (type): The type to cast the value to (e.g., int, float, str).
+        :param attr_name: The name of the attribute to set.
+        :type attr_name: str
+        :param yaml_path: The list of keys to navigate the YAML dictionary.
+        :type yaml_path: list
+        :param value_type: The type to cast the value to (e.g., int, float, str).
+        :type value_type: type
         """
         try:
             value = self.parsed_yaml
             for key in yaml_path:
                 value = value[key]
             setattr(self, attr_name, value_type(value))
-
         except (KeyError, TypeError) as e:
             logging.error(f"Config Error, Default simulation value {getattr(self, attr_name)} used for entry {e}")
 
@@ -143,11 +162,9 @@ class Config:
         """
         Sets other options based on parsed YAML and command-line options.
 
-        Args:
-            options (argparse.Namespace): Parsed command-line options.
+        :param options: Parsed command-line options.
+        :type options: argparse.Namespace
         """
-        # self._set_attribute_from_yaml('devices_template_filename', ['template_files', 'devices'], str)
-        # self._set_attribute_from_yaml('application_template_filename', ['template_files', 'applications'], str)
         self._set_attribute_from_yaml('number_of_applications', ['application_number'], int)
         self._set_attribute_from_yaml('number_of_devices', ['device_number'], int)
         self._set_attribute_from_yaml('wifi_range', ['wifi_range'], float)
