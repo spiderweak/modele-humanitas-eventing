@@ -52,7 +52,7 @@ class Config:
     DEFAULT_K_PARAM: int = 10
     DEFAULT_3D_SPACE: Dict[str, Union[int, float]] = {"x_min": 0, "x_max": 40, "y_min": 0, "y_max": 40, "z_min": 0, "z_max": 0}
 
-    RANDOM_SEED_VALUE = int(100 * rendom.random())
+    RANDOM_SEED_VALUE = int(100 * random.random())
 
     def __init__(self, *, options: argparse.Namespace):
         """
