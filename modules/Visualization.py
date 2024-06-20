@@ -1,3 +1,18 @@
+"""
+Visualization Module
+
+This module provides the Visualizer class for generating visualizations of the simulation results.
+It includes methods for plotting resource usage over time, application deployments, and final results.
+
+Classes:
+    Visualizer: Handles the visualization of simulation data.
+
+Usage Example:
+    visualizer = Visualizer()
+    visualizer.visualize_environment(env)
+    visualizer.apps_visualiser(env)
+"""
+
 import logging
 import os
 
@@ -8,15 +23,18 @@ from tqdm import tqdm
 from modules.Environment import Environment
 
 class Visualizer():
-
     def __init__(self):
         pass
 
-
     def visualize_environment(self, env: Environment):
+        """
+        Visualizes the environment including deployed applications and failed deployments.
 
+        :param env: The simulation environment.
+        :type env: Environment
+        """
         # List deployed apps
-        logging.info("Successfully deployed apps : ")
+        logging.info("Successfully deployed apps: ")
         logging.info(env.list_accepted_application)
 
         logging.info("Application deployment failures: ")
@@ -37,8 +55,13 @@ class Visualizer():
         logging.debug(data)
         plt.savefig(os.path.join(env.config.output_folder, "results.png"))
 
-
     def apps_visualiser(self, env: Environment):
+        """
+        Visualizes the accepted applications over time.
+
+        :param env: The simulation environment.
+        :type env: Environment
+        """
         times, values = zip(*env.count_accepted_application)
 
         plt.clf()
@@ -49,7 +72,6 @@ class Visualizer():
         plt.ylabel("Number of Accepted Applications")
 
         plt.savefig(os.path.join(env.config.output_folder, "accepted.png"))
-
 
         logging.info(f"Number of accepted applications : {values[-1]}")
 
@@ -64,9 +86,13 @@ class Visualizer():
 
         plt.savefig(os.path.join(env.config.output_folder, "tentatives_with_success.png"))
 
+    def final_results(self, env: Environment):
+        """
+        Generates the final results of the simulation, including CPU, GPU, memory, and disk usage over time.
 
-    def final_results(self, env):
-
+        :param env: The simulation environment.
+        :type env: Environment
+        """
         cpu_data = dict()
         cpu_limit_data = dict()
 
@@ -85,7 +111,6 @@ class Visualizer():
         for device in env.devices:
 
             previous_time, previous_value = (0,0)
-
             cpu_data[device.id] = [(previous_time, previous_value)]
             cpu_limit_data[device.id] = device.resource_limit['cpu']
 
@@ -130,7 +155,6 @@ class Visualizer():
                     disk_data[device.id].append((time,value-previous_value))
                     previous_time = time
                     previous_value = value
-
 
             max_time = max(time, max_time)
 
@@ -198,13 +222,19 @@ class Visualizer():
         df['cpu'] = df['cpu'] / sum(v for _,v in cpu_limit_data.items()) * 100
         df['gpu'] = df['gpu'] / sum(v for _,v in gpu_limit_data.items()) * 100
         df['mem'] = df['mem'] / sum(v for _,v in mem_limit_data.items()) * 100
-        df['disk'] = df['disk'] / sum(v for _,v in disk_limit_data.items())* 100
+        df['disk'] = df['disk'] / sum(v for _,v in disk_limit_data.items()) * 100
 
         df.to_csv(os.path.join(env.config.output_folder, "results.csv"))
 
         # Can be good to keep track on deployment requests, failures, and eventually to backoff placement failures
 
-    def other_final_results(self, env):
+    def other_final_results(self, env: Environment):
+        """
+        Generates additional final results of the simulation, including resource usage for all devices.
+
+        :param env: The simulation environment.
+        :type env: Environment
+        """
         # Initialize a DataFrame to store aggregated data
         resource_types = ['cpu', 'gpu', 'mem', 'disk']
         all_resources = pd.DataFrame()
@@ -233,23 +263,20 @@ class Visualizer():
             all_resources[resource] *= 100  # Convert to percentage
 
         all_resources = all_resources.round(1)
-        
+
         all_resources.to_csv(os.path.join(env.config.output_folder, "results.csv"))
-        all_resources = pd.read_csv(os.path.join(env.config.output_folder, "results.csv"))
 
         plt.figure(figsize=(12, 8))  # Set the size of the plot
-        
+
         # Plot each resource usage
         plt.plot(all_resources['time'], all_resources['cpu'], label='CPU Usage (%)', marker='')
-        plt.plot(all_resources['time'], all_resources['disk'], label='Disk Usage (%)', marker='')
         plt.plot(all_resources['time'], all_resources['gpu'], label='GPU Usage (%)', marker='')
         plt.plot(all_resources['time'], all_resources['mem'], label='Memory Usage (%)', marker='')
-        
+        plt.plot(all_resources['time'], all_resources['disk'], label='Disk Usage (%)', marker='')
+
         plt.title('Resource Usage Over Time')  # Title of the plot
         plt.xlabel('Time')  # X-axis label
         plt.ylabel('Usage (%)')  # Y-axis label
         plt.legend()  # Add a legend to the plot
-        plt.grid(True)  # Add gridlines for better readability
-        
-        plt.savefig(os.path.join(env.config.output_folder, "resource_use_avg.png"))  # Display the plot
 
+        plt.savefig(os.path.join(env.config.output_folder, "resource_use_avg.png"))  # Display the plot
