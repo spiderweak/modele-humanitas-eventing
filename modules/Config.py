@@ -1,3 +1,17 @@
+"""
+Config Module
+
+This module handles the configuration settings for the application.
+It initializes default values, loads configurations from a YAML file,
+and sets options based on command-line arguments and YAML configuration.
+
+Classes:
+    Config: Manages the application's configuration settings.
+
+Usage Example:
+    config = Config(options=args)
+"""
+
 import yaml
 import logging
 import os
@@ -18,22 +32,16 @@ class Config:
     DEFAULT_WIFI_RANGE: float = 6.0
     DEFAULT_APP_DURATION: int = 0
     DEFAULT_K_PARAM: int = 10
-    DEFAULT_3D_SPACE: Dict[str,Union[int,float]] = {"x_min": 0, "x_max": 40, "y_min": 0, "y_max": 40, "z_min": 0, "z_max": 0}
+    DEFAULT_3D_SPACE: Dict[str, Union[int, float]] = {"x_min": 0, "x_max": 40, "y_min": 0, "y_max": 40, "z_min": 0, "z_max": 0}
 
-    RANDOM_SEED_VALUE = int(100*random())
+    RANDOM_SEED_VALUE = int(100 * random())
 
     def __init__(self, *, options: argparse.Namespace):
-        """Initializes the application configuration with default values or values from a YAML file.
+        """
+        Initializes the application configuration with default values or values from a YAML file.
 
         Args:
-            options (argparse.Namespace): parsed command-line options
-            env (Environment): simulation environment
-
-        Attributes:
-            parsed_yaml (Dict[str, Any]): Contains the parsed configuration YAML file, stored as a dict.
-            log_level (int): Integer representation of the parsed log level.
-            log_filename (str): Log file name.
-            ... (and others)
+            options (argparse.Namespace): Parsed command-line options.
         """
         self.set_defaults()
 
@@ -51,7 +59,6 @@ class Config:
         self.log_level : int = self.DEFAULT_LOG_LEVEL
         self.log_filename: str = self.DEFAULT_LOG_FILENAME
 
-
         self.devices_template_filename: str = self.DEFAULT_DEVICES_TEMPLATE_FILENAME
         self.application_template_filename: str = self.DEFAULT_APPLICATION_TEMPLATE_FILENAME
         self.results_filename: str = self.DEFAULT_RESULTS_FILENAME
@@ -60,7 +67,7 @@ class Config:
         self.number_of_devices: int = self.DEFAULT_NUMBER_OF_DEVICES
         self.wifi_range: float = self.DEFAULT_WIFI_RANGE
 
-        self._3D_space: Dict[str,Union[int,float]] = self.DEFAULT_3D_SPACE
+        self._3D_space: Dict[str, Union[int, float]] = self.DEFAULT_3D_SPACE
 
         self.k_param: int = self.DEFAULT_K_PARAM
 
@@ -69,7 +76,8 @@ class Config:
         self.random_seed: int = self.RANDOM_SEED_VALUE
 
     def load_yaml(self, config_file_path: str) -> None:
-        """Loads settings from a YAML file.
+        """
+        Loads settings from a YAML file.
 
         Args:
             config_file_path (str): Configuration File Path
@@ -81,8 +89,12 @@ class Config:
             logging.error("Configuration File Not Found, using default settings.")
 
     def setup_logging(self, options) -> None:
-        """Initializes logging based on parsed YAML."""
+        """
+        Initializes logging based on parsed YAML.
 
+        Args:
+            options (argparse.Namespace): Parsed command-line options.
+        """
         try:
             match self.parsed_yaml.get('loglevel', 'info'):
                 case 'error':
@@ -104,7 +116,6 @@ class Config:
             os.makedirs(os.path.dirname(self.log_filename), exist_ok=True)
         except FileNotFoundError:
             if os.path.dirname(self.log_filename):
-                # Raise if os.path.dirname(self.log_filename) is True, do nothing if equals to ""
                 raise
 
         logging.basicConfig(filename=self.log_filename, encoding='utf-8', level=self.log_level)
@@ -129,32 +140,32 @@ class Config:
             logging.error(f"Config Error, Default simulation value {getattr(self, attr_name)} used for entry {e}")
 
     def set_options(self, options: argparse.Namespace) -> None:
-        """Sets other options based on parsed YAML and command-line options."""
+        """
+        Sets other options based on parsed YAML and command-line options.
 
-        #self._set_attribute_from_yaml('devices_template_filename', ['template_files', 'devices'], str)
-        #self._set_attribute_from_yaml('application_template_filename', ['template_files', 'applications'], str)
+        Args:
+            options (argparse.Namespace): Parsed command-line options.
+        """
+        # self._set_attribute_from_yaml('devices_template_filename', ['template_files', 'devices'], str)
+        # self._set_attribute_from_yaml('application_template_filename', ['template_files', 'applications'], str)
         self._set_attribute_from_yaml('number_of_applications', ['application_number'], int)
         self._set_attribute_from_yaml('number_of_devices', ['device_number'], int)
         self._set_attribute_from_yaml('wifi_range', ['wifi_range'], float)
 
-
-    # Simulated 2D/3D space
         for boundary in self._3D_space.keys():
-            self._set_attribute_from_yaml(f'_3D_space["{boundary}"]', ['device_positionning', boundary], float)
+            self._set_attribute_from_yaml(f'_3D_space["{boundary}"]', ['device_positioning', boundary], float)
 
         self._set_attribute_from_yaml('k_param', ['k_param'], int)
         self._set_attribute_from_yaml('app_duration', ['app_duration'], float)
         self._set_attribute_from_yaml('random_seed', ['seed'], int)
 
-
         # Setting options
         try:
             self.results_filename = options.output
-        except (KeyError,AttributeError) as e:
+        except (KeyError, AttributeError) as e:
             logging.error(f"{e}, processing output will be default {self.results_filename}")
 
         self.results_filename = getattr(options, 'results', self.results_filename)
-
         self.output_folder = os.path.dirname(self.results_filename)
 
         self.devices_file = getattr(options, 'devices', None)
