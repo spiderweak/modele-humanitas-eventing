@@ -1,3 +1,21 @@
+"""
+Simulation Module
+
+This module provides the Simulation class for managing the simulation process.
+It handles the initialization, event processing, and final reporting of the simulation.
+The simulation involves generating applications, placing them on devices, and recording
+the results.
+
+Classes:
+    Simulation: Manages the simulation process.
+
+Usage Example:
+    env = Environment(config)
+    simulation = Simulation(env)
+    simulation.init_simulation() # Optional
+    simulation.simulate()
+"""
+
 import matplotlib.pyplot as plt
 import networkx as nx
 import random
