@@ -292,3 +292,20 @@ class Visualizer():
 
         file_path = os.path.join(env.config.output_folder, "global_output.png")
         plt.savefig(file_path)
+
+        fig, ax1 = plt.subplots(figsize=(10, 6))
+
+        # Plot CPU, GPU, Memory, and Disk averages on primary y-axis
+        ax1.plot(df.index, df['cumulative_app_accepted']/(df['cumulative_app_arrival'] + df['cumulative_app_rejected'])*100, label='Acceptance ratio', color='green')
+
+        ax1.set_yticks(range(0, 101, 10))
+        ax1.set_yticklabels([f'{i}' for i in range(0, 101, 10)])
+
+        ax1.set_xticks(range(0, 25, 2))
+        ax1.set_xticklabels([f'{i}' for i in range(0, 25, 2)])
+
+        # Set plot title
+        plt.title('Average Acceptance Ratio Over Time')
+        file_path = os.path.join(env.config.output_folder, "acceptance.png")
+        plt.savefig(file_path)
+
