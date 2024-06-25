@@ -86,8 +86,6 @@ class Environment(object):
         self.list_devices_data: Optional[Dict] = None
         self.list_currently_deployed_app_data: Optional[List] = None
         self.data = Data()
-        self.data_folder = "."
-
 
     @property
     def config(self) -> Optional[Config]:
@@ -808,11 +806,3 @@ class Environment(object):
 
         return computed_cc
 
-    def set_data_folder(self, folder=".") -> None:
-        """
-        Sets the data folder for the environment.
-
-        :param folder: The path to the data folder.
-        :type folder: str
-        """
-        self.data_folder = folder

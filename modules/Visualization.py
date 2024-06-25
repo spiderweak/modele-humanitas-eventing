@@ -93,140 +93,98 @@ class Visualizer():
         :param env: The simulation environment.
         :type env: Environment
         """
-        cpu_data = dict()
-        cpu_limit_data = dict()
 
-        gpu_data = dict()
-        gpu_limit_data = dict()
+        def consolidate_resource_data(env: Environment, resource_type: str):
+            all_data = []
+            resource_limits = {}
 
-        mem_data = dict()
-        mem_limit_data = dict()
+            for device in env.devices:
+                resource_data = [list(tup) for tup in device.resource_usage_history[resource_type]] 
+                resource_limits[device.id] = device.resource_limit[resource_type]
 
-        disk_data = dict()
-        disk_limit_data = dict()
+                for entry in resource_data:
+                    all_data.append([device.id] + entry)
 
-        max_time = 0
-        time = 0
+            df = pd.DataFrame(all_data, columns=['device_id', 'time', resource_type])
+            df['time'] = df['time'] / (8640000 / 24)    
 
-        for device in env.devices:
+            """
+            # Identify and print duplicate entries
+            duplicates = df[df.duplicated(subset=['device_id', 'timestamp'], keep=False)]
+            if not duplicates.empty:
+                print("Duplicate entries found:")
+                print(duplicates)
+            """
+            
+            # Handling duplicate timestamps by averaging the values
+            df = df.groupby(['device_id', 'time'], as_index=False).mean()
 
-            previous_time, previous_value = (0,0)
-            cpu_data[device.id] = [(previous_time, previous_value)]
-            cpu_limit_data[device.id] = device.resource_limit['cpu']
+            df_pivot = df.pivot(index='time', columns='device_id', values=resource_type)
 
-            for time,value in device.resource_usage_history['cpu']:
-                if time != previous_time:
-                    cpu_data[device.id].append((time,value-previous_value))
-                    previous_time = time
-                    previous_value = value
+            # Convert resource limits to a DataFrame and align with df_pivot
+            limits_series = pd.Series(resource_limits)
+            df_normalized = df_pivot.div(limits_series, axis=1)
 
-            max_time = max(time, max_time)
+            return df_normalized
 
-            previous_time, previous_value = (0,0)
-            gpu_data[device.id] = [(previous_time, previous_value)]
-            gpu_limit_data[device.id] = device.resource_limit['gpu']
+        # Create DataFrames for each resource type
+        cpu_df_normalized = consolidate_resource_data(env, 'cpu')
+        gpu_df_normalized = consolidate_resource_data(env, 'gpu')
+        memory_df_normalized = consolidate_resource_data(env, 'mem')
+        disk_df_normalized = consolidate_resource_data(env, 'disk')
 
-            for time,value in device.resource_usage_history['gpu']:
-                if time != previous_time:
-                    gpu_data[device.id].append((time,value-previous_value))
-                    previous_time = time
-                    previous_value = value
+        cpu_df_interpolated = cpu_df_normalized.interpolate(method='linear', axis=0, limit_direction='both')
+        gpu_df_interpolated = gpu_df_normalized.interpolate(method='linear', axis=0, limit_direction='both')
+        memory_df_interpolated = memory_df_normalized.interpolate(method='linear', axis=0, limit_direction='both')
+        disk_df_interpolated = disk_df_normalized.interpolate(method='linear', axis=0, limit_direction='both')
 
-            max_time = max(time, max_time)
 
-            previous_time, previous_value = (0,0)
-            mem_data[device.id] = [(previous_time, previous_value)]
-            mem_limit_data[device.id] = device.resource_limit['mem']
+        # Function to calculate statistical values for each row
+        def calculate_statistics(df):
+            stats_df = pd.DataFrame()
+            stats_df['average'] = df.mean(axis=1)*100
+            stats_df['median'] = df.median(axis=1)*100
+            #stats_df['1st_quartile'] = df.apply(lambda x: np.percentile(x.dropna(), 25), axis=1)*100
+            #stats_df['last_quartile'] = df.apply(lambda x: np.percentile(x.dropna(), 75), axis=1)*100
 
-            for time,value in device.resource_usage_history['mem']:
-                if time != previous_time:
-                    mem_data[device.id].append((time,value-previous_value))
-                    previous_time = time
-                    previous_value = value
+            stats_df['1st_decile'] = df.apply(lambda x: np.percentile(x.dropna(), 10), axis=1)*100
+            stats_df['last_decile'] = df.apply(lambda x: np.percentile(x.dropna(), 90), axis=1)*100
 
-            max_time = max(time, max_time)
+            return stats_df
 
-            previous_time, previous_value = (0,0)
-            disk_data[device.id] = [(previous_time, previous_value)]
-            disk_limit_data[device.id] = device.resource_limit['disk']
+        # Calculate statistics for each resource type
+        cpu_stats = calculate_statistics(cpu_df_interpolated)
+        gpu_stats = calculate_statistics(gpu_df_interpolated)
+        memory_stats = calculate_statistics(memory_df_interpolated)
+        disk_stats = calculate_statistics(disk_df_interpolated)
 
-            for time,value in device.resource_usage_history['disk']:
-                if time != previous_time:
-                    disk_data[device.id].append((time,value-previous_value))
-                    previous_time = time
-                    previous_value = value
+        # Function to plot statistical values
+        def plot_statistics(stats_df, title, save_as):
+            plt.figure(figsize=(14, 8))
 
-            max_time = max(time, max_time)
+            plt.fill_between(stats_df.index, stats_df['1st_decile'], stats_df['last_decile'], color='lightgray', alpha=0.5, label='Decile Range (10-90%)')
+            plt.plot(stats_df.index, stats_df['average'], color='purple', label='Average')
+            plt.plot(stats_df.index, stats_df['median'], color='orange', label='Median')
+            #plt.plot(stats_df.index, stats_df['last_decile'], color='black', alpha=0.25, label='Last decile (90%)')
+            #plt.plot(stats_df.index, stats_df['1st_decile'], color='black', alpha=0.25, label='First decile (10%)')
 
-        cpu_data_unpacked = dict()
-        for _,v1 in cpu_data.items():
-            for k2,v2 in v1:
-                try:
-                    cpu_data_unpacked[k2] += v2
-                except KeyError:
-                    cpu_data_unpacked[k2] = v2
+            plt.axhline(y=100, color='lightgray', alpha=0.2)
 
-        gpu_data_unpacked = dict()
-        for _,v1 in gpu_data.items():
-            for k2,v2 in v1:
-                try:
-                    gpu_data_unpacked[k2] += v2
-                except KeyError:
-                    gpu_data_unpacked[k2] = v2
+            plt.xticks(ticks = range(0, 25), labels = [f'{i}' for i in range(0, 25)])
 
-        mem_data_unpacked = dict()
-        for _,v1 in mem_data.items():
-            for k2,v2 in v1:
-                try:
-                    mem_data_unpacked[k2] += v2
-                except KeyError:
-                    mem_data_unpacked[k2] = v2
+            plt.title(title)
+            plt.xlabel('Time')
+            plt.ylabel('Resource use (%)')
+            plt.ylim(-5, 105)
 
-        disk_data_unpacked = dict()
-        for _,v1 in disk_data.items():
-            for k2,v2 in v1:
-                try:
-                    disk_data_unpacked[k2] += v2
-                except KeyError:
-                    disk_data_unpacked[k2] = v2
+            plt.legend()
+            plt.savefig(save_as)
 
-        df = pd.DataFrame(index=range(max_time), columns=['cpu', 'gpu', 'mem', 'disk'])
-
-        df['cpu'] = 0
-        df['gpu'] = 0
-        df['mem'] = 0
-        df['disk'] = 0
-
-        print("\n\nDumping Output in results file")
-
-        for t in tqdm(range(1,max_time)):
-            try:
-                df.loc[t,'cpu'] = df.loc[t-1,'cpu'] + cpu_data_unpacked[t]
-            except KeyError:
-                df.loc[t,'cpu'] = df.loc[t-1,'cpu']
-            try:
-                df.loc[t,'gpu'] = df.loc[t-1,'gpu'] + gpu_data_unpacked[t]
-            except KeyError:
-                df.loc[t,'gpu'] = df.loc[t-1,'gpu']
-            try:
-                df.loc[t,'mem'] = df.loc[t-1,'mem'] + mem_data_unpacked[t]
-            except KeyError:
-                df.loc[t,'mem'] = df.loc[t-1,'mem']
-            try:
-                df.loc[t,'disk'] = df.loc[t-1,'disk'] + disk_data_unpacked[t]
-            except KeyError:
-                df.loc[t,'disk'] = df.loc[t-1,'disk']
-
-        # Percentages
-
-        df['cpu'] = df['cpu'] / sum(v for _,v in cpu_limit_data.items()) * 100
-        df['gpu'] = df['gpu'] / sum(v for _,v in gpu_limit_data.items()) * 100
-        df['mem'] = df['mem'] / sum(v for _,v in mem_limit_data.items()) * 100
-        df['disk'] = df['disk'] / sum(v for _,v in disk_limit_data.items()) * 100
-
-        df.to_csv(os.path.join(env.config.output_folder, "results.csv"))
-
-        # Can be good to keep track on deployment requests, failures, and eventually to backoff placement failures
+        # Plot statistics for each resource type
+        plot_statistics(cpu_stats, 'CPU Resource Usage Statistics', os.path.join(env.config.output_folder,"results-cpu.png"))
+        plot_statistics(gpu_stats, 'GPU Resource Usage Statistics', os.path.join(env.config.output_folder,"results-gpu.png"))
+        plot_statistics(memory_stats, 'Memory Resource Usage Statistics', os.path.join(env.config.output_folder,"results-mem.png"))
+        plot_statistics(disk_stats, 'Disk Resource Usage Statistics', os.path.join(env.config.output_folder,"results-disk.png"))
 
     def other_final_results(self, env: Environment):
         """
@@ -280,3 +238,57 @@ class Visualizer():
         plt.legend()  # Add a legend to the plot
 
         plt.savefig(os.path.join(env.config.output_folder, "resource_use_avg.png"))  # Display the plot
+
+    def plot_resource_and_application_counts(self, env: Environment):
+        """
+        Plots resource usage and application counts over time from a CSV file.
+
+        :param env: The simulation environment.
+        :type env: Environment
+        """
+        # Loading data
+        df = env.data.data
+        df.index = df.index / (8640000 / 24)  # Convert time index to hours
+
+        # Plotting data
+        fig, ax1 = plt.subplots(figsize=(14, 8))
+
+        # Plot CPU, GPU, Memory, and Disk averages on primary y-axis
+        ax1.plot(df.index, df['cpu_avg']*100, label='CPU Avg', color='lightgray')
+        ax1.plot(df.index, df['gpu_avg']*100, label='GPU Avg', color='lightgray')
+        ax1.plot(df.index, df['memory_avg']*100, label='Memory Avg', color='lightgray')
+        ax1.plot(df.index, df['disk_avg']*100, label='Disk Avg', color='lightgray')
+        ax1.set_xlabel('Time (hours)')
+        ax1.set_ylabel('Resource Usage (in %)')
+        ax1.legend(loc='upper left')
+
+        # Create a secondary y-axis to plot cumulative counts
+        ax2 = ax1.twinx()
+        ax2.plot(df.index, df['currently_hosted_apps'], label='Hosted Apps', color='orange', linestyle='dashed')
+        ax2.plot(df.index, df['currently_hosted_procs'], label='Hosted App Components', color='orange', linestyle='dotted')
+        ax2.plot(df.index, df['app_in_waiting'], label='Apps in waiting', color='yellow', linestyle='dashed')
+        ax2.set_ylabel('Cumulative Counts')
+        ax2.legend(loc='upper left', bbox_to_anchor=(0, 0.9))
+        ax2.set_ylim([0, env.config.number_of_applications/10])
+        
+        ax3 = ax1.twinx()
+        ax3.spines['right'].set_position(('outward', 60))  # Offset the third y-axis
+        ax3.plot(df.index, df['cumulative_app_arrival'], label='App Arrivals (cumulative)', color='magenta', linestyle='dashed')
+        ax3.plot(df.index, df['cumulative_app_departure'], label='App Departures (cumulative)', color='black', linestyle='dashed')
+        ax3.plot(df.index, df['cumulative_app_accepted'], label='App Accepted (cumulative)', color='green', linestyle='dashed')
+        ax3.plot(df.index, df['cumulative_app_rejected'], label='App Refused (cumulative)', color='red', linestyle='dashed')
+        ax3.set_ylabel('Cumulative Apps (Straight lines)')
+        ax3.set_ylim([0, env.config.number_of_applications])
+        ax3.legend(loc='upper right', bbox_to_anchor=(1.0, 1.0))
+
+        ax1.set_xticks(range(0, 25, 1))
+        ax1.set_xticklabels([f'{i}' for i in range(0, 25)])
+
+        # Set plot title
+        plt.title('Resource Usage and Application Counts Over Time')
+
+        # Adjust layout
+        plt.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.1)
+
+        file_path = os.path.join(env.config.output_folder, "global_output.png")
+        plt.savefig(file_path)

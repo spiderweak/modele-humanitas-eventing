@@ -14,7 +14,7 @@ The goal is to store time series with values over time for the following attribu
 from typing import Optional, Union
 import pandas as pd
 from datetime import datetime
-
+import os
 class Data:
     def __init__(self, cpu_max=0, gpu_max=0, memory_max=0, disk_max=0, bw_max=0) -> None:
         """Initialize the DataFrame to store time series data."""
@@ -59,7 +59,7 @@ class Data:
         self.data.at[time, key] += value
 
 
-    def report(self):
+    def report(self, folder  = "."):
         self.data['cpu_current'] = self.data['cpu_current'].div(self.cpu_max)
         self.data['gpu_current'] = self.data['gpu_current'].div(self.gpu_max)
         self.data['memory_current'] = self.data['memory_current'].div(self.memory_max)
@@ -72,4 +72,6 @@ class Data:
             'disk_current': 'disk_avg'
         }, inplace=True)
 
-        self.data.to_csv("output.csv")
+        file_path = os.path.join(folder, "global_output.csv")
+
+        self.data.to_csv(file_path)
