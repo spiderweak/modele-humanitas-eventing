@@ -246,7 +246,7 @@ class Placement(Event):
     def retry(self, environment, event_time):
         if self.tentatives < self.MAX_TENTATIVES:
             if self.tentatives == 1:
-                self.update_app_waiting(environment, 1)
+                self.update_app_waiting(environment)
             self.tentatives +=1
             self.time = event_time
             self.add_to_queue()
@@ -325,7 +325,7 @@ class Placement(Event):
         env.data.update_data(self.time, 'cumulative_app_arrival', 1)
 
 
-    def update_app_waiting(self, env, value = 0):
+    def update_app_waiting(self, env, value = 1):
 
         env.data.integrity_check(self.time)
 
