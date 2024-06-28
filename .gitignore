@@ -9,6 +9,7 @@ data/
 latest/
 today/
 .venv/
+.env
 stress_test/
 *.json
 output

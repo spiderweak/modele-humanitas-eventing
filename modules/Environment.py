@@ -40,7 +40,7 @@ from modules.routing.OSPFRoutingTable import OSPFRoutingTable
 
 import gurobipy as gp
 from gurobipy import GRB
-
+from dotenv import load_dotenv
 class Environment(object):
     """
     Represents the environment for the network simulation.
@@ -90,11 +90,13 @@ class Environment(object):
         self.list_currently_deployed_app_data: Optional[List] = None
         self.data = Data()
 
+        load_dotenv()
         connection_params = {
-            "WLSACCESSID": "1e852543-ef71-4422-967e-1cea36696f28",
-            "WLSSECRET": "305a0786-be3c-4ba2-adc3-4f1834c18ec2",
-            "LICENSEID": 2517970,
-            "OutputFlag": 0 }
+            'WLSACCESSID': os.getenv('GUROBI_WLSACCESSID'),
+            'WLSSECRET': os.getenv('GUROBI_WLSSECRET'),
+            'LICENSEID': int(os.getenv('GUROBI_LICENSEID', 0)),
+            'OutputFlag': int(os.getenv('GUROBI_OUTPUTFLAG', 0))  # Default to 0 if not set
+        }
 
         self.math_env = gp.Env(params=connection_params)
 
