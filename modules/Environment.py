@@ -38,6 +38,9 @@ from modules.CustomExceptions import (NoRouteToHost, DeviceNotFoundError, Applic
 from modules.ResourceManagement import custom_distance
 from modules.routing.OSPFRoutingTable import OSPFRoutingTable
 
+import gurobipy as gp
+from gurobipy import GRB
+
 class Environment(object):
     """
     Represents the environment for the network simulation.
@@ -86,6 +89,14 @@ class Environment(object):
         self.list_devices_data: Optional[Dict] = None
         self.list_currently_deployed_app_data: Optional[List] = None
         self.data = Data()
+
+        connection_params = {
+            "WLSACCESSID": "1e852543-ef71-4422-967e-1cea36696f28",
+            "WLSSECRET": "305a0786-be3c-4ba2-adc3-4f1834c18ec2",
+            "LICENSEID": 2517970,
+            "OutputFlag": 0 }
+
+        self.math_env = gp.Env(params=connection_params)
 
     @property
     def config(self) -> Optional[Config]:

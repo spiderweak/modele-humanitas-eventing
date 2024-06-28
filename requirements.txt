@@ -8,3 +8,4 @@ scikit-learn
 sphinx
 tqdm
 pulp
+gurobipy

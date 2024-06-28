@@ -39,6 +39,7 @@ class Config:
         k_param (int): Parameter for routing.
         _3D_space (Dict[str, Union[int, float]]): Space dimensions.
         random_seed (int): Random seed value.
+        batch_enable (bool): enables batch mode
     """
     DEFAULT_LOG_LEVEL = logging.INFO
     DEFAULT_LOG_FILENAME: str = 'log.txt'
@@ -51,6 +52,7 @@ class Config:
     DEFAULT_APP_DURATION: int = 0
     DEFAULT_K_PARAM: int = 10
     DEFAULT_3D_SPACE: Dict[str, Union[int, float]] = {"x_min": 0, "x_max": 40, "y_min": 0, "y_max": 40, "z_min": 0, "z_max": 0}
+    DEFAULT_BATCH_ENABLE = False
 
     RANDOM_SEED_VALUE = int(100 * random.random())
 
@@ -92,6 +94,8 @@ class Config:
         self.app_duration: int = self.DEFAULT_APP_DURATION
 
         self.random_seed: int = self.RANDOM_SEED_VALUE
+
+        self.batch_enable: bool = self.DEFAULT_BATCH_ENABLE
 
     def load_yaml(self, config_file_path: str) -> None:
         """
@@ -189,3 +193,5 @@ class Config:
         self.applications_file = getattr(options, 'applications', None)
         self.arrivals_file = getattr(options, 'arrivals', None)
         self.dry_run = getattr(options, 'dry_run', False)
+
+        self.batch_enable = getattr(options, 'batch', self.batch_enable)

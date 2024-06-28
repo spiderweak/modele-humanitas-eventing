@@ -235,9 +235,12 @@ class Application:
             self.deployment_info[self.processus_list[i]] = device_id
 
     def set_links_allocation_info(self, link_allocation):
-        for k,v in link_allocation.items():
-            self.links_deployment_info[k[0]][k[1]] = v
-            self.links_deployment_info[k[1]][k[0]] = v
+        try:
+            for k,v in link_allocation.items():
+                self.links_deployment_info[k[0]][k[1]] = v
+                self.links_deployment_info[k[1]][k[0]] = v
+        except:
+            pass
 
     def get_app_procs_ids(self) -> List[int]:
         """

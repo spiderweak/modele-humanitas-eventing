@@ -17,6 +17,8 @@ Usage Example:
 from queue import PriorityQueue
 import json
 
+from typing import Optional
+
 class EventQueue(object):
     """
     Manages a priority queue of events.
@@ -85,3 +87,18 @@ class EventQueue(object):
         for event in self.__queue.queue:
             json_data.append(event[2].__json__())
         return json_data
+
+    def get_next_batch(self):
+        """
+        Retrieves the next 'BatchProcessing' 'Event' in the queue without modifying the queue.
+
+        :return: The next 'BatchProcessing' 'Event' if available, otherwise None.
+        :rtype: Event or None
+        """
+        from .events.PlacementAlt import BatchProcessing
+
+        for _, _, event in self.__queue.queue:
+            if isinstance(event, BatchProcessing):
+                return event
+
+        return None

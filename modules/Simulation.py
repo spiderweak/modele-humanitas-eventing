@@ -35,6 +35,7 @@ from modules.EventQueue import EventQueue
 
 from modules.events.Placement import Placement
 from modules.events.Organize import Organize
+from modules.events.PlacementAlt import PlacementAlt, BatchProcessing
 from modules.events.FinalReport import FinalReport
 
 from modules.Visualization import Visualizer
@@ -44,6 +45,7 @@ from modules.ResourceManagement import custom_distance
 import json
 
 TIME_PERIOD = 24 * 60 * 60 * 100
+BATCH_STEP = 5 * 60 * 100
 
 class Simulation(object):
     """
@@ -165,11 +167,41 @@ class Simulation(object):
         except FileNotFoundError:
             raise FileNotFoundError("Please add placements list in argument, default value is placements.json in current directory")
 
-        for item in arrivals_list:
-            application = self.__env.get_application_by_id(item["application"])
-            device_id = item["requesting_device"]
-            arrival_time = item["placement_time"]
-            Placement("Placement", self.__queue, application, device_id, event_time=arrival_time).add_to_queue()
+        try:
+            if self.__env.config.batch_enable:
+
+                arrival_time = 0
+                batch_counter = 0
+                batches: dict[int, BatchProcessing] = dict()
+
+                while arrival_time <= TIME_PERIOD:
+
+                    batch_counter +=1
+                    arrival_time = batch_counter * BATCH_STEP
+
+                    batches[batch_counter] = BatchProcessing("BatchProcessing", self.__queue, event_time = arrival_time)
+                    batches[batch_counter].add_to_queue()
+
+                next_batch = batches[batch_counter]
+
+                for counter in range(batch_counter-1, 0, -1):
+                    batches[counter].next_batch = next_batch
+                    next_batch = batches[counter]
+
+                for item in arrivals_list:
+                    application = self.__env.get_application_by_id(item["application"])
+                    device_id = item["requesting_device"]
+                    arrival_time = item["placement_time"]
+                    associated_batch_id = int(arrival_time/BATCH_STEP) +1
+                    PlacementAlt("Placement", self.__queue, application, device_id, event_time=arrival_time, associated_batch=batches[associated_batch_id]).add_to_queue()
+            else:
+                for item in arrivals_list:
+                    application = self.__env.get_application_by_id(item["application"])
+                    device_id = item["requesting_device"]
+                    arrival_time = item["placement_time"]
+                    Placement("Placement", self.__queue, application, device_id, event_time=arrival_time).add_to_queue()
+        except:
+            raise
 
         FinalReport("Final Report", self.__queue, event_time=TIME_PERIOD).add_to_queue()
 

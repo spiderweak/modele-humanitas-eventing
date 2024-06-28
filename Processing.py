@@ -53,6 +53,9 @@ def parse_args():
     parser.add_argument('--dry-run',
                         help='Runs an empty simulation to export data',
                         default=False)
+    parser.add_argument('--batch',
+                        help='Enables batch mode for placement',
+                        default=False)
     parser.add_argument('--devices',
                         help='JSON file containing device list',
                         default="latest/devices.json")
@@ -109,12 +112,14 @@ def main():
     logging.debug(f"{datetime.datetime.now().isoformat(timespec='minutes')}: Exporting data to {options.output}")
     os.makedirs(os.path.dirname(options.output), exist_ok=True)
 
-    environment.export_devices(filename=f"{options.output}")
+    environment.export_devices(options.output)
 
     visu = Visualizer()
 
     visu.visualize_environment(environment)
     visu.apps_visualiser(environment)
+    visu.final_results(environment)
+    visu.plot_resource_and_application_counts(environment)
 
 if __name__ == '__main__':
     logger.info("MAIN")
