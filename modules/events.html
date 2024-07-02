@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Events &#8212; Humanitas Network and Services Simulator v0.5 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/nature.css?v=8dfa3f53" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+    <script src="../_static/documentation_options.js?v=c8bc6dd9"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Full State Processing" href="fullstateprocessing.html" />
+    <link rel="prev" title="Clustering" href="clustering.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="fullstateprocessing.html" title="Full State Processing"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="clustering.html" title="Clustering"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Humanitas Network and Services Simulator v0.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../modules.html" accesskey="U">modules package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Events</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="events">
+<h1>Events<a class="headerlink" href="#events" title="Link to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+</section>
+<section id="module-modules.events.DeployProc">
+<span id="modules-events-deployproc-module"></span><h2>modules.events.DeployProc module<a class="headerlink" href="#module-modules.events.DeployProc" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="modules.events.DeployProc.DeployProc">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.events.DeployProc.</span></span><span class="sig-name descname"><span class="pre">DeployProc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">EventQueue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">app</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="resource.html#modules.resource.Application.Application" title="modules.resource.Application.Application"><span class="pre">Application</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">deployed_onto_devices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">link_allocation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">synchronization_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.events.DeployProc.DeployProc" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#modules.events.Event.Event" title="modules.events.Event.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">Event</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.events.DeployProc.DeployProc.DEFAULT_SYNCRONIZATION_TIME">
+<span class="sig-name descname"><span class="pre">DEFAULT_SYNCRONIZATION_TIME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">10</span></em><a class="headerlink" href="#modules.events.DeployProc.DeployProc.DEFAULT_SYNCRONIZATION_TIME" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.events.DeployProc.DeployProc._abc_impl">
+<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#modules.events.DeployProc.DeployProc._abc_impl" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.events.DeployProc.DeployProc.process">
+<span class="sig-name descname"><span class="pre">process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.events.DeployProc.DeployProc.process" title="Link to this definition">¶</a></dt>
+<dd><p>Abstract method to be overridden by subclasses for event processing.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.events.DeployProc.DeployProc.update_global_data">
+<span class="sig-name descname"><span class="pre">update_global_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.events.DeployProc.DeployProc.update_global_data" title="Link to this definition">¶</a></dt>
+<dd><p>Update global data based on the environment state and allocation request.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-modules.events.Event">
+<span id="modules-events-event-module"></span><h2>modules.events.Event module<a class="headerlink" href="#module-modules.events.Event" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="modules.events.Event.Event">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.events.Event.</span></span><span class="sig-name descname"><span class="pre">Event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">EventQueue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.events.Event.Event" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<p>An event that has a name, time, and priority.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.events.Event.Event.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#modules.events.Event.Event.name" title="Link to this definition">¶</a></dt>
+<dd><p>The name of the event.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.events.Event.Event.queue">
+<span class="sig-name descname"><span class="pre">queue</span></span><a class="headerlink" href="#modules.events.Event.Event.queue" title="Link to this definition">¶</a></dt>
+<dd><p>The event queue to which this event belongs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>EventQueue</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.events.Event.Event.time">
+<span class="sig-name descname"><span class="pre">time</span></span><a class="headerlink" href="#modules.events.Event.Event.time" title="Link to this definition">¶</a></dt>
+<dd><p>The time at which the event occurs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.events.Event.Event.priority">
+<span class="sig-name descname"><span class="pre">priority</span></span><a class="headerlink" href="#modules.events.Event.Event.priority" title="Link to this definition">¶</a></dt>
+<dd><p>The priority of the event for sorting in the queue.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.events.Event.Event.REFERENCE_PRIORITY">
+<span class="sig-name descname"><span class="pre">REFERENCE_PRIORITY</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.0</span></em><a class="headerlink" href="#modules.events.Event.Event.REFERENCE_PRIORITY" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.events.Event.Event._abc_impl">
+<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#modules.events.Event.Event._abc_impl" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.events.Event.Event._set_time">
+<span class="sig-name descname"><span class="pre">_set_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.events.Event.Event._set_time" title="Link to this definition">¶</a></dt>
+<dd><p>Internal method to set the time of the event, used to avoid code duplication.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>event_time</strong> (<em>int</em><em>, </em><em>optional</em>) – New time for the event.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.events.Event.Event.add_to_queue">
+<span class="sig-name descname"><span class="pre">add_to_queue</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#modules.events.Event.Event.add_to_queue" title="Link to this definition">¶</a></dt>
+<dd><p>Adds this event to its associated event queue.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="id0">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#id0" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="id1">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">priority</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#id1" title="Link to this definition">¶</a></dt>
+<dd><p>Gets the priority of the event.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.events.Event.Event.process">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.events.Event.Event.process" title="Link to this definition">¶</a></dt>
+<dd><p>Abstract method to be overridden by subclasses for event processing.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="id2">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#id2" title="Link to this definition">¶</a></dt>
+<dd><p>Gets the time of the event.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-modules.events.FinalReport">
+<span id="modules-events-finalreport-module"></span><h2>modules.events.FinalReport module<a class="headerlink" href="#module-modules.events.FinalReport" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="modules.events.FinalReport.FinalReport">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.events.FinalReport.</span></span><span class="sig-name descname"><span class="pre">FinalReport</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.events.FinalReport.FinalReport" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#modules.events.Event.Event" title="modules.events.Event.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">Event</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.events.FinalReport.FinalReport._abc_impl">
+<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#modules.events.FinalReport.FinalReport._abc_impl" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.events.FinalReport.FinalReport.process">
+<span class="sig-name descname"><span class="pre">process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.events.FinalReport.FinalReport.process" title="Link to this definition">¶</a></dt>
+<dd><p>Abstract method to be overridden by subclasses for event processing.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-modules.events.Fit">
+<span id="modules-events-fit-module"></span><h2>modules.events.Fit module<a class="headerlink" href="#module-modules.events.Fit" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="modules.events.Fit.Fit">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.events.Fit.</span></span><span class="sig-name descname"><span class="pre">Fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.events.Fit.Fit" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#modules.events.Event.Event" title="modules.events.Event.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">Event</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.events.Fit.Fit._abc_impl">
+<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#modules.events.Fit.Fit._abc_impl" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-modules.events.Move">
+<span id="modules-events-move-module"></span><h2>modules.events.Move module<a class="headerlink" href="#module-modules.events.Move" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="modules.events.Move.Movement">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.events.Move.</span></span><span class="sig-name descname"><span class="pre">Movement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">EventQueue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.events.Move.Movement" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#modules.events.Event.Event" title="modules.events.Event.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">Event</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.events.Move.Movement._abc_impl">
+<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#modules.events.Move.Movement._abc_impl" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-modules.events.Organize">
+<span id="modules-events-organize-module"></span><h2>modules.events.Organize module<a class="headerlink" href="#module-modules.events.Organize" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="modules.events.Organize.Organize">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.events.Organize.</span></span><span class="sig-name descname"><span class="pre">Organize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">application_to_place</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.events.Organize.Organize" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#modules.events.Event.Event" title="modules.events.Event.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">Event</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.events.Organize.Organize._abc_impl">
+<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#modules.events.Organize.Organize._abc_impl" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.events.Organize.Organize.process">
+<span class="sig-name descname"><span class="pre">process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Environment</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.events.Organize.Organize.process" title="Link to this definition">¶</a></dt>
+<dd><p>Abstract method to be overridden by subclasses for event processing.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-modules.events.Placement">
+<span id="modules-events-placement-module"></span><h2>modules.events.Placement module<a class="headerlink" href="#module-modules.events.Placement" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="modules.events.Placement.Placement">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.events.Placement.</span></span><span class="sig-name descname"><span class="pre">Placement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">EventQueue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">app</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="resource.html#modules.resource.Application.Application" title="modules.resource.Application.Application"><span class="pre">Application</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.events.Placement.Placement" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#modules.events.Event.Event" title="modules.events.Event.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">Event</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.events.Placement.Placement.FIFTEEN_MINUTES_BACKOFF">
+<span class="sig-name descname"><span class="pre">FIFTEEN_MINUTES_BACKOFF</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">900000</span></em><a class="headerlink" href="#modules.events.Placement.Placement.FIFTEEN_MINUTES_BACKOFF" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.events.Placement.Placement.MAX_TENTATIVES">
+<span class="sig-name descname"><span class="pre">MAX_TENTATIVES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5</span></em><a class="headerlink" href="#modules.events.Placement.Placement.MAX_TENTATIVES" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.events.Placement.Placement.REFERENCE_PRIORITY">
+<span class="sig-name descname"><span class="pre">REFERENCE_PRIORITY</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2.0</span></em><a class="headerlink" href="#modules.events.Placement.Placement.REFERENCE_PRIORITY" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.events.Placement.Placement._abc_impl">
+<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#modules.events.Placement.Placement._abc_impl" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.events.Placement.Placement._calculate_priority">
+<span class="sig-name descname"><span class="pre">_calculate_priority</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="resource.html#modules.resource.Application.Application" title="modules.resource.Application.Application"><span class="pre">Application</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#modules.events.Placement.Placement._calculate_priority" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate the priority of the Placement event based on the application’s priority.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>app</strong> (<a class="reference internal" href="resource.html#modules.resource.Application.Application" title="modules.resource.Application.Application"><em>Application</em></a>) – The application to place.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Calculated priority.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.events.Placement.Placement.deployable_proc">
+<span class="sig-name descname"><span class="pre">deployable_proc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.events.Placement.Placement.deployable_proc" title="Link to this definition">¶</a></dt>
+<dd><p>Checks if a given process can be deployed onto a device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>proc</strong> – Processus</p></li>
+<li><p><strong>device</strong> – Device</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Boolean, True if deployable, else False</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.events.Placement.Placement.linkability">
+<span class="sig-name descname"><span class="pre">linkability</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deployed_app_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proc_links</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.events.Placement.Placement.linkability" title="Link to this definition">¶</a></dt>
+<dd><p>Checks if a newly deployed processus can be linked to already deployed processus in a given app by checking the link quality on all Paths between the newly deployed processus and already deployed ones.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>env</strong> – Environment</p></li>
+<li><p><strong>deployed_app_list</strong> – list of devices on which deployment is proposed</p></li>
+<li><p><strong>proc_links</strong> – Application.proc_links, len(Application.num_procs)*len(Application.num_procs) matrix indicating necessary bandwidth on each virtual link between application processus members</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Boolean, True if all the interconnexions are possible with given bandwidths, False if at least one is impossible.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.events.Placement.Placement.process">
+<span class="sig-name descname"><span class="pre">process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Environment</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.events.Placement.Placement.process" title="Link to this definition">¶</a></dt>
+<dd><p>Tries to place a multi-processus application from a given device.</p>
+<p>Really messy, code to clean</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>env</strong> – Environment</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Deployment times and deployed onto devices (Device ID List)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple[List[int], List[int]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.events.Placement.Placement.reservable_bandwidth">
+<span class="sig-name descname"><span class="pre">reservable_bandwidth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Environment</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="resource.html#modules.resource.Path.Path" title="modules.resource.Path.Path"><span class="pre">Path</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bandwidth_needed</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.events.Placement.Placement.reservable_bandwidth" title="Link to this definition">¶</a></dt>
+<dd><p>Checks if a given bandwidth can be reserved along a given path.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>env</strong> – Environment</p></li>
+<li><p><strong>path</strong> – Path</p></li>
+<li><p><strong>bandwidth_needed</strong> – Bandwidth to allocate on the Path</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Boolean, True if bandwidth can be reserved, else False</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.events.Placement.Placement.retry">
+<span class="sig-name descname"><span class="pre">retry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">environment</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_time</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.events.Placement.Placement.retry" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.events.Placement.Placement.update_app_arrival">
+<span class="sig-name descname"><span class="pre">update_app_arrival</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.events.Placement.Placement.update_app_arrival" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.events.Placement.Placement.update_app_rejected">
+<span class="sig-name descname"><span class="pre">update_app_rejected</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.events.Placement.Placement.update_app_rejected" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.events.Placement.Placement.update_app_waiting">
+<span class="sig-name descname"><span class="pre">update_app_waiting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.events.Placement.Placement.update_app_waiting" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.events.Placement.Placement.update_cumulative_accepted_app">
+<span class="sig-name descname"><span class="pre">update_cumulative_accepted_app</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prev_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prev_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prev_tentative</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.events.Placement.Placement.update_cumulative_accepted_app" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-modules.events.RegularCheck">
+<span id="modules-events-regularcheck-module"></span><h2>modules.events.RegularCheck module<a class="headerlink" href="#module-modules.events.RegularCheck" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="modules.events.RegularCheck.RegularCheck">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.events.RegularCheck.</span></span><span class="sig-name descname"><span class="pre">RegularCheck</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.events.RegularCheck.RegularCheck" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#modules.events.Event.Event" title="modules.events.Event.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">Event</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.events.RegularCheck.RegularCheck._abc_impl">
+<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#modules.events.RegularCheck.RegularCheck._abc_impl" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-modules.events.Sync">
+<span id="modules-events-sync-module"></span><h2>modules.events.Sync module<a class="headerlink" href="#module-modules.events.Sync" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="modules.events.Sync.Sync">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.events.Sync.</span></span><span class="sig-name descname"><span class="pre">Sync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">app</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deployed_onto_devices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">link_allocation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.events.Sync.Sync" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#modules.events.Event.Event" title="modules.events.Event.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">Event</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.events.Sync.Sync._abc_impl">
+<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#modules.events.Sync.Sync._abc_impl" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.events.Sync.Sync.process">
+<span class="sig-name descname"><span class="pre">process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.events.Sync.Sync.process" title="Link to this definition">¶</a></dt>
+<dd><p>Abstract method to be overridden by subclasses for event processing.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.events.Sync.Sync.update_global_data">
+<span class="sig-name descname"><span class="pre">update_global_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.events.Sync.Sync.update_global_data" title="Link to this definition">¶</a></dt>
+<dd><p>Update global data based on the environment state and allocation request.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-modules.events.Undeploy">
+<span id="modules-events-undeploy-module"></span><h2>modules.events.Undeploy module<a class="headerlink" href="#module-modules.events.Undeploy" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="modules.events.Undeploy.Undeploy">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.events.Undeploy.</span></span><span class="sig-name descname"><span class="pre">Undeploy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">app</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.events.Undeploy.Undeploy" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#modules.events.Event.Event" title="modules.events.Event.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">Event</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.events.Undeploy.Undeploy._abc_impl">
+<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#modules.events.Undeploy.Undeploy._abc_impl" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.events.Undeploy.Undeploy.process">
+<span class="sig-name descname"><span class="pre">process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.events.Undeploy.Undeploy.process" title="Link to this definition">¶</a></dt>
+<dd><p>Abstract method to be overridden by subclasses for event processing.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.events.Undeploy.Undeploy.update_global_data">
+<span class="sig-name descname"><span class="pre">update_global_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.events.Undeploy.Undeploy.update_global_data" title="Link to this definition">¶</a></dt>
+<dd><p>Update global data based on the environment state and allocation request.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-modules.events">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-modules.events" title="Link to this heading">¶</a></h2>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Events</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-modules.events.DeployProc">modules.events.DeployProc module</a><ul>
+<li><a class="reference internal" href="#modules.events.DeployProc.DeployProc"><code class="docutils literal notranslate"><span class="pre">DeployProc</span></code></a><ul>
+<li><a class="reference internal" href="#modules.events.DeployProc.DeployProc.DEFAULT_SYNCRONIZATION_TIME"><code class="docutils literal notranslate"><span class="pre">DeployProc.DEFAULT_SYNCRONIZATION_TIME</span></code></a></li>
+<li><a class="reference internal" href="#modules.events.DeployProc.DeployProc._abc_impl"><code class="docutils literal notranslate"><span class="pre">DeployProc._abc_impl</span></code></a></li>
+<li><a class="reference internal" href="#modules.events.DeployProc.DeployProc.process"><code class="docutils literal notranslate"><span class="pre">DeployProc.process()</span></code></a></li>
+<li><a class="reference internal" href="#modules.events.DeployProc.DeployProc.update_global_data"><code class="docutils literal notranslate"><span class="pre">DeployProc.update_global_data()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-modules.events.Event">modules.events.Event module</a><ul>
+<li><a class="reference internal" href="#modules.events.Event.Event"><code class="docutils literal notranslate"><span class="pre">Event</span></code></a><ul>
+<li><a class="reference internal" href="#modules.events.Event.Event.name"><code class="docutils literal notranslate"><span class="pre">Event.name</span></code></a></li>
+<li><a class="reference internal" href="#modules.events.Event.Event.queue"><code class="docutils literal notranslate"><span class="pre">Event.queue</span></code></a></li>
+<li><a class="reference internal" href="#modules.events.Event.Event.time"><code class="docutils literal notranslate"><span class="pre">Event.time</span></code></a></li>
+<li><a class="reference internal" href="#modules.events.Event.Event.priority"><code class="docutils literal notranslate"><span class="pre">Event.priority</span></code></a></li>
+<li><a class="reference internal" href="#modules.events.Event.Event.REFERENCE_PRIORITY"><code class="docutils literal notranslate"><span class="pre">Event.REFERENCE_PRIORITY</span></code></a></li>
+<li><a class="reference internal" href="#modules.events.Event.Event._abc_impl"><code class="docutils literal notranslate"><span class="pre">Event._abc_impl</span></code></a></li>
+<li><a class="reference internal" href="#modules.events.Event.Event._set_time"><code class="docutils literal notranslate"><span class="pre">Event._set_time()</span></code></a></li>
+<li><a class="reference internal" href="#modules.events.Event.Event.add_to_queue"><code class="docutils literal notranslate"><span class="pre">Event.add_to_queue()</span></code></a></li>
+<li><a class="reference internal" href="#id0"><code class="docutils literal notranslate"><span class="pre">Event.name</span></code></a></li>
+<li><a class="reference internal" href="#id1"><code class="docutils literal notranslate"><span class="pre">Event.priority</span></code></a></li>
+<li><a class="reference internal" href="#modules.events.Event.Event.process"><code class="docutils literal notranslate"><span class="pre">Event.process()</span></code></a></li>
+<li><a class="reference internal" href="#id2"><code class="docutils literal notranslate"><span class="pre">Event.time</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-modules.events.FinalReport">modules.events.FinalReport module</a><ul>
+<li><a class="reference internal" href="#modules.events.FinalReport.FinalReport"><code class="docutils literal notranslate"><span class="pre">FinalReport</span></code></a><ul>
+<li><a class="reference internal" href="#modules.events.FinalReport.FinalReport._abc_impl"><code class="docutils literal notranslate"><span class="pre">FinalReport._abc_impl</span></code></a></li>
+<li><a class="reference internal" href="#modules.events.FinalReport.FinalReport.process"><code class="docutils literal notranslate"><span class="pre">FinalReport.process()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-modules.events.Fit">modules.events.Fit module</a><ul>
+<li><a class="reference internal" href="#modules.events.Fit.Fit"><code class="docutils literal notranslate"><span class="pre">Fit</span></code></a><ul>
+<li><a class="reference internal" href="#modules.events.Fit.Fit._abc_impl"><code class="docutils literal notranslate"><span class="pre">Fit._abc_impl</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-modules.events.Move">modules.events.Move module</a><ul>
+<li><a class="reference internal" href="#modules.events.Move.Movement"><code class="docutils literal notranslate"><span class="pre">Movement</span></code></a><ul>
+<li><a class="reference internal" href="#modules.events.Move.Movement._abc_impl"><code class="docutils literal notranslate"><span class="pre">Movement._abc_impl</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-modules.events.Organize">modules.events.Organize module</a><ul>
+<li><a class="reference internal" href="#modules.events.Organize.Organize"><code class="docutils literal notranslate"><span class="pre">Organize</span></code></a><ul>
+<li><a class="reference internal" href="#modules.events.Organize.Organize._abc_impl"><code class="docutils literal notranslate"><span class="pre">Organize._abc_impl</span></code></a></li>
+<li><a class="reference internal" href="#modules.events.Organize.Organize.process"><code class="docutils literal notranslate"><span class="pre">Organize.process()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-modules.events.Placement">modules.events.Placement module</a><ul>
+<li><a class="reference internal" href="#modules.events.Placement.Placement"><code class="docutils literal notranslate"><span class="pre">Placement</span></code></a><ul>
+<li><a class="reference internal" href="#modules.events.Placement.Placement.FIFTEEN_MINUTES_BACKOFF"><code class="docutils literal notranslate"><span class="pre">Placement.FIFTEEN_MINUTES_BACKOFF</span></code></a></li>
+<li><a class="reference internal" href="#modules.events.Placement.Placement.MAX_TENTATIVES"><code class="docutils literal notranslate"><span class="pre">Placement.MAX_TENTATIVES</span></code></a></li>
+<li><a class="reference internal" href="#modules.events.Placement.Placement.REFERENCE_PRIORITY"><code class="docutils literal notranslate"><span class="pre">Placement.REFERENCE_PRIORITY</span></code></a></li>
+<li><a class="reference internal" href="#modules.events.Placement.Placement._abc_impl"><code class="docutils literal notranslate"><span class="pre">Placement._abc_impl</span></code></a></li>
+<li><a class="reference internal" href="#modules.events.Placement.Placement._calculate_priority"><code class="docutils literal notranslate"><span class="pre">Placement._calculate_priority()</span></code></a></li>
+<li><a class="reference internal" href="#modules.events.Placement.Placement.deployable_proc"><code class="docutils literal notranslate"><span class="pre">Placement.deployable_proc()</span></code></a></li>
+<li><a class="reference internal" href="#modules.events.Placement.Placement.linkability"><code class="docutils literal notranslate"><span class="pre">Placement.linkability()</span></code></a></li>
+<li><a class="reference internal" href="#modules.events.Placement.Placement.process"><code class="docutils literal notranslate"><span class="pre">Placement.process()</span></code></a></li>
+<li><a class="reference internal" href="#modules.events.Placement.Placement.reservable_bandwidth"><code class="docutils literal notranslate"><span class="pre">Placement.reservable_bandwidth()</span></code></a></li>
+<li><a class="reference internal" href="#modules.events.Placement.Placement.retry"><code class="docutils literal notranslate"><span class="pre">Placement.retry()</span></code></a></li>
+<li><a class="reference internal" href="#modules.events.Placement.Placement.update_app_arrival"><code class="docutils literal notranslate"><span class="pre">Placement.update_app_arrival()</span></code></a></li>
+<li><a class="reference internal" href="#modules.events.Placement.Placement.update_app_rejected"><code class="docutils literal notranslate"><span class="pre">Placement.update_app_rejected()</span></code></a></li>
+<li><a class="reference internal" href="#modules.events.Placement.Placement.update_app_waiting"><code class="docutils literal notranslate"><span class="pre">Placement.update_app_waiting()</span></code></a></li>
+<li><a class="reference internal" href="#modules.events.Placement.Placement.update_cumulative_accepted_app"><code class="docutils literal notranslate"><span class="pre">Placement.update_cumulative_accepted_app()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-modules.events.RegularCheck">modules.events.RegularCheck module</a><ul>
+<li><a class="reference internal" href="#modules.events.RegularCheck.RegularCheck"><code class="docutils literal notranslate"><span class="pre">RegularCheck</span></code></a><ul>
+<li><a class="reference internal" href="#modules.events.RegularCheck.RegularCheck._abc_impl"><code class="docutils literal notranslate"><span class="pre">RegularCheck._abc_impl</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-modules.events.Sync">modules.events.Sync module</a><ul>
+<li><a class="reference internal" href="#modules.events.Sync.Sync"><code class="docutils literal notranslate"><span class="pre">Sync</span></code></a><ul>
+<li><a class="reference internal" href="#modules.events.Sync.Sync._abc_impl"><code class="docutils literal notranslate"><span class="pre">Sync._abc_impl</span></code></a></li>
+<li><a class="reference internal" href="#modules.events.Sync.Sync.process"><code class="docutils literal notranslate"><span class="pre">Sync.process()</span></code></a></li>
+<li><a class="reference internal" href="#modules.events.Sync.Sync.update_global_data"><code class="docutils literal notranslate"><span class="pre">Sync.update_global_data()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-modules.events.Undeploy">modules.events.Undeploy module</a><ul>
+<li><a class="reference internal" href="#modules.events.Undeploy.Undeploy"><code class="docutils literal notranslate"><span class="pre">Undeploy</span></code></a><ul>
+<li><a class="reference internal" href="#modules.events.Undeploy.Undeploy._abc_impl"><code class="docutils literal notranslate"><span class="pre">Undeploy._abc_impl</span></code></a></li>
+<li><a class="reference internal" href="#modules.events.Undeploy.Undeploy.process"><code class="docutils literal notranslate"><span class="pre">Undeploy.process()</span></code></a></li>
+<li><a class="reference internal" href="#modules.events.Undeploy.Undeploy.update_global_data"><code class="docutils literal notranslate"><span class="pre">Undeploy.update_global_data()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-modules.events">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="clustering.html"
+                          title="previous chapter">Clustering</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="fullstateprocessing.html"
+                          title="next chapter">Full State Processing</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/modules/events.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="fullstateprocessing.html" title="Full State Processing"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="clustering.html" title="Clustering"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Humanitas Network and Services Simulator v0.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../modules.html" >modules package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Events</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2024, Antoine BERNARD.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
+    </div>
+  </body>
+</html>

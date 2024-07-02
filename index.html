@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Welcome to the Humanitas Network and Services Simulator’s documentation &#8212; Humanitas Network and Services Simulator v0.5 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="_static/nature.css?v=8dfa3f53" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css" />
+    <script src="_static/documentation_options.js?v=c8bc6dd9"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Entry Points Documentation" href="entrypoints.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="entrypoints.html" title="Entry Points Documentation"
+             accesskey="N">next</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">Humanitas Network and Services Simulator v0.5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Welcome to the Humanitas Network and Services Simulator’s documentation</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="welcome-to-the-humanitas-network-and-services-simulator-s-documentation">
+<h1>Welcome to the Humanitas Network and Services Simulator’s documentation<a class="headerlink" href="#welcome-to-the-humanitas-network-and-services-simulator-s-documentation" title="Link to this heading">¶</a></h1>
+<p>This program is designed as a simulation tool to experiment with application placement under operational constraints for HEAVEN.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
+<p>The Humanitas Network and Services Simulator is built with modularity in mind, allowing replaceable building blocks that can interoperate with other Humanitas tools. Key modules include device generation, application generation, application arrivals generation, simulation processing, and archival of results.</p>
+</section>
+<section id="running-the-program">
+<h2>Running the Program<a class="headerlink" href="#running-the-program" title="Link to this heading">¶</a></h2>
+<p>The program can be executed either as a whole or step-by-step. It is typically run using an automation tool like Airflow.</p>
+<section id="global-simulation">
+<h3>Global Simulation<a class="headerlink" href="#global-simulation" title="Link to this heading">¶</a></h3>
+<p>To run the overall simulation, use the following command:</p>
+<blockquote>
+<div><p>python __main__.py</p>
+</div></blockquote>
+<p>This command uses the default <cite>config.yaml</cite> file and example files, which provide default values for various parameters. The simulation generates a graph saved as <em>fig/graph.png</em> and plots deployment results in <em>fig/results.png</em>.</p>
+</section>
+<section id="step-by-step-execution">
+<h3>Step-by-Step Execution<a class="headerlink" href="#step-by-step-execution" title="Link to this heading">¶</a></h3>
+<p>For more granular control, you can execute each component individually. This approach facilitates exports and allows concurrent runs of different placement algorithms for testing and comparison.</p>
+<p>Execute the following commands in sequence:</p>
+<blockquote>
+<div><p>python DeviceGenerator.py
+python AppGenerator.py
+python PlacementGenerator.py
+python Processing.py
+python Archiver.py</p>
+</div></blockquote>
+</section>
+</section>
+<section id="modules">
+<h2>Modules<a class="headerlink" href="#modules" title="Link to this heading">¶</a></h2>
+<section id="devicegenerator">
+<h3>DeviceGenerator<a class="headerlink" href="#devicegenerator" title="Link to this heading">¶</a></h3>
+<p>The <strong>DeviceGenerator</strong> uses the <cite>config.yaml</cite> device files, specifically from <em>template_files/devices</em> and <em>device_number</em>, to generate a device graph. The generated device information is stored in a JSON file (defaults to <em>latest/devices.json</em>) with device characteristics and a routing table.</p>
+</section>
+<section id="appgenerator">
+<h3>AppGenerator<a class="headerlink" href="#appgenerator" title="Link to this heading">¶</a></h3>
+<p>The <strong>AppGenerator</strong> uses the <cite>config.yaml</cite> application files, primarily from <em>template_files/application</em> and <em>application_number</em>, to generate application characteristics. Applications are defined as a list of processes (Processus) that request resources from allocated devices. The generated applications are stored in <em>latest/applications.json</em>, with a default of generating 5000 applications.</p>
+</section>
+<section id="placementgenerator">
+<h3>PlacementGenerator<a class="headerlink" href="#placementgenerator" title="Link to this heading">¶</a></h3>
+<p>The <strong>PlacementGenerator</strong> creates a queue of <em>Placement</em> events that simulate application arrivals. Each event includes the event time, application ID, and device requester ID, and is exported to a JSON file for the Processing algorithm.</p>
+</section>
+<section id="processing">
+<h3>Processing<a class="headerlink" href="#processing" title="Link to this heading">¶</a></h3>
+<p>The <strong>Processing</strong> module is the core of the simulator. It loads information from previous modules, processes the simulation queue, and exports the data to a results.csv file. The processing currently uses bi-partite graphs but will be enhanced for other placement algorithms.</p>
+</section>
+<section id="visualizer">
+<h3>Visualizer<a class="headerlink" href="#visualizer" title="Link to this heading">¶</a></h3>
+<p>The <strong>Visualizer</strong> imports pre-processed data and generates graphs for articles. It extracts data from the <em>latest</em> folder and saves it to a dated folder, with the default date set to today. For Airflow, the date string is formatted as:</p>
+<blockquote>
+<div><p>date_string = datetime.datetime.now().isoformat(timespec=’minutes’).replace(“:”, “-“)[:-1]+”0”
+python Visualizer.py –date=data/{date_string}</p>
+</div></blockquote>
+</section>
+</section>
+<section id="features">
+<h2>Features<a class="headerlink" href="#features" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Modular design for easy replacement and integration with other tools.</p></li>
+<li><p>Comprehensive simulation with configurable parameters.</p></li>
+<li><p>Detailed logging and archival of results.</p></li>
+</ul>
+</section>
+<section id="todo">
+<h2>TODO<a class="headerlink" href="#todo" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Enhance the processing unit for additional placement algorithms.</p></li>
+</ul>
+</section>
+<section id="configuration">
+<h2>Configuration<a class="headerlink" href="#configuration" title="Link to this heading">¶</a></h2>
+<p>Refer to <cite>config.yaml</cite> for parameter settings and customization options.</p>
+</section>
+<section id="contact">
+<h2>Contact<a class="headerlink" href="#contact" title="Link to this heading">¶</a></h2>
+<p>For questions or contributions, please contact the development team at <a class="reference external" href="mailto:antoine&#37;&#52;&#48;humanitas&#46;io">antoine<span>&#64;</span>humanitas<span>&#46;</span>io</a>.</p>
+<p>Repository : <a class="reference external" href="https://github.com/spiderweak/modele-humanitas-eventing">https://github.com/spiderweak/modele-humanitas-eventing</a></p>
+</section>
+</section>
+<section id="entry-points">
+<h1>Entry Points<a class="headerlink" href="#entry-points" title="Link to this heading">¶</a></h1>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Entry Points:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="entrypoints.html">Entry Points Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="DeviceGenerator.html">DeviceGenerator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AppGenerator.html">AppGenerator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PlacementGenerator.html">PlacementGenerator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Processing.html">Processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Visualizer.html">Visualizer</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="id1">
+<h1>Modules<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h1>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Modules:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">modules package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/clustering.html">Clustering</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/clustering.html#modules-clustering-clustergeneration-module">modules.clustering.ClusterGeneration module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/clustering.html#module-modules.clustering">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/events.html">Events</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/events.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/events.html#module-modules.events.DeployProc">modules.events.DeployProc module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/events.html#module-modules.events.Event">modules.events.Event module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/events.html#module-modules.events.FinalReport">modules.events.FinalReport module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/events.html#module-modules.events.Fit">modules.events.Fit module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/events.html#module-modules.events.Move">modules.events.Move module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/events.html#module-modules.events.Organize">modules.events.Organize module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/events.html#module-modules.events.Placement">modules.events.Placement module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/events.html#module-modules.events.RegularCheck">modules.events.RegularCheck module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/events.html#module-modules.events.Sync">modules.events.Sync module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/events.html#module-modules.events.Undeploy">modules.events.Undeploy module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/events.html#module-modules.events">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/fullstateprocessing.html">Full State Processing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/fullstateprocessing.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/fullstateprocessing.html#module-modules.fullstateprocessing.FullStateProcessing">modules.fullstateprocessing.FullStateProcessing module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/fullstateprocessing.html#module-modules.fullstateprocessing">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/processing.html">Processing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/processing.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/processing.html#modules-processing-simpledistanceplacement-module">modules.processing.SimpleDistancePlacement module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/processing.html#module-modules.processing">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/resource.html">Resource</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/resource.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/resource.html#module-modules.resource.Application">modules.resource.Application module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/resource.html#module-modules.resource.Device">modules.resource.Device module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/resource.html#module-modules.resource.LinkMetric">modules.resource.LinkMetric module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/resource.html#module-modules.resource.Path">modules.resource.Path module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/resource.html#module-modules.resource.PhysicalNetwork">modules.resource.PhysicalNetwork module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/resource.html#module-modules.resource.PhysicalNetworkLink">modules.resource.PhysicalNetworkLink module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/resource.html#module-modules.resource.Processus">modules.resource.Processus module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/resource.html#module-modules.resource">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/routing.html">Routing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/routing.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/routing.html#module-modules.routing.OSPFRoutingTable">modules.routing.OSPFRoutingTable module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/routing.html#module-modules.routing.Route">modules.routing.Route module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/routing.html#module-modules.routing.RoutingTable">modules.routing.RoutingTable module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/routing.html#module-modules.routing.utils">modules.routing.utils module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/routing.html#module-modules.routing">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/templates.html">Templates</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/templates.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/templates.html#module-modules.templates.Applications">modules.templates.Applications module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/templates.html#module-modules.templates">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#modules-config-module">modules.Config module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#modules-customexceptions-module">modules.CustomExceptions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#modules-environment-module">modules.Environment module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#modules-eventqueue-module">modules.EventQueue module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#modules-resourcemanagement-module">modules.ResourceManagement module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#modules-simulation-module">modules.Simulation module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#modules-visualization-module">modules.Visualization module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#module-contents">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/clustering.html">Clustering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/events.html">Events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/fullstateprocessing.html">Full State Processing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/processing.html">Processing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/resource.html">Resource</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/routing.html">Routing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/templates.html">Templates</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Link to this heading">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="#">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Welcome to the Humanitas Network and Services Simulator’s documentation</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+<li><a class="reference internal" href="#running-the-program">Running the Program</a><ul>
+<li><a class="reference internal" href="#global-simulation">Global Simulation</a></li>
+<li><a class="reference internal" href="#step-by-step-execution">Step-by-Step Execution</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#modules">Modules</a><ul>
+<li><a class="reference internal" href="#devicegenerator">DeviceGenerator</a></li>
+<li><a class="reference internal" href="#appgenerator">AppGenerator</a></li>
+<li><a class="reference internal" href="#placementgenerator">PlacementGenerator</a></li>
+<li><a class="reference internal" href="#processing">Processing</a></li>
+<li><a class="reference internal" href="#visualizer">Visualizer</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#features">Features</a></li>
+<li><a class="reference internal" href="#todo">TODO</a></li>
+<li><a class="reference internal" href="#configuration">Configuration</a></li>
+<li><a class="reference internal" href="#contact">Contact</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#entry-points">Entry Points</a></li>
+<li><a class="reference internal" href="#id1">Modules</a></li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="entrypoints.html"
+                          title="next chapter">Entry Points Documentation</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="entrypoints.html" title="Entry Points Documentation"
+             >next</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">Humanitas Network and Services Simulator v0.5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Welcome to the Humanitas Network and Services Simulator’s documentation</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2024, Antoine BERNARD.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Routing &#8212; Humanitas Network and Services Simulator v0.5 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/nature.css?v=8dfa3f53" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+    <script src="../_static/documentation_options.js?v=c8bc6dd9"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Templates" href="templates.html" />
+    <link rel="prev" title="Resource" href="resource.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="templates.html" title="Templates"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="resource.html" title="Resource"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Humanitas Network and Services Simulator v0.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../modules.html" accesskey="U">modules package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Routing</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="routing">
+<h1>Routing<a class="headerlink" href="#routing" title="Link to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+</section>
+<section id="module-modules.routing.OSPFRoutingTable">
+<span id="modules-routing-ospfroutingtable-module"></span><h2>modules.routing.OSPFRoutingTable module<a class="headerlink" href="#module-modules.routing.OSPFRoutingTable" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="modules.routing.OSPFRoutingTable.OSPFRoutingTable">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.routing.OSPFRoutingTable.</span></span><span class="sig-name descname"><span class="pre">OSPFRoutingTable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">physical_network</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k_param</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.routing.OSPFRoutingTable.OSPFRoutingTable" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#modules.routing.RoutingTable.RoutingTable" title="modules.routing.RoutingTable.RoutingTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">RoutingTable</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.routing.OSPFRoutingTable.OSPFRoutingTable._abc_impl">
+<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#modules.routing.OSPFRoutingTable.OSPFRoutingTable._abc_impl" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.routing.OSPFRoutingTable.OSPFRoutingTable.add_route">
+<span class="sig-name descname"><span class="pre">add_route</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">destination</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">route</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modules.routing.Route.Route" title="modules.routing.Route.Route"><span class="pre">Route</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.routing.OSPFRoutingTable.OSPFRoutingTable.add_route" title="Link to this definition">¶</a></dt>
+<dd><p>Add or update a route to a destination.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.routing.OSPFRoutingTable.OSPFRoutingTable.append_neighboring_routes">
+<span class="sig-name descname"><span class="pre">append_neighboring_routes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#modules.routing.OSPFRoutingTable.OSPFRoutingTable.append_neighboring_routes" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.routing.OSPFRoutingTable.OSPFRoutingTable.content">
+<span class="sig-name descname"><span class="pre">content</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#modules.routing.OSPFRoutingTable.OSPFRoutingTable.content" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.routing.OSPFRoutingTable.OSPFRoutingTable.find_best_route">
+<span class="sig-name descname"><span class="pre">find_best_route</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">destination</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.routing.OSPFRoutingTable.OSPFRoutingTable.find_best_route" title="Link to this definition">¶</a></dt>
+<dd><p>Find the best route to a destination.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.routing.OSPFRoutingTable.OSPFRoutingTable.find_k_shortest_paths">
+<span class="sig-name descname"><span class="pre">find_k_shortest_paths</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">destination</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modules.routing.Route.Route" title="modules.routing.Route.Route"><span class="pre">Route</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.routing.OSPFRoutingTable.OSPFRoutingTable.find_k_shortest_paths" title="Link to this definition">¶</a></dt>
+<dd><p>Find up to k-shortest paths to a destination.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.routing.OSPFRoutingTable.OSPFRoutingTable.initialize_routing_table_content">
+<span class="sig-name descname"><span class="pre">initialize_routing_table_content</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#modules.routing.OSPFRoutingTable.OSPFRoutingTable.initialize_routing_table_content" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.routing.OSPFRoutingTable.OSPFRoutingTable.initialize_routing_table_from_dict">
+<span class="sig-name descname"><span class="pre">initialize_routing_table_from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">routing_table_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.routing.OSPFRoutingTable.OSPFRoutingTable.initialize_routing_table_from_dict" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.routing.OSPFRoutingTable.OSPFRoutingTable.remove_route">
+<span class="sig-name descname"><span class="pre">remove_route</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">destination</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">route</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modules.routing.Route.Route" title="modules.routing.Route.Route"><span class="pre">Route</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.routing.OSPFRoutingTable.OSPFRoutingTable.remove_route" title="Link to this definition">¶</a></dt>
+<dd><p>Remove a specific route to a destination.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-modules.routing.Route">
+<span id="modules-routing-route-module"></span><h2>modules.routing.Route module<a class="headerlink" href="#module-modules.routing.Route" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="modules.routing.Route.Route">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.routing.Route.</span></span><span class="sig-name descname"><span class="pre">Route</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">destination</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="resource.html#modules.resource.LinkMetric.LinkMetric" title="modules.resource.LinkMetric.LinkMetric"><span class="pre">LinkMetric</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="resource.html#modules.resource.Path.Path" title="modules.resource.Path.Path"><span class="pre">Path</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.routing.Route.Route" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.routing.Route.Route.__to_self">
+<span class="sig-name descname"><span class="pre">__to_self</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.routing.Route.Route.__to_self" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.routing.Route.route_generation">
+<span class="sig-prename descclassname"><span class="pre">modules.routing.Route.</span></span><span class="sig-name descname"><span class="pre">route_generation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">physical_link</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="resource.html#modules.resource.PhysicalNetworkLink.PhysicalNetworkLink" title="modules.resource.PhysicalNetworkLink.PhysicalNetworkLink"><span class="pre">PhysicalNetworkLink</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">route</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modules.routing.Route.Route" title="modules.routing.Route.Route"><span class="pre">Route</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#modules.routing.Route.Route" title="modules.routing.Route.Route"><span class="pre">Route</span></a></span></span><a class="headerlink" href="#modules.routing.Route.route_generation" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-modules.routing.RoutingTable">
+<span id="modules-routing-routingtable-module"></span><h2>modules.routing.RoutingTable module<a class="headerlink" href="#module-modules.routing.RoutingTable" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="modules.routing.RoutingTable.RoutingTable">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.routing.RoutingTable.</span></span><span class="sig-name descname"><span class="pre">RoutingTable</span></span><a class="headerlink" href="#modules.routing.RoutingTable.RoutingTable" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.routing.RoutingTable.RoutingTable._abc_impl">
+<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#modules.routing.RoutingTable.RoutingTable._abc_impl" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.routing.RoutingTable.RoutingTable.add_route">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">add_route</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">destination</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">route</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modules.routing.Route.Route" title="modules.routing.Route.Route"><span class="pre">Route</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.routing.RoutingTable.RoutingTable.add_route" title="Link to this definition">¶</a></dt>
+<dd><p>Add or update a route to a destination.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.routing.RoutingTable.RoutingTable.find_best_route">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">find_best_route</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">destination</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#modules.routing.Route.Route" title="modules.routing.Route.Route"><span class="pre">Route</span></a></span></span><a class="headerlink" href="#modules.routing.RoutingTable.RoutingTable.find_best_route" title="Link to this definition">¶</a></dt>
+<dd><p>Find the best route to a destination.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.routing.RoutingTable.RoutingTable.find_k_shortest_paths">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">find_k_shortest_paths</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">destination</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modules.routing.Route.Route" title="modules.routing.Route.Route"><span class="pre">Route</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.routing.RoutingTable.RoutingTable.find_k_shortest_paths" title="Link to this definition">¶</a></dt>
+<dd><p>Find up to k-shortest paths to a destination.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.routing.RoutingTable.RoutingTable.remove_route">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">remove_route</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">destination</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">route</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modules.routing.Route.Route" title="modules.routing.Route.Route"><span class="pre">Route</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.routing.RoutingTable.RoutingTable.remove_route" title="Link to this definition">¶</a></dt>
+<dd><p>Remove a specific route to a destination.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-modules.routing.utils">
+<span id="modules-routing-utils-module"></span><h2>modules.routing.utils module<a class="headerlink" href="#module-modules.routing.utils" title="Link to this heading">¶</a></h2>
+</section>
+<section id="module-modules.routing">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-modules.routing" title="Link to this heading">¶</a></h2>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Routing</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-modules.routing.OSPFRoutingTable">modules.routing.OSPFRoutingTable module</a><ul>
+<li><a class="reference internal" href="#modules.routing.OSPFRoutingTable.OSPFRoutingTable"><code class="docutils literal notranslate"><span class="pre">OSPFRoutingTable</span></code></a><ul>
+<li><a class="reference internal" href="#modules.routing.OSPFRoutingTable.OSPFRoutingTable._abc_impl"><code class="docutils literal notranslate"><span class="pre">OSPFRoutingTable._abc_impl</span></code></a></li>
+<li><a class="reference internal" href="#modules.routing.OSPFRoutingTable.OSPFRoutingTable.add_route"><code class="docutils literal notranslate"><span class="pre">OSPFRoutingTable.add_route()</span></code></a></li>
+<li><a class="reference internal" href="#modules.routing.OSPFRoutingTable.OSPFRoutingTable.append_neighboring_routes"><code class="docutils literal notranslate"><span class="pre">OSPFRoutingTable.append_neighboring_routes()</span></code></a></li>
+<li><a class="reference internal" href="#modules.routing.OSPFRoutingTable.OSPFRoutingTable.content"><code class="docutils literal notranslate"><span class="pre">OSPFRoutingTable.content()</span></code></a></li>
+<li><a class="reference internal" href="#modules.routing.OSPFRoutingTable.OSPFRoutingTable.find_best_route"><code class="docutils literal notranslate"><span class="pre">OSPFRoutingTable.find_best_route()</span></code></a></li>
+<li><a class="reference internal" href="#modules.routing.OSPFRoutingTable.OSPFRoutingTable.find_k_shortest_paths"><code class="docutils literal notranslate"><span class="pre">OSPFRoutingTable.find_k_shortest_paths()</span></code></a></li>
+<li><a class="reference internal" href="#modules.routing.OSPFRoutingTable.OSPFRoutingTable.initialize_routing_table_content"><code class="docutils literal notranslate"><span class="pre">OSPFRoutingTable.initialize_routing_table_content()</span></code></a></li>
+<li><a class="reference internal" href="#modules.routing.OSPFRoutingTable.OSPFRoutingTable.initialize_routing_table_from_dict"><code class="docutils literal notranslate"><span class="pre">OSPFRoutingTable.initialize_routing_table_from_dict()</span></code></a></li>
+<li><a class="reference internal" href="#modules.routing.OSPFRoutingTable.OSPFRoutingTable.remove_route"><code class="docutils literal notranslate"><span class="pre">OSPFRoutingTable.remove_route()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-modules.routing.Route">modules.routing.Route module</a><ul>
+<li><a class="reference internal" href="#modules.routing.Route.Route"><code class="docutils literal notranslate"><span class="pre">Route</span></code></a><ul>
+<li><a class="reference internal" href="#modules.routing.Route.Route.__to_self"><code class="docutils literal notranslate"><span class="pre">Route.__to_self()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#modules.routing.Route.route_generation"><code class="docutils literal notranslate"><span class="pre">route_generation()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-modules.routing.RoutingTable">modules.routing.RoutingTable module</a><ul>
+<li><a class="reference internal" href="#modules.routing.RoutingTable.RoutingTable"><code class="docutils literal notranslate"><span class="pre">RoutingTable</span></code></a><ul>
+<li><a class="reference internal" href="#modules.routing.RoutingTable.RoutingTable._abc_impl"><code class="docutils literal notranslate"><span class="pre">RoutingTable._abc_impl</span></code></a></li>
+<li><a class="reference internal" href="#modules.routing.RoutingTable.RoutingTable.add_route"><code class="docutils literal notranslate"><span class="pre">RoutingTable.add_route()</span></code></a></li>
+<li><a class="reference internal" href="#modules.routing.RoutingTable.RoutingTable.find_best_route"><code class="docutils literal notranslate"><span class="pre">RoutingTable.find_best_route()</span></code></a></li>
+<li><a class="reference internal" href="#modules.routing.RoutingTable.RoutingTable.find_k_shortest_paths"><code class="docutils literal notranslate"><span class="pre">RoutingTable.find_k_shortest_paths()</span></code></a></li>
+<li><a class="reference internal" href="#modules.routing.RoutingTable.RoutingTable.remove_route"><code class="docutils literal notranslate"><span class="pre">RoutingTable.remove_route()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-modules.routing.utils">modules.routing.utils module</a></li>
+<li><a class="reference internal" href="#module-modules.routing">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="resource.html"
+                          title="previous chapter">Resource</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="templates.html"
+                          title="next chapter">Templates</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/modules/routing.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="templates.html" title="Templates"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="resource.html" title="Resource"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Humanitas Network and Services Simulator v0.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../modules.html" >modules package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Routing</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2024, Antoine BERNARD.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
+    </div>
+  </body>
+</html>

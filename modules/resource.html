@@ -1,0 +1,1505 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Resource &#8212; Humanitas Network and Services Simulator v0.5 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/nature.css?v=8dfa3f53" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+    <script src="../_static/documentation_options.js?v=c8bc6dd9"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Routing" href="routing.html" />
+    <link rel="prev" title="Processing" href="processing.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="routing.html" title="Routing"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="processing.html" title="Processing"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Humanitas Network and Services Simulator v0.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../modules.html" accesskey="U">modules package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Resource</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="resource">
+<h1>Resource<a class="headerlink" href="#resource" title="Link to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+</section>
+<section id="module-modules.resource.Application">
+<span id="modules-resource-application-module"></span><h2>modules.resource.Application module<a class="headerlink" href="#module-modules.resource.Application" title="Link to this heading">¶</a></h2>
+<p>Application module, defines the Application Class</p>
+<dl class="simple">
+<dt>Usage:</dt><dd><p>from modules.resources.Application import Application
+app = Application()</p>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="modules.resource.Application.Application">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.resource.Application.</span></span><span class="sig-name descname"><span class="pre">Application</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_procs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.resource.Application.Application" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>An application is defined as a graph of processus (array of arrays, potentially a networkx graph in the future).</p>
+<p>It is initialized with empty data by default, usually populated with  a list of processus, a matrix of processus links, and device deployment information.</p>
+<section id="attributes">
+<h3>Attributes:<a class="headerlink" href="#attributes" title="Link to this heading">¶</a></h3>
+<dl>
+<dt>id<span class="classifier"><cite>int</cite></span></dt><dd><p>The ID of the application, generated automatically during initialization.</p>
+</dd>
+<dt>duration<span class="classifier"><cite>int</cite></span></dt><dd><p>The duration of the application in chunks of 10 ms.</p>
+</dd>
+<dt>num_procs<span class="classifier"><cite>int</cite></span></dt><dd><p>The number of processus in the application.</p>
+</dd>
+<dt>processus_list<span class="classifier"><cite>List[Processus]</cite></span></dt><dd><p>A list of Processus objects representing the individual processus in the application.</p>
+</dd>
+<dt>proc_links<span class="classifier"><cite>np.ndarray</cite></span></dt><dd><p>A matrix representing the bandwidth request over virtual links between processus.</p>
+</dd>
+<dt>deployment_info<span class="classifier"><cite>dict</cite></span></dt><dd><p>A dictionary linking Processus objects to Device IDs.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.resource.Application.Application._generate_id">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_generate_id</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#modules.resource.Application.Application._generate_id" title="Link to this definition">¶</a></dt>
+<dd><p>Class method for ID generation.
+Generates a unique ID for a new Application object.
+Assigns ID then increments for next generation.</p>
+<section id="returns">
+<h4>Returns:<a class="headerlink" href="#returns" title="Link to this heading">¶</a></h4>
+<dl>
+<dt>result<span class="classifier"><cite>int</cite></span></dt><dd><p>Application ID</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="modules.resource.Application.Application.duration">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">duration</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#modules.resource.Application.Application.duration" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.resource.Application.Application.get_app_proc_by_id">
+<span class="sig-name descname"><span class="pre">get_app_proc_by_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#modules.resource.Processus.Processus" title="modules.resource.Processus.Processus"><span class="pre">Processus</span></a></span></span><a class="headerlink" href="#modules.resource.Application.Application.get_app_proc_by_id" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves a processus by its ID.</p>
+<section id="args">
+<h4>Args:<a class="headerlink" href="#args" title="Link to this heading">¶</a></h4>
+<dl>
+<dt>id<span class="classifier"><cite>int</cite></span></dt><dd><p>The ID of the processus to retrieve.</p>
+</dd>
+</dl>
+</section>
+<section id="id1">
+<h4>Returns:<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h4>
+<dl class="simple">
+<dt><cite>Processus</cite></dt><dd><p>The processus with the specified ID.</p>
+</dd>
+</dl>
+</section>
+<section id="raises">
+<h4>Raises:<a class="headerlink" href="#raises" title="Link to this heading">¶</a></h4>
+<dl class="simple">
+<dt>KeyError</dt><dd><p>If no processus with the specified ID is found.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.resource.Application.Application.get_app_procs_ids">
+<span class="sig-name descname"><span class="pre">get_app_procs_ids</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.resource.Application.Application.get_app_procs_ids" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves the IDs of all processus in the application.</p>
+<section id="id2">
+<h4>Returns:<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h4>
+<dl class="simple">
+<dt><cite>List[int]</cite></dt><dd><p>A list containing the IDs of all processus in the application.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="modules.resource.Application.Application.id">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#modules.resource.Application.Application.id" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves the application’s ID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The application ID.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.resource.Application.Application.init_from_dict">
+<span class="sig-name descname"><span class="pre">init_from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.resource.Application.Application.init_from_dict" title="Link to this definition">¶</a></dt>
+<dd><p>Initializes the Application object from a dictionary of data.</p>
+<section id="id3">
+<h4>Args:<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h4>
+<dl>
+<dt>data<span class="classifier"><cite>dict</cite></span></dt><dd><p>Dictionary containing data to initialize the Application object with. Should contain keys:</p>
+<ul class="simple">
+<li><p>‘app_id’: (<cite>int</cite>) The ID for the application.</p></li>
+<li><p>‘duration’: (<cite>int</cite>) The duration for the application.</p></li>
+<li><p>‘proc_list’: (<cite>List[Dict]</cite>) List of dictionaries representing processus objects.</p></li>
+<li><p>‘proc_links’: (<cite>List[List[int]]</cite>) Matrix representing the processus links.</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="id4">
+<h4>Returns:<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h4>
+<p>None</p>
+</section>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.resource.Application.Application.next_id">
+<span class="sig-name descname"><span class="pre">next_id</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#modules.resource.Application.Application.next_id" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="modules.resource.Application.Application.priority">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">priority</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#modules.resource.Application.Application.priority" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.resource.Application.Application.random_app_init">
+<span class="sig-name descname"><span class="pre">random_app_init</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_procs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_proc_random</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.resource.Application.Application.random_app_init" title="Link to this definition">¶</a></dt>
+<dd><p>Random initialization of the application.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_procs</strong> (<cite>int</cite>, optional) – Number of processus to consider, by default 3</p></li>
+<li><p><strong>num_proc_random</strong> (<cite>bool</cite>, optional) – If True, the number of processus deployed is randomly chosen between 1 and num_procs, by default True</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.resource.Application.Application.set_app_duration">
+<span class="sig-name descname"><span class="pre">set_app_duration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">180000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.resource.Application.Application.set_app_duration" title="Link to this definition">¶</a></dt>
+<dd><p>Sets the application execution duration.</p>
+<p>The default value corresponds to a duration of 30 minutes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>duration</strong> (<cite>int</cite>) – Application duration in milliseconds, by default 1800000 (30 minutes)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.resource.Application.Application.set_deployment_info">
+<span class="sig-name descname"><span class="pre">set_deployment_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">deployed_onto_device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.resource.Application.Application.set_deployment_info" title="Link to this definition">¶</a></dt>
+<dd><p>Creates a dictionary matching <cite>Processus</cite> and <cite>Device</cite> ID.</p>
+<section id="id5">
+<h4>Args:<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h4>
+<dl>
+<dt>deployed_onto_device<span class="classifier"><cite>List[int]</cite></span></dt><dd><p>List of device IDs that reference processus hosts.</p>
+</dd>
+</dl>
+</section>
+<section id="id6">
+<h4>Raises:<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h4>
+<dl class="simple">
+<dt>ValueError:</dt><dd><p>If the length of deployed_onto_device does not match the number of processus in the application.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.resource.Application.Application.set_links_allocation_info">
+<span class="sig-name descname"><span class="pre">set_links_allocation_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">link_allocation</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.resource.Application.Application.set_links_allocation_info" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+</dd></dl>
+
+</section>
+<section id="module-modules.resource.Device">
+<span id="modules-resource-device-module"></span><h2>modules.resource.Device module<a class="headerlink" href="#module-modules.resource.Device" title="Link to this heading">¶</a></h2>
+<p>Device module, defines the Device Class</p>
+<p>Usage:</p>
+<blockquote>
+<div><p>from modules.resources.Device import Device
+dev = Device()</p>
+</div></blockquote>
+<dl class="py class">
+<dt class="sig sig-object py" id="modules.resource.Device.Device">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.resource.Device.</span></span><span class="sig-name descname"><span class="pre">Device</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data:</span> <span class="pre">~typing.Dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">routing_table_type=&lt;class</span> <span class="pre">'modules.routing.RoutingTable.RoutingTable'&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.resource.Device.Device" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Represents a computing device with limited resources and network capabilities.</p>
+<p>A Device is characterized by resource limitations in terms of CPU, GPU, memory, and disk space.
+Each resource has an associated maximum limit and current usage level. The device also maintains
+a routing table to discover optimal paths to other devices in the network.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.resource.Device.Device.device_id">
+<span class="sig-name descname"><span class="pre">device_id</span></span><a class="headerlink" href="#modules.resource.Device.Device.device_id" title="Link to this definition">¶</a></dt>
+<dd><p>The unique identifier for this device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.resource.Device.Device.location">
+<span class="sig-name descname"><span class="pre">location</span></span><a class="headerlink" href="#modules.resource.Device.Device.location" title="Link to this definition">¶</a></dt>
+<dd><p>The x, y, z coordinates of the device in the network.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple[float, float, float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.resource.Device.Device.resource_limit">
+<span class="sig-name descname"><span class="pre">resource_limit</span></span><a class="headerlink" href="#modules.resource.Device.Device.resource_limit" title="Link to this definition">¶</a></dt>
+<dd><p>A dictionary containing the resource limits for the device.
+Keys can be resource names like ‘CPU’, ‘GPU’, etc., and the values are the respective limits.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict[str, Union[int, float]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.resource.Device.Device.current_resource_usage">
+<span class="sig-name descname"><span class="pre">current_resource_usage</span></span><a class="headerlink" href="#modules.resource.Device.Device.current_resource_usage" title="Link to this definition">¶</a></dt>
+<dd><p>A dictionary containing the current resource usage for the device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict[str, Union[int, float]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.resource.Device.Device.theoretical_resource_usage">
+<span class="sig-name descname"><span class="pre">theoretical_resource_usage</span></span><a class="headerlink" href="#modules.resource.Device.Device.theoretical_resource_usage" title="Link to this definition">¶</a></dt>
+<dd><p>A dictionary containing the theoretical resource usage for the device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict[str, Union[int, float]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.resource.Device.Device.resource_usage_history">
+<span class="sig-name descname"><span class="pre">resource_usage_history</span></span><a class="headerlink" href="#modules.resource.Device.Device.resource_usage_history" title="Link to this definition">¶</a></dt>
+<dd><p>A history of resource usage for each type of resource.
+Each history is a list of tuples, where the first element is the time, and the second is the resource usage at that time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict[str, List[Tuple[int, Union[int, float]]]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.resource.Device.Device.routing_table">
+<span class="sig-name descname"><span class="pre">routing_table</span></span><a class="headerlink" href="#modules.resource.Device.Device.routing_table" title="Link to this definition">¶</a></dt>
+<dd><p>A dictionary representing the routing table for this device.
+Each key is the device_id of a destination, and the value is a tuple (next_hop_id, distance).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict[int, Tuple[int, float]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.resource.Device.Device.proc">
+<span class="sig-name descname"><span class="pre">proc</span></span><a class="headerlink" href="#modules.resource.Device.Device.proc" title="Link to this definition">¶</a></dt>
+<dd><p>A list containing processus that are running on this device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.resource.Device.Device.closeness_centrality">
+<span class="sig-name descname"><span class="pre">closeness_centrality</span></span><a class="headerlink" href="#modules.resource.Device.Device.closeness_centrality" title="Link to this definition">¶</a></dt>
+<dd><p>The closeness centrality metric for this device in the network graph.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.resource.Device.Device.DEFAULT_POSITION">
+<span class="sig-name descname"><span class="pre">DEFAULT_POSITION</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'x':</span> <span class="pre">0,</span> <span class="pre">'y':</span> <span class="pre">0,</span> <span class="pre">'z':</span> <span class="pre">0}</span></em><a class="headerlink" href="#modules.resource.Device.Device.DEFAULT_POSITION" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.resource.Device.Device.DEFAULT_RESOURCE_LIMIT_ARM">
+<span class="sig-name descname"><span class="pre">DEFAULT_RESOURCE_LIMIT_ARM</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'cpu':</span> <span class="pre">16,</span> <span class="pre">'disk':</span> <span class="pre">1024000,</span> <span class="pre">'gpu':</span> <span class="pre">0,</span> <span class="pre">'mem':</span> <span class="pre">32768}</span></em><a class="headerlink" href="#modules.resource.Device.Device.DEFAULT_RESOURCE_LIMIT_ARM" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.resource.Device.Device.DEFAULT_RESOURCE_LIMIT_NVIDIA">
+<span class="sig-name descname"><span class="pre">DEFAULT_RESOURCE_LIMIT_NVIDIA</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'cpu':</span> <span class="pre">8,</span> <span class="pre">'disk':</span> <span class="pre">1024000,</span> <span class="pre">'gpu':</span> <span class="pre">8,</span> <span class="pre">'mem':</span> <span class="pre">8192}</span></em><a class="headerlink" href="#modules.resource.Device.Device.DEFAULT_RESOURCE_LIMIT_NVIDIA" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.resource.Device.Device._generate_id">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_generate_id</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#modules.resource.Device.Device._generate_id" title="Link to this definition">¶</a></dt>
+<dd><p>Generates an ID for a new Device instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The Device ID.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.resource.Device.Device.add_to_routing_table">
+<span class="sig-name descname"><span class="pre">add_to_routing_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">destination_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">next_hop_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance_destination</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.resource.Device.Device.add_to_routing_table" title="Link to this definition">¶</a></dt>
+<dd><p>Adds a new destination or update an existing one in the routing table
+Reminder - routing table element are : {destination:(next_hop, distance)}</p>
+<p>Generates a rounting table progressively by adding devices
+Path are not considered, only next hop and distance
+Single path for now</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>destination_id</strong> (<em>int</em>) – Device ID of the destination point</p></li>
+<li><p><strong>next_hop_id</strong> (<em>int</em>) – Device ID of the next hop in the path to destination</p></li>
+<li><p><strong>distance_destination</strong> (<em>int</em>) – distance from device (self) to destination (destination_id), when passing through device (next_hop_id), distance is arbitrary, can be actual distance, number of hops, …</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.resource.Device.Device.allocate_all_resources">
+<span class="sig-name descname"><span class="pre">allocate_all_resources</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resources</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overconsume</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.resource.Device.Device.allocate_all_resources" title="Link to this definition">¶</a></dt>
+<dd><p>Allocate all resources based on calls to allocate_device_resource.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t</strong> (<em>int</em>) – current time value.</p></li>
+<li><p><strong>resources</strong> (<em>dict</em>) – dictionary of all device resources.</p></li>
+<li><p><strong>force</strong> (<em>bool</em>) – Forces allocation at previous moment in time,
+might cause discrepancies. Defaults to False.</p></li>
+<li><p><strong>overconsume</strong> (<em>bool</em>) – Allow for allocation over Resource limit.
+Defaults to False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary of retrofitting coefficients for each resource.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict[str, float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.resource.Device.Device.allocate_device_resource">
+<span class="sig-name descname"><span class="pre">allocate_device_resource</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resource_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resource</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overconsume</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#modules.resource.Device.Device.allocate_device_resource" title="Link to this definition">¶</a></dt>
+<dd><p>Allocates a given amount of device resource.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t</strong> (<em>int</em>) – Current time value.</p></li>
+<li><p><strong>resource_name</strong> (<em>str</em>) – Name for the allocated resource.</p></li>
+<li><p><strong>resource</strong> (<em>float</em>) – Value for the quantity of resource requested.</p></li>
+<li><p><strong>force</strong> (<em>bool</em><em>, </em><em>optional</em>) – Forces allocation at previous moment in time. Defaults to False.</p></li>
+<li><p><strong>overconsume</strong> (<em>bool</em><em>, </em><em>optional</em>) – Allows allocation over resource limit. Defaults to False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Retrofitting coefficient to propagate to remaining processes.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – When the current time is before the previous time.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="id0">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">closeness_centrality</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#id0" title="Link to this definition">¶</a></dt>
+<dd><p>Gets the closeness centrality of the device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The closeness centrality value.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.resource.Device.Device.get_device_resource_usage">
+<span class="sig-name descname"><span class="pre">get_device_resource_usage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">resource</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></span><a class="headerlink" href="#modules.resource.Device.Device.get_device_resource_usage" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieve the current usage of a given resource on the device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>resource</strong> (<em>str</em>) – The name of the resource.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The current resource usage.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Union[int, float]</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the resource usage is not properly allocated.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.resource.Device.Device.get_route_info">
+<span class="sig-name descname"><span class="pre">get_route_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">destination_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.resource.Device.Device.get_route_info" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the next hop and distance for a given destination.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>destination_id</strong> (<em>int</em>) – The ID of the destination device.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The next hop ID and the distance to the destination.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple[int, float]</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>NoRouteToHost</strong> – If there is no route to the destination.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="modules.resource.Device.Device.id">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#modules.resource.Device.Device.id" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves the device’s ID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The device ID.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.resource.Device.Device.initialize_routing_table">
+<span class="sig-name descname"><span class="pre">initialize_routing_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">physical_network</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k_param</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.resource.Device.Device.initialize_routing_table" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.resource.Device.Device.initialize_routing_table_from_dict">
+<span class="sig-name descname"><span class="pre">initialize_routing_table_from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">routing_table_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.resource.Device.Device.initialize_routing_table_from_dict" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.resource.Device.Device.next_id">
+<span class="sig-name descname"><span class="pre">next_id</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#modules.resource.Device.Device.next_id" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="modules.resource.Device.Device.position">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">position</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#modules.resource.Device.Device.position" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.resource.Device.Device.release_all_resources">
+<span class="sig-name descname"><span class="pre">release_all_resources</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resources</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overconsume</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.resource.Device.Device.release_all_resources" title="Link to this definition">¶</a></dt>
+<dd><p>Release all resources based on calls to release_device_resource.</p>
+<p>Note: This method does not propagate the retrofitting coefficient for now.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t</strong> (<em>int</em>) – Current time value.</p></li>
+<li><p><strong>resources</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>float</em><em>]</em>) – Dictionary of all device resources.</p></li>
+<li><p><strong>force</strong> (<em>bool</em><em>, </em><em>optional</em>) – Forces allocation at the previous moment in time, which might cause discrepancies. Defaults to False.</p></li>
+<li><p><strong>overconsume</strong> (<em>bool</em><em>, </em><em>optional</em>) – Allows allocation over the resource limit. Defaults to False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary of retrofitting coefficients for each resource.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict[str, float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.resource.Device.Device.release_device_resource">
+<span class="sig-name descname"><span class="pre">release_device_resource</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resource_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resource</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overconsume</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#modules.resource.Device.Device.release_device_resource" title="Link to this definition">¶</a></dt>
+<dd><p>Release resource allocation from the device by allocating a negative resource value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t</strong> (<em>int</em>) – Current time value.</p></li>
+<li><p><strong>resource_name</strong> (<em>str</em>) – The name of the resource to release.</p></li>
+<li><p><strong>resource</strong> (<em>float</em>) – The quantity of the resource to release.</p></li>
+<li><p><strong>force</strong> (<em>bool</em><em>, </em><em>optional</em>) – Forces allocation at the previous moment in time, which might cause discrepancies. Defaults to False.</p></li>
+<li><p><strong>overconsume</strong> (<em>bool</em><em>, </em><em>optional</em>) – Allows allocation over the resource limit. Defaults to False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Retrofitting coefficient returned by allocate_device_resource</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.resource.Device.Device.report_on_value">
+<span class="sig-name descname"><span class="pre">report_on_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resources</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="headerlink" href="#modules.resource.Device.Device.report_on_value" title="Link to this definition">¶</a></dt>
+<dd><p>Append the last resource usage value to the history at a specific time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time</strong> (<em>int</em>) – The current time value.</p></li>
+<li><p><strong>force</strong> (<em>bool</em><em>, </em><em>optional</em>) – Force the operation even if max_time is greater than time. Defaults to False.</p></li>
+<li><p><strong>resources</strong> (<em>Optional</em><em>[</em><em>List</em><em>[</em><em>str</em><em>]</em><em>]</em><em>, </em><em>optional</em>) – List of resource types to report on. Defaults to [‘cpu’, ‘gpu’, ‘mem’, ‘disk’].</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of reported data.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[Tuple[int, Union[int, float]]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="id7">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">resource_limit</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id7" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="id8">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">resource_usage_history</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id8" title="Link to this definition">¶</a></dt>
+<dd><p>Get the resource usage history.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The resource usage history.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dict[str, List[Tuple[int, Union[int, float]]]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.resource.Device.Device.set_device_resource_limit">
+<span class="sig-name descname"><span class="pre">set_device_resource_limit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">resource</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resource_limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.resource.Device.Device.set_device_resource_limit" title="Link to this definition">¶</a></dt>
+<dd><p>Sets the device’s resource limit for a given resource type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>resource</strong> (<em>str</em>) – The type of resource to set.
+Can take any value but try to be consistent between Device and Application.</p></li>
+<li><p><strong>resource_limit</strong> (<em>Union</em><em>[</em><em>int</em><em>, </em><em>float</em><em>]</em>) – The maximum limit for the specified resource type.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-modules.resource.LinkMetric">
+<span id="modules-resource-linkmetric-module"></span><h2>modules.resource.LinkMetric module<a class="headerlink" href="#module-modules.resource.LinkMetric" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="modules.resource.LinkMetric.LinkMetric">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.resource.LinkMetric.</span></span><span class="sig-name descname"><span class="pre">LinkMetric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bandwidth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delay</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.resource.LinkMetric.LinkMetric" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.resource.LinkMetric.LinkMetric._abc_impl">
+<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#modules.resource.LinkMetric.LinkMetric._abc_impl" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.resource.LinkMetric.LinkMetric.calculate_total">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">calculate_total</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#modules.resource.LinkMetric.LinkMetric.calculate_total" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="modules.resource.LinkMetric.OSPFLinkMetric">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.resource.LinkMetric.</span></span><span class="sig-name descname"><span class="pre">OSPFLinkMetric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bandwidth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delay</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.resource.LinkMetric.OSPFLinkMetric" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#modules.resource.LinkMetric.LinkMetric" title="modules.resource.LinkMetric.LinkMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">LinkMetric</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.resource.LinkMetric.OSPFLinkMetric._abc_impl">
+<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#modules.resource.LinkMetric.OSPFLinkMetric._abc_impl" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.resource.LinkMetric.OSPFLinkMetric.calculate_total">
+<span class="sig-name descname"><span class="pre">calculate_total</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#modules.resource.LinkMetric.OSPFLinkMetric.calculate_total" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-modules.resource.Path">
+<span id="modules-resource-path-module"></span><h2>modules.resource.Path module<a class="headerlink" href="#module-modules.resource.Path" title="Link to this heading">¶</a></h2>
+<p>Path module, defines the physical path between two devices
+A path is necessary when allocating network resources between two physical devices hosting inter-connected application process</p>
+<p>Usage:</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="modules.resource.Path.Path">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.resource.Path.</span></span><span class="sig-name descname"><span class="pre">Path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device_source_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_destination_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.resource.Path.Path" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Represents a virtual path between two devices in the network.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.resource.Path.Path.source_id">
+<span class="sig-name descname"><span class="pre">source_id</span></span><a class="headerlink" href="#modules.resource.Path.Path.source_id" title="Link to this definition">¶</a></dt>
+<dd><p>The ID of the source device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.resource.Path.Path.destination_id">
+<span class="sig-name descname"><span class="pre">destination_id</span></span><a class="headerlink" href="#modules.resource.Path.Path.destination_id" title="Link to this definition">¶</a></dt>
+<dd><p>The ID of the destination device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.resource.Path.Path.devices_path">
+<span class="sig-name descname"><span class="pre">devices_path</span></span><a class="headerlink" href="#modules.resource.Path.Path.devices_path" title="Link to this definition">¶</a></dt>
+<dd><p>List of device IDs forming the path from source to destination.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[int]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.resource.Path.Path.physical_links_path">
+<span class="sig-name descname"><span class="pre">physical_links_path</span></span><a class="headerlink" href="#modules.resource.Path.Path.physical_links_path" title="Link to this definition">¶</a></dt>
+<dd><p>List of physical link IDs forming the path from source to destination.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[int]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.resource.Path.Path.allocate_bandwidth_on_path">
+<span class="sig-name descname"><span class="pre">allocate_bandwidth_on_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bandwidth_needed</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.resource.Path.Path.allocate_bandwidth_on_path" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="id9">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">destination_id</span></span><a class="headerlink" href="#id9" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.resource.Path.Path.free_bandwidth_on_path">
+<span class="sig-name descname"><span class="pre">free_bandwidth_on_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">free_bandwidth_needed</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.resource.Path.Path.free_bandwidth_on_path" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.resource.Path.Path.generate_path_from_intermediate_devices">
+<span class="sig-name descname"><span class="pre">generate_path_from_intermediate_devices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">devices_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.resource.Path.Path.generate_path_from_intermediate_devices" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.resource.Path.Path.min_bandwidth_available_on_path">
+<span class="sig-name descname"><span class="pre">min_bandwidth_available_on_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.resource.Path.Path.min_bandwidth_available_on_path" title="Link to this definition">¶</a></dt>
+<dd><p>Calculates the minimum available bandwidth on the path.</p>
+<p>This method returns the minimum available bandwidth among all the physical
+links on the path, which can be used for maximal resource allocation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>env</strong> (<em>Environment</em>) – The simulation environment object.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The minimum available bandwidth on the path.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.resource.Path.Path.path_generation">
+<span class="sig-name descname"><span class="pre">path_generation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_source_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_destination_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.resource.Path.Path.path_generation" title="Link to this definition">¶</a></dt>
+<dd><p>Generates the list of devices and links on the path from source to destination.</p>
+<p>This method sets the source and destination IDs, and populates <cite>devices_path</cite>
+and <cite>physical_links_path</cite> based on the given Environment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>env</strong> (<em>Environment</em>) – The simulation environment object.</p></li>
+<li><p><strong>device_source_id</strong> (<em>int</em>) – The ID of the source device.</p></li>
+<li><p><strong>device_destination_id</strong> (<em>int</em>) – The ID of the destination device.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="id10">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">source_id</span></span><a class="headerlink" href="#id10" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modules.resource.Path.path_append_left">
+<span class="sig-prename descclassname"><span class="pre">modules.resource.Path.</span></span><span class="sig-name descname"><span class="pre">path_append_left</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">physical_link</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modules.resource.PhysicalNetworkLink.PhysicalNetworkLink" title="modules.resource.PhysicalNetworkLink.PhysicalNetworkLink"><span class="pre">PhysicalNetworkLink</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">old_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modules.resource.Path.Path" title="modules.resource.Path.Path"><span class="pre">Path</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.resource.Path.path_append_left" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-modules.resource.PhysicalNetwork">
+<span id="modules-resource-physicalnetwork-module"></span><h2>modules.resource.PhysicalNetwork module<a class="headerlink" href="#module-modules.resource.PhysicalNetwork" title="Link to this heading">¶</a></h2>
+<p>Physical Network Link module, defines the physical link constraints and capabilities for inter-devices links</p>
+<p>Usage:</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="modules.resource.PhysicalNetwork.PhysicalNetwork">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.resource.PhysicalNetwork.</span></span><span class="sig-name descname"><span class="pre">PhysicalNetwork</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.resource.PhysicalNetwork.PhysicalNetwork" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Manages physical network links and provides network matrix extraction methods.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.resource.PhysicalNetwork.PhysicalNetwork.links">
+<span class="sig-name descname"><span class="pre">links</span></span><a class="headerlink" href="#modules.resource.PhysicalNetwork.PhysicalNetwork.links" title="Link to this definition">¶</a></dt>
+<dd><p>2D array holding physical network links between devices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.resource.PhysicalNetwork.PhysicalNetwork.add_link">
+<span class="sig-name descname"><span class="pre">add_link</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">physical_network_link</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modules.resource.PhysicalNetworkLink.PhysicalNetworkLink" title="modules.resource.PhysicalNetworkLink.PhysicalNetworkLink"><span class="pre">PhysicalNetworkLink</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.resource.PhysicalNetwork.PhysicalNetwork.add_link" title="Link to this definition">¶</a></dt>
+<dd><p>Adds a physical network link to the links 2D array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>physical_network_link</strong> (<a class="reference internal" href="#modules.resource.PhysicalNetworkLink.PhysicalNetworkLink" title="modules.resource.PhysicalNetworkLink.PhysicalNetworkLink"><em>PhysicalNetworkLink</em></a>) – Physical network link object.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.resource.PhysicalNetwork.PhysicalNetwork.compute_closeness_centrality">
+<span class="sig-name descname"><span class="pre">compute_closeness_centrality</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="headerlink" href="#modules.resource.PhysicalNetwork.PhysicalNetwork.compute_closeness_centrality" title="Link to this definition">¶</a></dt>
+<dd><p>Computes the closeness centrality for the network.</p>
+<p>Currently not implemented.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.resource.PhysicalNetwork.PhysicalNetwork.extract_available_bandwidth_matrix">
+<span class="sig-name descname"><span class="pre">extract_available_bandwidth_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">_ScalarType_co</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.resource.PhysicalNetwork.PhysicalNetwork.extract_available_bandwidth_matrix" title="Link to this definition">¶</a></dt>
+<dd><p>Extracts a matrix representing the available bandwidth of links.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> (<em>str</em><em>, </em><em>optional</em>) – The filename to save the extracted matrix. Defaults to None.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Matrix representing the available bandwidth of links.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.resource.PhysicalNetwork.PhysicalNetwork.extract_bandwidth_matrix">
+<span class="sig-name descname"><span class="pre">extract_bandwidth_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">_ScalarType_co</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.resource.PhysicalNetwork.PhysicalNetwork.extract_bandwidth_matrix" title="Link to this definition">¶</a></dt>
+<dd><p>Extracts a matrix representing the bandwidth of links.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> (<em>str</em><em>, </em><em>optional</em>) – The filename to save the extracted matrix. Defaults to None.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Matrix representing the bandwidth of links.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.resource.PhysicalNetwork.PhysicalNetwork.extract_delay_matrix">
+<span class="sig-name descname"><span class="pre">extract_delay_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">_ScalarType_co</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.resource.PhysicalNetwork.PhysicalNetwork.extract_delay_matrix" title="Link to this definition">¶</a></dt>
+<dd><p>Extracts a matrix representing the delay of links.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> (<em>str</em><em>, </em><em>optional</em>) – The filename to save the extracted matrix. Defaults to None.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Matrix representing the delay of links.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.resource.PhysicalNetwork.PhysicalNetwork.extract_network_matrix">
+<span class="sig-name descname"><span class="pre">extract_network_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">_ScalarType_co</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#modules.resource.PhysicalNetwork.PhysicalNetwork.extract_network_matrix" title="Link to this definition">¶</a></dt>
+<dd><p>Extracts a binary matrix representing the existence of links.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> (<em>str</em><em>, </em><em>optional</em>) – The filename to save the extracted matrix. Defaults to None.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Binary matrix representing the existence of links.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.resource.PhysicalNetwork.PhysicalNetwork.extract_networkx_graph">
+<span class="sig-name descname"><span class="pre">extract_networkx_graph</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="headerlink" href="#modules.resource.PhysicalNetwork.PhysicalNetwork.extract_networkx_graph" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.resource.PhysicalNetwork.PhysicalNetwork.generate_physical_network">
+<span class="sig-name descname"><span class="pre">generate_physical_network</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#modules.resource.PhysicalNetwork.PhysicalNetwork.generate_physical_network" title="Link to this definition">¶</a></dt>
+<dd><p>Generates physical network links based on a given environment.</p>
+<p>Currently not implemented.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.resource.PhysicalNetwork.PhysicalNetwork.select_link">
+<span class="sig-name descname"><span class="pre">select_link</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">destination_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.resource.PhysicalNetwork.PhysicalNetwork.select_link" title="Link to this definition">¶</a></dt>
+<dd><p>Selects a link based on source and destination IDs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source_id</strong> (<em>int</em>) – Source device ID.</p></li>
+<li><p><strong>destination_id</strong> (<em>int</em>) – Destination device ID.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of physical links matching the given source and destination IDs.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.resource.PhysicalNetwork.PhysicalNetwork.select_link_by_id">
+<span class="sig-name descname"><span class="pre">select_link_by_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">link_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.resource.PhysicalNetwork.PhysicalNetwork.select_link_by_id" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-modules.resource.PhysicalNetworkLink">
+<span id="modules-resource-physicalnetworklink-module"></span><h2>modules.resource.PhysicalNetworkLink module<a class="headerlink" href="#module-modules.resource.PhysicalNetworkLink" title="Link to this heading">¶</a></h2>
+<p>Physical Network Link module, defines the physical link constraints and capabilities for inter-devices links</p>
+<p>Usage:</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="modules.resource.PhysicalNetworkLink.PhysicalNetworkLink">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.resource.PhysicalNetworkLink.</span></span><span class="sig-name descname"><span class="pre">PhysicalNetworkLink</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metric_type=&lt;class</span> <span class="pre">'modules.resource.LinkMetric.LinkMetric'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_1_id:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_2_id:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delay:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.resource.PhysicalNetworkLink.PhysicalNetworkLink" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Represents a physical link between two network devices.
+A PhysicalNetworkLink is defined as a link between two physical devices
+A Physical Network Link is plugged on two network interfaces (Will need to modify device description)
+For now, the Physical Link is plugged between two devices in a directional way, device IDs are not swappable</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.resource.PhysicalNetworkLink.PhysicalNetworkLink.DEFAULT_BANDWIDTH">
+<span class="sig-name descname"><span class="pre">DEFAULT_BANDWIDTH</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">100</span></em><a class="headerlink" href="#modules.resource.PhysicalNetworkLink.PhysicalNetworkLink.DEFAULT_BANDWIDTH" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.resource.PhysicalNetworkLink.PhysicalNetworkLink.DEFAULT_DELAY">
+<span class="sig-name descname"><span class="pre">DEFAULT_DELAY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.0</span></em><a class="headerlink" href="#modules.resource.PhysicalNetworkLink.PhysicalNetworkLink.DEFAULT_DELAY" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.resource.PhysicalNetworkLink.PhysicalNetworkLink.DEFAULT_DISTANCE">
+<span class="sig-name descname"><span class="pre">DEFAULT_DISTANCE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.0</span></em><a class="headerlink" href="#modules.resource.PhysicalNetworkLink.PhysicalNetworkLink.DEFAULT_DISTANCE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.resource.PhysicalNetworkLink.PhysicalNetworkLink._generate_id">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_generate_id</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#modules.resource.PhysicalNetworkLink.PhysicalNetworkLink._generate_id" title="Link to this definition">¶</a></dt>
+<dd><p>Generates an ID for a new PhysicalNetworkLink instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The PhysicalNetworkLink ID.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.resource.PhysicalNetworkLink.PhysicalNetworkLink.available_bandwidth">
+<span class="sig-name descname"><span class="pre">available_bandwidth</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#modules.resource.PhysicalNetworkLink.PhysicalNetworkLink.available_bandwidth" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the Physical Link’s available (unused) bandwidth (in kBytes/s)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><dl class="simple">
+<dt>float</dt><dd><p>Physical link’s available bandwidth</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>available_bandwidth</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="modules.resource.PhysicalNetworkLink.PhysicalNetworkLink.bandwidth">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">bandwidth</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#modules.resource.PhysicalNetworkLink.PhysicalNetworkLink.bandwidth" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.resource.PhysicalNetworkLink.PhysicalNetworkLink.check_physical_link">
+<span class="sig-name descname"><span class="pre">check_physical_link</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device_1_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_2_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#modules.resource.PhysicalNetworkLink.PhysicalNetworkLink.check_physical_link" title="Link to this definition">¶</a></dt>
+<dd><p>Check if the associated link actually links the two given devices</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>device_1_id</strong> – int</p></li>
+<li><p><strong>device_2_id</strong> – int</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="modules.resource.PhysicalNetworkLink.PhysicalNetworkLink.delay">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">delay</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#modules.resource.PhysicalNetworkLink.PhysicalNetworkLink.delay" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="modules.resource.PhysicalNetworkLink.PhysicalNetworkLink.destination">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">destination</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#modules.resource.PhysicalNetworkLink.PhysicalNetworkLink.destination" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.resource.PhysicalNetworkLink.PhysicalNetworkLink.free_bandwidth">
+<span class="sig-name descname"><span class="pre">free_bandwidth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">free_bandwidth_request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.resource.PhysicalNetworkLink.PhysicalNetworkLink.free_bandwidth" title="Link to this definition">¶</a></dt>
+<dd><p>Free a part of the Physical Link’s bandwidth based on free bandwidth request (in kBytes/s)
+If requested bandwidth is superior to allocated bandwidth, bandwidth use is set to 0 instead of negative value</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>free_bandwidth_request</strong> – float
+Necessary bandwidth to free (in kBytes/s)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="modules.resource.PhysicalNetworkLink.PhysicalNetworkLink.id">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#modules.resource.PhysicalNetworkLink.PhysicalNetworkLink.id" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.resource.PhysicalNetworkLink.PhysicalNetworkLink.next_id">
+<span class="sig-name descname"><span class="pre">next_id</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#modules.resource.PhysicalNetworkLink.PhysicalNetworkLink.next_id" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="modules.resource.PhysicalNetworkLink.PhysicalNetworkLink.origin">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">origin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#modules.resource.PhysicalNetworkLink.PhysicalNetworkLink.origin" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.resource.PhysicalNetworkLink.PhysicalNetworkLink.use_bandwidth">
+<span class="sig-name descname"><span class="pre">use_bandwidth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bandwidth_request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#modules.resource.PhysicalNetworkLink.PhysicalNetworkLink.use_bandwidth" title="Link to this definition">¶</a></dt>
+<dd><p>Allocates Physical Link’s bandwidth based on bandwidth request (in kBytes/s)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>bandwidth_request</strong> – float
+Necessary bandwidth to allocate (in kBytes/s)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>bool</dt><dd><p>True if allocation possible and successfull, else False</p>
+</dd>
+</dl>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-modules.resource.Processus">
+<span id="modules-resource-processus-module"></span><h2>modules.resource.Processus module<a class="headerlink" href="#module-modules.resource.Processus" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="modules.resource.Processus.Processus">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.resource.Processus.</span></span><span class="sig-name descname"><span class="pre">Processus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">priority</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.resource.Processus.Processus" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The Processus class represents a sub-component of an Application and is responsible for managing
+its resource requirements and allocations.</p>
+<p>This class provides methods for comparing Processus instances, combining their resource requirements,
+and generating JSON representations.</p>
+<p>Comparison is based on an arbitrary resource priority order.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.resource.Processus.Processus.id">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#modules.resource.Processus.Processus.id" title="Link to this definition">¶</a></dt>
+<dd><p>Unique identifier for the Processus instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.resource.Processus.Processus.app_id">
+<span class="sig-name descname"><span class="pre">app_id</span></span><a class="headerlink" href="#modules.resource.Processus.Processus.app_id" title="Link to this definition">¶</a></dt>
+<dd><p>Identifier for the application to which this Processus instance belongs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.resource.Processus.Processus.resource_request">
+<span class="sig-name descname"><span class="pre">resource_request</span></span><a class="headerlink" href="#modules.resource.Processus.Processus.resource_request" title="Link to this definition">¶</a></dt>
+<dd><p>Dictionary representing the resource requirements for this Processus.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict[str, Union[int, float]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.resource.Processus.Processus.resource_allocation">
+<span class="sig-name descname"><span class="pre">resource_allocation</span></span><a class="headerlink" href="#modules.resource.Processus.Processus.resource_allocation" title="Link to this definition">¶</a></dt>
+<dd><p>Dictionary representing the allocated resources for this Processus.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict[str, Union[int, float]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.resource.Processus.Processus.DEFAULT_RESOURCES">
+<span class="sig-name descname"><span class="pre">DEFAULT_RESOURCES</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'cpu':</span> <span class="pre">0,</span> <span class="pre">'disk':</span> <span class="pre">0,</span> <span class="pre">'gpu':</span> <span class="pre">0,</span> <span class="pre">'mem':</span> <span class="pre">0}</span></em><a class="headerlink" href="#modules.resource.Processus.Processus.DEFAULT_RESOURCES" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.resource.Processus.Processus.RANDOMIZER_DEFAULT_RESOURCE">
+<span class="sig-name descname"><span class="pre">RANDOMIZER_DEFAULT_RESOURCE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'cpu':</span> <span class="pre">{'choices':</span> <span class="pre">[0.5,</span> <span class="pre">1,</span> <span class="pre">2,</span> <span class="pre">3,</span> <span class="pre">4]},</span> <span class="pre">'disk':</span> <span class="pre">{'factor':</span> <span class="pre">25600,</span> <span class="pre">'range':</span> <span class="pre">(1,</span> <span class="pre">10)},</span> <span class="pre">'gpu':</span> <span class="pre">{'choices':</span> <span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">0,</span> <span class="pre">0,</span> <span class="pre">0.5,</span> <span class="pre">1,</span> <span class="pre">2,</span> <span class="pre">4]},</span> <span class="pre">'mem':</span> <span class="pre">{'factor':</span> <span class="pre">8192,</span> <span class="pre">'range':</span> <span class="pre">(0.0125,</span> <span class="pre">1)}}</span></em><a class="headerlink" href="#modules.resource.Processus.Processus.RANDOMIZER_DEFAULT_RESOURCE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.resource.Processus.Processus.RESOURCE_ORDER">
+<span class="sig-name descname"><span class="pre">RESOURCE_ORDER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['gpu',</span> <span class="pre">'cpu',</span> <span class="pre">'mem',</span> <span class="pre">'disk']</span></em><a class="headerlink" href="#modules.resource.Processus.Processus.RESOURCE_ORDER" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.resource.Processus.Processus._generate_id">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_generate_id</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#modules.resource.Processus.Processus._generate_id" title="Link to this definition">¶</a></dt>
+<dd><p>Class method for id generation
+Assigns id then increment for next generation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Processus ID</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>result (int)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.resource.Processus.Processus._get_random_value">
+<span class="sig-name descname"><span class="pre">_get_random_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">resource_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></span><a class="headerlink" href="#modules.resource.Processus.Processus._get_random_value" title="Link to this definition">¶</a></dt>
+<dd><p>Helper method to get a random value for a given resource type.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="id11">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">app_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#id11" title="Link to this definition">¶</a></dt>
+<dd><p>Get the application ID associated with this processus.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The application ID.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="id12">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#id12" title="Link to this definition">¶</a></dt>
+<dd><p>Used to get a processus’s ID</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Processus ID</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>id (int)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modules.resource.Processus.Processus.next_id">
+<span class="sig-name descname"><span class="pre">next_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#modules.resource.Processus.Processus.next_id" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="modules.resource.Processus.Processus.priority">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">priority</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#modules.resource.Processus.Processus.priority" title="Link to this definition">¶</a></dt>
+<dd><p>Get the priority level of the object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Priority level as an integer.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.resource.Processus.Processus.random_proc_init">
+<span class="sig-name descname"><span class="pre">random_proc_init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#modules.resource.Processus.Processus.random_proc_init" title="Link to this definition">¶</a></dt>
+<dd><p>Randomly initialize the resource request for this processus:
+Random number of CPU between 0.5 and 4
+Random number of GPU between 0 and 8
+Random Memory between 0.1 and 4 GigaBytes
+Random Disk space between 10 and 100 GigaBytes</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="id13">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">resource_request</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id13" title="Link to this definition">¶</a></dt>
+<dd><p>Get the resource request dictionary for this processus.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The resource request dictionary.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dict[str, Union[int, float]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modules.resource.Processus.Processus.set_processus_resource_request">
+<span class="sig-name descname"><span class="pre">set_processus_resource_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">resource</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resource_requested</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modules.resource.Processus.Processus.set_processus_resource_request" title="Link to this definition">¶</a></dt>
+<dd><p>Set Processus Resource (CPU, GPU, Mem, Disk) Request</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>resource</strong> (<em>str`</em>) – Resource name</p></li>
+<li><p><strong>resource_requested</strong> (<em>float</em>) – Quantity of a given resource to request from device.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-modules.resource">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-modules.resource" title="Link to this heading">¶</a></h2>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Resource</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-modules.resource.Application">modules.resource.Application module</a><ul>
+<li><a class="reference internal" href="#modules.resource.Application.Application"><code class="docutils literal notranslate"><span class="pre">Application</span></code></a><ul>
+<li><a class="reference internal" href="#modules.resource.Application.Application._generate_id"><code class="docutils literal notranslate"><span class="pre">Application._generate_id()</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Application.Application.duration"><code class="docutils literal notranslate"><span class="pre">Application.duration</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Application.Application.get_app_proc_by_id"><code class="docutils literal notranslate"><span class="pre">Application.get_app_proc_by_id()</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Application.Application.get_app_procs_ids"><code class="docutils literal notranslate"><span class="pre">Application.get_app_procs_ids()</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Application.Application.id"><code class="docutils literal notranslate"><span class="pre">Application.id</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Application.Application.init_from_dict"><code class="docutils literal notranslate"><span class="pre">Application.init_from_dict()</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Application.Application.next_id"><code class="docutils literal notranslate"><span class="pre">Application.next_id</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Application.Application.priority"><code class="docutils literal notranslate"><span class="pre">Application.priority</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Application.Application.random_app_init"><code class="docutils literal notranslate"><span class="pre">Application.random_app_init()</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Application.Application.set_app_duration"><code class="docutils literal notranslate"><span class="pre">Application.set_app_duration()</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Application.Application.set_deployment_info"><code class="docutils literal notranslate"><span class="pre">Application.set_deployment_info()</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Application.Application.set_links_allocation_info"><code class="docutils literal notranslate"><span class="pre">Application.set_links_allocation_info()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-modules.resource.Device">modules.resource.Device module</a><ul>
+<li><a class="reference internal" href="#modules.resource.Device.Device"><code class="docutils literal notranslate"><span class="pre">Device</span></code></a><ul>
+<li><a class="reference internal" href="#modules.resource.Device.Device.device_id"><code class="docutils literal notranslate"><span class="pre">Device.device_id</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Device.Device.location"><code class="docutils literal notranslate"><span class="pre">Device.location</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Device.Device.resource_limit"><code class="docutils literal notranslate"><span class="pre">Device.resource_limit</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Device.Device.current_resource_usage"><code class="docutils literal notranslate"><span class="pre">Device.current_resource_usage</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Device.Device.theoretical_resource_usage"><code class="docutils literal notranslate"><span class="pre">Device.theoretical_resource_usage</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Device.Device.resource_usage_history"><code class="docutils literal notranslate"><span class="pre">Device.resource_usage_history</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Device.Device.routing_table"><code class="docutils literal notranslate"><span class="pre">Device.routing_table</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Device.Device.proc"><code class="docutils literal notranslate"><span class="pre">Device.proc</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Device.Device.closeness_centrality"><code class="docutils literal notranslate"><span class="pre">Device.closeness_centrality</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Device.Device.DEFAULT_POSITION"><code class="docutils literal notranslate"><span class="pre">Device.DEFAULT_POSITION</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Device.Device.DEFAULT_RESOURCE_LIMIT_ARM"><code class="docutils literal notranslate"><span class="pre">Device.DEFAULT_RESOURCE_LIMIT_ARM</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Device.Device.DEFAULT_RESOURCE_LIMIT_NVIDIA"><code class="docutils literal notranslate"><span class="pre">Device.DEFAULT_RESOURCE_LIMIT_NVIDIA</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Device.Device._generate_id"><code class="docutils literal notranslate"><span class="pre">Device._generate_id()</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Device.Device.add_to_routing_table"><code class="docutils literal notranslate"><span class="pre">Device.add_to_routing_table()</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Device.Device.allocate_all_resources"><code class="docutils literal notranslate"><span class="pre">Device.allocate_all_resources()</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Device.Device.allocate_device_resource"><code class="docutils literal notranslate"><span class="pre">Device.allocate_device_resource()</span></code></a></li>
+<li><a class="reference internal" href="#id0"><code class="docutils literal notranslate"><span class="pre">Device.closeness_centrality</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Device.Device.get_device_resource_usage"><code class="docutils literal notranslate"><span class="pre">Device.get_device_resource_usage()</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Device.Device.get_route_info"><code class="docutils literal notranslate"><span class="pre">Device.get_route_info()</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Device.Device.id"><code class="docutils literal notranslate"><span class="pre">Device.id</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Device.Device.initialize_routing_table"><code class="docutils literal notranslate"><span class="pre">Device.initialize_routing_table()</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Device.Device.initialize_routing_table_from_dict"><code class="docutils literal notranslate"><span class="pre">Device.initialize_routing_table_from_dict()</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Device.Device.next_id"><code class="docutils literal notranslate"><span class="pre">Device.next_id</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Device.Device.position"><code class="docutils literal notranslate"><span class="pre">Device.position</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Device.Device.release_all_resources"><code class="docutils literal notranslate"><span class="pre">Device.release_all_resources()</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Device.Device.release_device_resource"><code class="docutils literal notranslate"><span class="pre">Device.release_device_resource()</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Device.Device.report_on_value"><code class="docutils literal notranslate"><span class="pre">Device.report_on_value()</span></code></a></li>
+<li><a class="reference internal" href="#id7"><code class="docutils literal notranslate"><span class="pre">Device.resource_limit</span></code></a></li>
+<li><a class="reference internal" href="#id8"><code class="docutils literal notranslate"><span class="pre">Device.resource_usage_history</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Device.Device.set_device_resource_limit"><code class="docutils literal notranslate"><span class="pre">Device.set_device_resource_limit()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-modules.resource.LinkMetric">modules.resource.LinkMetric module</a><ul>
+<li><a class="reference internal" href="#modules.resource.LinkMetric.LinkMetric"><code class="docutils literal notranslate"><span class="pre">LinkMetric</span></code></a><ul>
+<li><a class="reference internal" href="#modules.resource.LinkMetric.LinkMetric._abc_impl"><code class="docutils literal notranslate"><span class="pre">LinkMetric._abc_impl</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.LinkMetric.LinkMetric.calculate_total"><code class="docutils literal notranslate"><span class="pre">LinkMetric.calculate_total()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#modules.resource.LinkMetric.OSPFLinkMetric"><code class="docutils literal notranslate"><span class="pre">OSPFLinkMetric</span></code></a><ul>
+<li><a class="reference internal" href="#modules.resource.LinkMetric.OSPFLinkMetric._abc_impl"><code class="docutils literal notranslate"><span class="pre">OSPFLinkMetric._abc_impl</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.LinkMetric.OSPFLinkMetric.calculate_total"><code class="docutils literal notranslate"><span class="pre">OSPFLinkMetric.calculate_total()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-modules.resource.Path">modules.resource.Path module</a><ul>
+<li><a class="reference internal" href="#modules.resource.Path.Path"><code class="docutils literal notranslate"><span class="pre">Path</span></code></a><ul>
+<li><a class="reference internal" href="#modules.resource.Path.Path.source_id"><code class="docutils literal notranslate"><span class="pre">Path.source_id</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Path.Path.destination_id"><code class="docutils literal notranslate"><span class="pre">Path.destination_id</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Path.Path.devices_path"><code class="docutils literal notranslate"><span class="pre">Path.devices_path</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Path.Path.physical_links_path"><code class="docutils literal notranslate"><span class="pre">Path.physical_links_path</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Path.Path.allocate_bandwidth_on_path"><code class="docutils literal notranslate"><span class="pre">Path.allocate_bandwidth_on_path()</span></code></a></li>
+<li><a class="reference internal" href="#id9"><code class="docutils literal notranslate"><span class="pre">Path.destination_id</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Path.Path.free_bandwidth_on_path"><code class="docutils literal notranslate"><span class="pre">Path.free_bandwidth_on_path()</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Path.Path.generate_path_from_intermediate_devices"><code class="docutils literal notranslate"><span class="pre">Path.generate_path_from_intermediate_devices()</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Path.Path.min_bandwidth_available_on_path"><code class="docutils literal notranslate"><span class="pre">Path.min_bandwidth_available_on_path()</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Path.Path.path_generation"><code class="docutils literal notranslate"><span class="pre">Path.path_generation()</span></code></a></li>
+<li><a class="reference internal" href="#id10"><code class="docutils literal notranslate"><span class="pre">Path.source_id</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#modules.resource.Path.path_append_left"><code class="docutils literal notranslate"><span class="pre">path_append_left()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-modules.resource.PhysicalNetwork">modules.resource.PhysicalNetwork module</a><ul>
+<li><a class="reference internal" href="#modules.resource.PhysicalNetwork.PhysicalNetwork"><code class="docutils literal notranslate"><span class="pre">PhysicalNetwork</span></code></a><ul>
+<li><a class="reference internal" href="#modules.resource.PhysicalNetwork.PhysicalNetwork.links"><code class="docutils literal notranslate"><span class="pre">PhysicalNetwork.links</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.PhysicalNetwork.PhysicalNetwork.add_link"><code class="docutils literal notranslate"><span class="pre">PhysicalNetwork.add_link()</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.PhysicalNetwork.PhysicalNetwork.compute_closeness_centrality"><code class="docutils literal notranslate"><span class="pre">PhysicalNetwork.compute_closeness_centrality()</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.PhysicalNetwork.PhysicalNetwork.extract_available_bandwidth_matrix"><code class="docutils literal notranslate"><span class="pre">PhysicalNetwork.extract_available_bandwidth_matrix()</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.PhysicalNetwork.PhysicalNetwork.extract_bandwidth_matrix"><code class="docutils literal notranslate"><span class="pre">PhysicalNetwork.extract_bandwidth_matrix()</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.PhysicalNetwork.PhysicalNetwork.extract_delay_matrix"><code class="docutils literal notranslate"><span class="pre">PhysicalNetwork.extract_delay_matrix()</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.PhysicalNetwork.PhysicalNetwork.extract_network_matrix"><code class="docutils literal notranslate"><span class="pre">PhysicalNetwork.extract_network_matrix()</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.PhysicalNetwork.PhysicalNetwork.extract_networkx_graph"><code class="docutils literal notranslate"><span class="pre">PhysicalNetwork.extract_networkx_graph()</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.PhysicalNetwork.PhysicalNetwork.generate_physical_network"><code class="docutils literal notranslate"><span class="pre">PhysicalNetwork.generate_physical_network()</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.PhysicalNetwork.PhysicalNetwork.select_link"><code class="docutils literal notranslate"><span class="pre">PhysicalNetwork.select_link()</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.PhysicalNetwork.PhysicalNetwork.select_link_by_id"><code class="docutils literal notranslate"><span class="pre">PhysicalNetwork.select_link_by_id()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-modules.resource.PhysicalNetworkLink">modules.resource.PhysicalNetworkLink module</a><ul>
+<li><a class="reference internal" href="#modules.resource.PhysicalNetworkLink.PhysicalNetworkLink"><code class="docutils literal notranslate"><span class="pre">PhysicalNetworkLink</span></code></a><ul>
+<li><a class="reference internal" href="#modules.resource.PhysicalNetworkLink.PhysicalNetworkLink.DEFAULT_BANDWIDTH"><code class="docutils literal notranslate"><span class="pre">PhysicalNetworkLink.DEFAULT_BANDWIDTH</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.PhysicalNetworkLink.PhysicalNetworkLink.DEFAULT_DELAY"><code class="docutils literal notranslate"><span class="pre">PhysicalNetworkLink.DEFAULT_DELAY</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.PhysicalNetworkLink.PhysicalNetworkLink.DEFAULT_DISTANCE"><code class="docutils literal notranslate"><span class="pre">PhysicalNetworkLink.DEFAULT_DISTANCE</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.PhysicalNetworkLink.PhysicalNetworkLink._generate_id"><code class="docutils literal notranslate"><span class="pre">PhysicalNetworkLink._generate_id()</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.PhysicalNetworkLink.PhysicalNetworkLink.available_bandwidth"><code class="docutils literal notranslate"><span class="pre">PhysicalNetworkLink.available_bandwidth()</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.PhysicalNetworkLink.PhysicalNetworkLink.bandwidth"><code class="docutils literal notranslate"><span class="pre">PhysicalNetworkLink.bandwidth</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.PhysicalNetworkLink.PhysicalNetworkLink.check_physical_link"><code class="docutils literal notranslate"><span class="pre">PhysicalNetworkLink.check_physical_link()</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.PhysicalNetworkLink.PhysicalNetworkLink.delay"><code class="docutils literal notranslate"><span class="pre">PhysicalNetworkLink.delay</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.PhysicalNetworkLink.PhysicalNetworkLink.destination"><code class="docutils literal notranslate"><span class="pre">PhysicalNetworkLink.destination</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.PhysicalNetworkLink.PhysicalNetworkLink.free_bandwidth"><code class="docutils literal notranslate"><span class="pre">PhysicalNetworkLink.free_bandwidth()</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.PhysicalNetworkLink.PhysicalNetworkLink.id"><code class="docutils literal notranslate"><span class="pre">PhysicalNetworkLink.id</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.PhysicalNetworkLink.PhysicalNetworkLink.next_id"><code class="docutils literal notranslate"><span class="pre">PhysicalNetworkLink.next_id</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.PhysicalNetworkLink.PhysicalNetworkLink.origin"><code class="docutils literal notranslate"><span class="pre">PhysicalNetworkLink.origin</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.PhysicalNetworkLink.PhysicalNetworkLink.use_bandwidth"><code class="docutils literal notranslate"><span class="pre">PhysicalNetworkLink.use_bandwidth()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-modules.resource.Processus">modules.resource.Processus module</a><ul>
+<li><a class="reference internal" href="#modules.resource.Processus.Processus"><code class="docutils literal notranslate"><span class="pre">Processus</span></code></a><ul>
+<li><a class="reference internal" href="#modules.resource.Processus.Processus.id"><code class="docutils literal notranslate"><span class="pre">Processus.id</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Processus.Processus.app_id"><code class="docutils literal notranslate"><span class="pre">Processus.app_id</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Processus.Processus.resource_request"><code class="docutils literal notranslate"><span class="pre">Processus.resource_request</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Processus.Processus.resource_allocation"><code class="docutils literal notranslate"><span class="pre">Processus.resource_allocation</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Processus.Processus.DEFAULT_RESOURCES"><code class="docutils literal notranslate"><span class="pre">Processus.DEFAULT_RESOURCES</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Processus.Processus.RANDOMIZER_DEFAULT_RESOURCE"><code class="docutils literal notranslate"><span class="pre">Processus.RANDOMIZER_DEFAULT_RESOURCE</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Processus.Processus.RESOURCE_ORDER"><code class="docutils literal notranslate"><span class="pre">Processus.RESOURCE_ORDER</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Processus.Processus._generate_id"><code class="docutils literal notranslate"><span class="pre">Processus._generate_id()</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Processus.Processus._get_random_value"><code class="docutils literal notranslate"><span class="pre">Processus._get_random_value()</span></code></a></li>
+<li><a class="reference internal" href="#id11"><code class="docutils literal notranslate"><span class="pre">Processus.app_id</span></code></a></li>
+<li><a class="reference internal" href="#id12"><code class="docutils literal notranslate"><span class="pre">Processus.id</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Processus.Processus.next_id"><code class="docutils literal notranslate"><span class="pre">Processus.next_id</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Processus.Processus.priority"><code class="docutils literal notranslate"><span class="pre">Processus.priority</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Processus.Processus.random_proc_init"><code class="docutils literal notranslate"><span class="pre">Processus.random_proc_init()</span></code></a></li>
+<li><a class="reference internal" href="#id13"><code class="docutils literal notranslate"><span class="pre">Processus.resource_request</span></code></a></li>
+<li><a class="reference internal" href="#modules.resource.Processus.Processus.set_processus_resource_request"><code class="docutils literal notranslate"><span class="pre">Processus.set_processus_resource_request()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-modules.resource">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="processing.html"
+                          title="previous chapter">Processing</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="routing.html"
+                          title="next chapter">Routing</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/modules/resource.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="routing.html" title="Routing"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="processing.html" title="Processing"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Humanitas Network and Services Simulator v0.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../modules.html" >modules package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Resource</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2024, Antoine BERNARD.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
+    </div>
+  </body>
+</html>

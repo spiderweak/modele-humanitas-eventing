@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>modules package &#8212; Humanitas Network and Services Simulator v0.5 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="_static/nature.css?v=8dfa3f53" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css" />
+    <script src="_static/documentation_options.js?v=c8bc6dd9"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Clustering" href="modules/clustering.html" />
+    <link rel="prev" title="Visualizer" href="Visualizer.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="modules/clustering.html" title="Clustering"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="Visualizer.html" title="Visualizer"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Humanitas Network and Services Simulator v0.5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">modules package</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="modules-package">
+<h1>modules package<a class="headerlink" href="#modules-package" title="Link to this heading">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules/clustering.html">Clustering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/events.html">Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/fullstateprocessing.html">Full State Processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/processing.html">Processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/resource.html">Resource</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/routing.html">Routing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/templates.html">Templates</a></li>
+</ul>
+</div>
+<section id="modules-config-module">
+<h2>modules.Config module<a class="headerlink" href="#modules-config-module" title="Link to this heading">¶</a></h2>
+<p>Config Module</p>
+<p>This module handles the configuration settings for the application.
+It initializes default values, loads configurations from a YAML file,
+and sets options based on command-line arguments and YAML configuration.</p>
+<dl class="simple">
+<dt>Classes:</dt><dd><p>Config: Manages the application’s configuration settings.</p>
+</dd>
+<dt>Usage Example:</dt><dd><p>config = Config(options=args)</p>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.Config.</span></span><span class="sig-name descname"><span class="pre">Config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Namespace</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Manages the application’s configuration settings.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">parsed_yaml</span></span></dt>
+<dd><p>The parsed YAML configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict[str, Any]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">log_level</span></span></dt>
+<dd><p>Logging level.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">log_filename</span></span></dt>
+<dd><p>Name of the log file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">devices_template_filename</span></span></dt>
+<dd><p>Filename for device templates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">application_template_filename</span></span></dt>
+<dd><p>Filename for application templates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">results_filename</span></span></dt>
+<dd><p>Filename for results.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">number_of_applications</span></span></dt>
+<dd><p>Number of applications.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">number_of_devices</span></span></dt>
+<dd><p>Number of devices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">wifi_range</span></span></dt>
+<dd><p>WiFi range.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">app_duration</span></span></dt>
+<dd><p>Application duration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">k_param</span></span></dt>
+<dd><p>Parameter for routing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_3D_space</span></span></dt>
+<dd><p>Space dimensions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict[str, Union[int, float]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">random_seed</span></span></dt>
+<dd><p>Random seed value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">batch_enable</span></span></dt>
+<dd><p>enables batch mode</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">DEFAULT_3D_SPACE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'x_max':</span> <span class="pre">40,</span> <span class="pre">'x_min':</span> <span class="pre">0,</span> <span class="pre">'y_max':</span> <span class="pre">40,</span> <span class="pre">'y_min':</span> <span class="pre">0,</span> <span class="pre">'z_max':</span> <span class="pre">0,</span> <span class="pre">'z_min':</span> <span class="pre">0}</span></em></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">DEFAULT_APPLICATION_TEMPLATE_FILENAME</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'application.json'</span></em></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">DEFAULT_APP_DURATION</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">DEFAULT_BATCH_ENABLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">DEFAULT_DEVICES_TEMPLATE_FILENAME</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'devices.json'</span></em></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">DEFAULT_K_PARAM</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">10</span></em></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">DEFAULT_LOG_FILENAME</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'log.txt'</span></em></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">DEFAULT_LOG_LEVEL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">20</span></em></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">DEFAULT_NUMBER_OF_APPLICATIONS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">500</span></em></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">DEFAULT_NUMBER_OF_DEVICES</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">40</span></em></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">DEFAULT_RESULTS_FILENAME</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'results.json'</span></em></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">DEFAULT_WIFI_RANGE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">6.0</span></em></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">RANDOM_SEED_VALUE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">79</span></em></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_set_attribute_from_yaml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attr_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yaml_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span></dt>
+<dd><p>Helper function to set attribute from parsed YAML.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>attr_name</strong> (<em>str</em>) – The name of the attribute to set.</p></li>
+<li><p><strong>yaml_path</strong> (<em>list</em>) – The list of keys to navigate the YAML dictionary.</p></li>
+<li><p><strong>value_type</strong> (<em>type</em>) – The type to cast the value to (e.g., int, float, str).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">load_yaml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span></dt>
+<dd><p>Loads settings from a YAML file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>config_file_path</strong> (<em>str</em>) – Configuration file path.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">set_defaults</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span></dt>
+<dd><p>Sets default values for all attributes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">set_options</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Namespace</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span></dt>
+<dd><p>Sets other options based on parsed YAML and command-line options.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>options</strong> (<em>argparse.Namespace</em>) – Parsed command-line options.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">setup_logging</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Namespace</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span></dt>
+<dd><p>Initializes logging based on parsed YAML.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>options</strong> (<em>argparse.Namespace</em>) – Parsed command-line options.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="modules-customexceptions-module">
+<h2>modules.CustomExceptions module<a class="headerlink" href="#modules-customexceptions-module" title="Link to this heading">¶</a></h2>
+<dl class="py exception">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.CustomExceptions.</span></span><span class="sig-name descname"><span class="pre">ApplicationNotFoundError</span></span></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.CustomExceptions.</span></span><span class="sig-name descname"><span class="pre">DeviceNotFoundError</span></span></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.CustomExceptions.</span></span><span class="sig-name descname"><span class="pre">NoRouteToHost</span></span></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd></dl>
+
+</section>
+<section id="modules-environment-module">
+<h2>modules.Environment module<a class="headerlink" href="#modules-environment-module" title="Link to this heading">¶</a></h2>
+<p>Environment Module</p>
+<p>This module defines the Environment class, which represents the environment for the network simulation.
+It includes methods for managing devices, applications, physical network links, and resource usage.</p>
+<dl class="simple">
+<dt>Classes:</dt><dd><p>Environment: Represents the environment for the network simulation.</p>
+</dd>
+<dt>Usage Example:</dt><dd><p>env = Environment()
+env.config = Config()
+env.generate_device_list()
+env.generate_application_list()
+env.simulate()</p>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.Environment.</span></span><span class="sig-name descname"><span class="pre">Environment</span></span></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Represents the environment for the network simulation.</p>
+<p>The <cite>Environment</cite> class primarily acts as a structure for storing
+information about various network elements like configuration, device info,
+application info, network links, etc.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">current_time</span></span></dt>
+<dd><p>The date and time of the current event.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">config</span></span></dt>
+<dd><p>Environment configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Config</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">devices</span></span></dt>
+<dd><p>List of Device objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="modules/resource.html#modules.resource.Device.Device" title="modules.resource.Device.Device">Device</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">applications</span></span></dt>
+<dd><p>List of Application objects to be deployed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="modules/resource.html#modules.resource.Application.Application" title="modules.resource.Application.Application">Application</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">physical_network_links</span></span></dt>
+<dd><p>List of physical network links between devices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="modules/resource.html#modules.resource.PhysicalNetworkLink.PhysicalNetworkLink" title="modules.resource.PhysicalNetworkLink.PhysicalNetworkLink">PhysicalNetworkLink</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">count_rejected_application</span></span></dt>
+<dd><p>Count of rejected applications by time and reason.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[List[int]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">count_accepted_application</span></span></dt>
+<dd><p>Count of accepted applications by time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[List[int]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">list_accepted_application</span></span></dt>
+<dd><p>List of accepted applications.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[int]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">count_tentatives</span></span></dt>
+<dd><p>Count of placement tentatives with success.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[List[int]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">rejected_application_by_reason</span></span></dt>
+<dd><p>Reasons for application rejection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">list_devices_data</span></span></dt>
+<dd><p>Data about devices (optional).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Optional[Dict]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">list_currently_deployed_app_data</span></span></dt>
+<dd><p>Currently deployed applications data (optional).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Optional[List]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">data</span></span></dt>
+<dd><p>Data object for the environment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Data</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">TIME_PERIOD</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">8640000</span></em></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">add_application</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">application</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="modules/resource.html#modules.resource.Application.Application" title="modules.resource.Application.Application"><span class="pre">Application</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span></dt>
+<dd><p>Adds a new <cite>Application</cite> to the applications list.</p>
+<p>The id_to_application dictionary is updated as well.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>application</strong> (<a class="reference internal" href="modules/resource.html#modules.resource.Application.Application" title="modules.resource.Application.Application"><em>Application</em></a>) – The <cite>Application</cite> object to be added.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">add_device</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="modules/resource.html#modules.resource.Device.Device" title="modules.resource.Device.Device"><span class="pre">Device</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span></dt>
+<dd><p>Adds a new <cite>Device</cite> to the devices list.</p>
+<p>The id_to_device dictionary is updated along the way. We use a trick so that dictionary members are either a single device or a list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>device</strong> (<a class="reference internal" href="modules/resource.html#modules.resource.Device.Device" title="modules.resource.Device.Device"><em>Device</em></a>) – The <cite>Device</cite> object to be added.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">applications</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="modules/resource.html#modules.resource.Application.Application" title="modules.resource.Application.Application"><span class="pre">Application</span></a><span class="p"><span class="pre">]</span></span></em></dt>
+<dd><p>Get the list of Application objects in the environment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The list of Application objects representing network applications.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>List[<a class="reference internal" href="modules/resource.html#modules.resource.Application.Application" title="modules.resource.Application.Application">Application</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Config</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em></dt>
+<dd><p>Get the Config object for the environment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The Config object, or None if not set.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Optional[Config]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">devices</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="modules/resource.html#modules.resource.Device.Device" title="modules.resource.Device.Device"><span class="pre">Device</span></a><span class="p"><span class="pre">]</span></span></em></dt>
+<dd><p>Get the list of Device objects in the environment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The list of Device objects representing network devices.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>List[<a class="reference internal" href="modules/resource.html#modules.resource.Device.Device" title="modules.resource.Device.Device">Device</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">export_applications</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'applications.json'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span></dt>
+<dd><p>Export the applications list to a JSON file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> (<em>str</em>) – The name of the file to export the applications list to.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">export_devices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'devices.json'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span></dt>
+<dd><p>Export the devices list to a JSON file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> (<em>str</em>) – The name of the file to export the devices list to.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">extract_currently_deployed_apps_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">resources</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['cpu',</span> <span class="pre">'gpu',</span> <span class="pre">'mem',</span> <span class="pre">'disk']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'apps_data.json'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span></span></span></dt>
+<dd><p>Extracts the currently deployed applications data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>resources</strong> (<em>list</em>) – The list of resources to extract.</p></li>
+<li><p><strong>filename</strong> (<em>str</em>) – The filename to save the extracted data to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The list of dictionaries containing the currently deployed applications data.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[Dict]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">extract_decision_weights</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span></dt>
+<dd><p>Extracts the decision weights of the devices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A dictionary with the decision weights of the devices.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">extract_devices_resources</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">resources</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['cpu',</span> <span class="pre">'gpu',</span> <span class="pre">'mem',</span> <span class="pre">'disk']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'devices_data.json'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span></dt>
+<dd><p>Extract the resources of the devices and return as a dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>resources</strong> (<em>list</em>) – The list of resources to extract.</p></li>
+<li><p><strong>filename</strong> (<em>str</em>) – The filename to save the extracted data to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The dictionary of extracted resources.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">extract_values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span></dt>
+<dd><p>Extracts and processes various values from the environment.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">generate_application_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span></dt>
+<dd><p>Generates a list of <cite>Application</cite> objects and appends them to <cite>self.applications</cite>.</p>
+<p>The number of applications to be generated is retrieved from <cite>self.config.number_of_applications</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – If the config is not initialized.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">generate_device_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span></dt>
+<dd><p>Generates the list of devices from the configuration file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – If Config is not initialized.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">generate_other_routing_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k_param</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span></dt>
+<dd><p>Generates a routing table on each device in <cite>self.devices</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>k_param</strong> (<em>int</em>) – The k parameter for the routing table algorithm.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">generate_routing_table</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span></dt>
+<dd><p>Generates a routing table on each device in <cite>self.devices</cite>.</p>
+<p>The function first lists the neighboring device, then iterate on the list to build a routing table based on shortest distance among links.
+This is brute forcing the shortest path between devices, we can probably create a better algorithm, but this is not the point for now.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">get_application_by_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="modules/resource.html#modules.resource.Application.Application" title="modules.resource.Application.Application"><span class="pre">Application</span></a></span></span></dt>
+<dd><p>Gets the <cite>Application</cite> whose ID matches <cite>app_id</cite>.</p>
+<p><cite>Application</cite> IDs are supposed to be unique by construction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>app_id</strong> (<em>int</em>) – Application identifier.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The Application object with the matching ID.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="modules/resource.html#modules.resource.Application.Application" title="modules.resource.Application.Application">Application</a></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ApplicationNotFoundError</strong> – If no application is found.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">get_device_by_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dev_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="modules/resource.html#modules.resource.Device.Device" title="modules.resource.Device.Device"><span class="pre">Device</span></a></span></span></dt>
+<dd><p>Gets the <cite>Device</cite> whose ID matches <cite>dev_id</cite>.</p>
+<p><cite>Device</cite> IDs are supposed to be unique by construction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dev_id</strong> (<em>int</em>) – Device identifier.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The device with the matching ID.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="modules/resource.html#modules.resource.Device.Device" title="modules.resource.Device.Device">Device</a></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>DeviceNotFoundError</strong> – If no device is found.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">get_random_device</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="modules/resource.html#modules.resource.Device.Device" title="modules.resource.Device.Device"><span class="pre">Device</span></a></span></span></dt>
+<dd><p>Get a random <cite>Device</cite> from the list of devices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A random <cite>Device</cite> object.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="modules/resource.html#modules.resource.Device.Device" title="modules.resource.Device.Device">Device</a></p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>DeviceNotFoundError</strong> – If no devices are available.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">import_applications</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span></dt>
+<dd><p>Import the applications list from a configuration file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ValueError</strong> – If the config is not initialized.</p></li>
+<li><p><strong>ImportError</strong> – If no application list to process.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">import_devices</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span></dt>
+<dd><p>Import the devices list from a configuration file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ValueError</strong> – If the config is not initialized.</p></li>
+<li><p><strong>ImportError</strong> – If no device list to process.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">import_links</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span></dt>
+<dd><p>Import the physical network links from the configuration file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – If the config is not initialized.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">import_ospf_routing_table</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span></dt>
+<dd><p>Import the OSPF routing table from a configuration file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ValueError</strong> – If the config is not initialized.</p></li>
+<li><p><strong>ImportError</strong> – If no device list to process.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">import_results</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span></dt>
+<dd><p>Imports the results from the results file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ValueError</strong> – If the config is not initialized.</p></li>
+<li><p><strong>NotImplementedError</strong> – If device processing is not implemented.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">plot_device_network</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span></dt>
+<dd><p>Plot the network of devices.</p>
+<p>Creates a graph of the network and plots it using networkx and matplotlib.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">process_closeness_centrality</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span></dt>
+<dd><p>Processes the closeness centrality for the physical network and updates devices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A dictionary mapping device IDs to their computed closeness centrality values.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dict[int, float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">remove_application</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">application</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="modules/resource.html#modules.resource.Application.Application" title="modules.resource.Application.Application"><span class="pre">Application</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span></dt>
+<dd><p>Removes an <cite>Application</cite> from the applications list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>application</strong> (<a class="reference internal" href="modules/resource.html#modules.resource.Application.Application" title="modules.resource.Application.Application"><em>Application</em></a>) – The <cite>Application</cite> object to be removed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">remove_device</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="modules/resource.html#modules.resource.Device.Device" title="modules.resource.Device.Device"><span class="pre">Device</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span></dt>
+<dd><p>Removes a <cite>Device</cite> from the devices list</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>device</strong> (<a class="reference internal" href="modules/resource.html#modules.resource.Device.Device" title="modules.resource.Device.Device"><em>Device</em></a>) – The <cite>Device</cite> object to be added.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">set_data_max</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span></dt>
+<dd><p>Set maximum values for each resource in the data object.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="modules-eventqueue-module">
+<h2>modules.EventQueue module<a class="headerlink" href="#modules-eventqueue-module" title="Link to this heading">¶</a></h2>
+<p>EventQueue Module</p>
+<p>This module provides the EventQueue class for managing events in a priority queue.
+The events are stored based on their priority (time), and the queue supports adding,
+popping, checking for emptiness, and exporting to JSON.</p>
+<dl class="simple">
+<dt>Classes:</dt><dd><p>EventQueue: Manages a priority queue of events.</p>
+</dd>
+<dt>Usage Example:</dt><dd><p>queue = EventQueue(env)
+queue.put(event)
+event = queue.pop()</p>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.EventQueue.</span></span><span class="sig-name descname"><span class="pre">EventQueue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Manages a priority queue of events.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>env</strong> (<em>Any</em>) – The simulation environment or any relevant context for the events.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">export</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'placement.json'</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Exports the events in the queue to a JSON file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> (<em>str</em>) – The name of the file to export the events to. Default is “placement.json”.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">get_next_batch</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>Retrieves the next ‘BatchProcessing’ ‘Event’ in the queue without modifying the queue.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The next ‘BatchProcessing’ ‘Event’ if available, otherwise None.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="modules/events.html#modules.events.Event.Event" title="modules.events.Event.Event">Event</a> or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">is_empty</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>Checks if the queue is empty.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if the queue is empty, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">pop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>Pops an event from the queue based on priority (time).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The event with the highest priority (earliest time).</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Any</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">put</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Adds an event to the queue.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>Any</em>) – The event to be added to the queue. It should have a ‘time’ attribute.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="modules-resourcemanagement-module">
+<h2>modules.ResourceManagement module<a class="headerlink" href="#modules-resourcemanagement-module" title="Link to this heading">¶</a></h2>
+<p>ResourceManagement Module</p>
+<p>This module provides utility functions for managing resources in a simulated environment.
+It includes functions for calculating the resource fit and custom distance for devices.</p>
+<dl class="simple">
+<dt>Functions:</dt><dd><p>fit_resource(new_value, limit_value): Calculates the fit resource value.
+custom_distance(A, B): Calculates a custom distance metric between two sets of coordinates.</p>
+</dd>
+<dt>Usage Example:</dt><dd><p>fit = fit_resource(new_value, limit_value)
+distance = custom_distance(A, B)</p>
+</dd>
+</dl>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">modules.ResourceManagement.</span></span><span class="sig-name descname"><span class="pre">custom_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Defines a custom distance for device wireless coverage to account for less coverage due to floor interception.</p>
+<p>If A and B are not of the same size, distance is calculated among the first values up to min(len(A), len(B)).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>A</strong> (<em>list</em>) – List of coordinates for point A.</p></li>
+<li><p><strong>B</strong> (<em>list</em>) – List of coordinates for point B.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Distance (as coverage) between A and B.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">modules.ResourceManagement.</span></span><span class="sig-name descname"><span class="pre">fit_resource</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit_value</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Calculates the fit resource value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>new_value</strong> (<em>float</em>) – The new value to fit.</p></li>
+<li><p><strong>limit_value</strong> (<em>float</em>) – The limiting value.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The fit resource value.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="modules-simulation-module">
+<h2>modules.Simulation module<a class="headerlink" href="#modules-simulation-module" title="Link to this heading">¶</a></h2>
+<p>Simulation Module</p>
+<p>This module provides the Simulation class for managing the simulation process.
+It handles the initialization, event processing, and final reporting of the simulation.
+The simulation involves generating applications, placing them on devices, and recording
+the results.</p>
+<dl class="simple">
+<dt>Classes:</dt><dd><p>Simulation: Manages the simulation process.</p>
+</dd>
+<dt>Usage Example:</dt><dd><p>env = Environment(config)
+simulation = Simulation(env)
+simulation.init_simulation() # Optional
+simulation.simulate()</p>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.Simulation.</span></span><span class="sig-name descname"><span class="pre">Simulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Simulation class to manage the simulation process.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>env</strong> (<em>Environment</em>) – The simulation environment.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">bulk_import_queue_items</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>Bulk imports queue items from a JSON file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">full_state_simulate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>Alternate loop of the simulation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">import_queue_items</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>Imports queue items from a JSON file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">init_simulation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>Initializes the simulation by generating arrival times and events.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">simulate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>Main loop of the simulation.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="modules-visualization-module">
+<h2>modules.Visualization module<a class="headerlink" href="#modules-visualization-module" title="Link to this heading">¶</a></h2>
+<p>Visualization Module</p>
+<p>This module provides the Visualizer class for generating visualizations of the simulation results.
+It includes methods for plotting resource usage over time, application deployments, and final results.</p>
+<dl class="simple">
+<dt>Classes:</dt><dd><p>Visualizer: Handles the visualization of simulation data.</p>
+</dd>
+<dt>Usage Example:</dt><dd><p>visualizer = Visualizer()
+visualizer.visualize_environment(env)
+visualizer.apps_visualiser(env)</p>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modules.Visualization.</span></span><span class="sig-name descname"><span class="pre">Visualizer</span></span></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">apps_visualiser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Environment</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Visualizes the accepted applications over time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>env</strong> (<em>Environment</em>) – The simulation environment.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">final_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Environment</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Generates the final results of the simulation, including CPU, GPU, memory, and disk usage over time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>env</strong> (<em>Environment</em>) – The simulation environment.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">other_final_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Environment</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Generates additional final results of the simulation, including resource usage for all devices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>env</strong> (<em>Environment</em>) – The simulation environment.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">plot_resource_and_application_counts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Environment</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Plots resource usage and application counts over time from a CSV file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>env</strong> (<em>Environment</em>) – The simulation environment.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">visualize_environment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Environment</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Visualizes the environment including deployed applications and failed deployments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>env</strong> (<em>Environment</em>) – The simulation environment.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-contents">
+<h2>Module contents<a class="headerlink" href="#module-contents" title="Link to this heading">¶</a></h2>
+</section>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules/clustering.html">Clustering</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/clustering.html#modules-clustering-clustergeneration-module">modules.clustering.ClusterGeneration module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/clustering.html#module-modules.clustering">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules/events.html">Events</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/events.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/events.html#module-modules.events.DeployProc">modules.events.DeployProc module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/events.html#module-modules.events.Event">modules.events.Event module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/events.html#module-modules.events.FinalReport">modules.events.FinalReport module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/events.html#module-modules.events.Fit">modules.events.Fit module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/events.html#module-modules.events.Move">modules.events.Move module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/events.html#module-modules.events.Organize">modules.events.Organize module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/events.html#module-modules.events.Placement">modules.events.Placement module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/events.html#module-modules.events.RegularCheck">modules.events.RegularCheck module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/events.html#module-modules.events.Sync">modules.events.Sync module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/events.html#module-modules.events.Undeploy">modules.events.Undeploy module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/events.html#module-modules.events">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules/fullstateprocessing.html">Full State Processing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/fullstateprocessing.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/fullstateprocessing.html#module-modules.fullstateprocessing.FullStateProcessing">modules.fullstateprocessing.FullStateProcessing module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/fullstateprocessing.html#module-modules.fullstateprocessing">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules/processing.html">Processing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/processing.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/processing.html#modules-processing-simpledistanceplacement-module">modules.processing.SimpleDistancePlacement module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/processing.html#module-modules.processing">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules/resource.html">Resource</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/resource.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/resource.html#module-modules.resource.Application">modules.resource.Application module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/resource.html#module-modules.resource.Device">modules.resource.Device module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/resource.html#module-modules.resource.LinkMetric">modules.resource.LinkMetric module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/resource.html#module-modules.resource.Path">modules.resource.Path module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/resource.html#module-modules.resource.PhysicalNetwork">modules.resource.PhysicalNetwork module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/resource.html#module-modules.resource.PhysicalNetworkLink">modules.resource.PhysicalNetworkLink module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/resource.html#module-modules.resource.Processus">modules.resource.Processus module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/resource.html#module-modules.resource">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules/routing.html">Routing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/routing.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/routing.html#module-modules.routing.OSPFRoutingTable">modules.routing.OSPFRoutingTable module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/routing.html#module-modules.routing.Route">modules.routing.Route module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/routing.html#module-modules.routing.RoutingTable">modules.routing.RoutingTable module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/routing.html#module-modules.routing.utils">modules.routing.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/routing.html#module-modules.routing">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules/templates.html">Templates</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/templates.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/templates.html#module-modules.templates.Applications">modules.templates.Applications module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/templates.html#module-modules.templates">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">modules package</a><ul>
+<li><a class="reference internal" href="#modules-config-module">modules.Config module</a></li>
+<li><a class="reference internal" href="#modules-customexceptions-module">modules.CustomExceptions module</a></li>
+<li><a class="reference internal" href="#modules-environment-module">modules.Environment module</a></li>
+<li><a class="reference internal" href="#modules-eventqueue-module">modules.EventQueue module</a></li>
+<li><a class="reference internal" href="#modules-resourcemanagement-module">modules.ResourceManagement module</a></li>
+<li><a class="reference internal" href="#modules-simulation-module">modules.Simulation module</a></li>
+<li><a class="reference internal" href="#modules-visualization-module">modules.Visualization module</a></li>
+<li><a class="reference internal" href="#module-contents">Module contents</a></li>
+<li><a class="reference internal" href="#subpackages">Subpackages</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="Visualizer.html"
+                          title="previous chapter">Visualizer</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="modules/clustering.html"
+                          title="next chapter">Clustering</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/modules.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="modules/clustering.html" title="Clustering"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="Visualizer.html" title="Visualizer"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Humanitas Network and Services Simulator v0.5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">modules package</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2024, Antoine BERNARD.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
+    </div>
+  </body>
+</html>
