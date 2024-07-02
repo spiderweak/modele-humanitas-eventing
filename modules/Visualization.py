@@ -246,6 +246,7 @@ class Visualizer():
         :param env: The simulation environment.
         :type env: Environment
         """
+
         # Loading data
         df = env.data.data
         df.index = df.index / (8640000 / 24)  # Convert time index to hours
@@ -268,8 +269,8 @@ class Visualizer():
         ax2.plot(df.index, df['currently_hosted_procs'], label='Hosted App Components', color='orange', linestyle='dotted')
         ax2.plot(df.index, df['app_in_waiting'], label='Apps in waiting', color='yellow', linestyle='dashed')
         ax2.set_ylabel('Cumulative Counts')
-        ax2.legend(loc='upper left', bbox_to_anchor=(0, 0.9))
-        ax2.set_ylim([0, env.config.number_of_applications/10])
+        ax2.legend(loc='upper left', bbox_to_anchor=(0, 0.85))
+        ax2.set_ylim([0, int(len(env.applications)/10)])
         
         ax3 = ax1.twinx()
         ax3.spines['right'].set_position(('outward', 60))  # Offset the third y-axis
@@ -278,17 +279,17 @@ class Visualizer():
         ax3.plot(df.index, df['cumulative_app_accepted'], label='App Accepted (cumulative)', color='green', linestyle='dashed')
         ax3.plot(df.index, df['cumulative_app_rejected'], label='App Refused (cumulative)', color='red', linestyle='dashed')
         ax3.set_ylabel('Cumulative Apps (Straight lines)')
-        ax3.set_ylim([0, env.config.number_of_applications])
+        ax3.set_ylim([0, len(env.applications)])
         ax3.legend(loc='upper right', bbox_to_anchor=(1.0, 1.0))
 
-        ax1.set_xticks(range(0, 25, 1))
-        ax1.set_xticklabels([f'{i}' for i in range(0, 25)])
+        ax1.set_xticks(range(0, int(df.index.max()/ (8640000 / 24)), 1))
+        ax1.set_xticklabels([f'{i}' for i in range(0, int(df.index.max()/ (8640000 / 24)))])
 
         # Set plot title
         plt.title('Resource Usage and Application Counts Over Time')
 
         # Adjust layout
-        plt.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.1)
+        plt.subplots_adjust(left=0.1, right=0.85, top=0.9, bottom=0.1)
 
         file_path = os.path.join(env.config.output_folder, "global_output.png")
         plt.savefig(file_path)
@@ -301,11 +302,12 @@ class Visualizer():
         ax1.set_yticks(range(0, 101, 10))
         ax1.set_yticklabels([f'{i}' for i in range(0, 101, 10)])
 
-        ax1.set_xticks(range(0, 25, 2))
-        ax1.set_xticklabels([f'{i}' for i in range(0, 25, 2)])
+        ax1.set_xticks(range(0, int(df.index.max()/ (8640000 / 24)), 2))
+        ax1.set_xticklabels([f'{i}' for i in range(0, int(df.index.max()/ (8640000 / 24)), 2)])
 
         # Set plot title
         plt.title('Average Acceptance Ratio Over Time')
         file_path = os.path.join(env.config.output_folder, "acceptance.png")
         plt.savefig(file_path)
 
+        df.to_csv(os.path.join(env.config.output_folder, "counts_df.csv"))
