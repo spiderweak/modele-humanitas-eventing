@@ -92,7 +92,7 @@ class Placement(Event):
             raise ValueError("Configuration not set")
 
         if env.config.dry_run:
-            self.application_to_place.set_deployment_info([]) # This will break the dry_run option
+            self.application_to_place.set_deployment_info([])
             env.currently_deployed_apps.append(self.application_to_place)
             Undeploy("Release", self.queue, self.application_to_place, event_time=int(self.time+self.application_to_place.duration)).add_to_queue()
             return [], []
