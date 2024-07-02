@@ -1,3 +1,5 @@
+
+import time
 import logging
 
 from modules.Environment import Environment
@@ -10,6 +12,9 @@ from modules.resource.Path import Path
 from modules.events.Event import Event
 from modules.events.Undeploy import Undeploy
 from modules.events.DeployProc import DeployProc
+
+from modules.processing.OptimalNodeMapping import O_N_M
+from modules.processing.OptimalLinkMapping import O_L_M
 
 from modules.CustomExceptions import DeviceNotFoundError
 
@@ -47,11 +52,155 @@ class BatchProcessing(Event):
         logging.debug(f"Current Time : {placement_event.time}, added placement_event : {placement_event.application_to_place.id} on device {placement_event.deployment_starting_point}")
 
     def process(self, env):
+        self.new_process(env)
+
+    def new_process(self, env):
+        logging.debug(f"\n ######### \n Batch Processing \n Time : {self.time} \n")
+        logging.debug(f"self.stack is {[item.application_to_place.id for item in self.stack]}")
+
+        num_dev = len(env.devices)
+        logging.debug("num_dev ", num_dev)
+        comp_app = [item.application_to_place.num_procs for item in self.stack]
+        logging.debug("comp_app ", comp_app)
+        num_comp = sum(comp_app)
+        logging.debug("num_comp ", num_comp)
+        num_app = len(self.stack)
+        logging.debug("num_app ", num_app)
+        dim = len(env.get_random_device().position)
+        logging.debug("dim ", dim)
+        num_resource = len(env.get_random_device().resource_limit)
+        logging.debug("num_resource ", num_resource)
+
+        pos_app = np.transpose(np.array([list(env.get_device_by_id(item.deployment_starting_point).position.values()) for item in self.stack]))
+        logging.debug("pos_app", pos_app)
+
+        pos_dev = np.transpose(np.array([list(device.position.values()) for device in env.devices]))
+        logging.debug("pos_dev", pos_dev)
+
+        pos_comp=np.array([[0 for col in range(num_comp)] for row in range(dim)], dtype=float)     #Position of all Comps of all Apps in 2D (m)
+        c: int=0              #Counter used in iteration
+        for i in range(num_app):
+            for j in range(comp_app[i]):
+                pos_comp[:,c+j]=pos_app[:,i]
+            c = c + comp_app[i]
+        logging.debug("pos_comp", pos_comp)
+
+        cap_dev_nod = np.array([np.array(list(device.resource_limit.values())) - np.array(list(device.current_resource_usage.values())) for device in env.devices])
+        logging.debug("cap_dev_nod", cap_dev_nod)
+
+        cap_comp_nod = np.array([list(processus.resource_request.values()) for item in self.stack for processus in item.application_to_place.processus_list])
+        logging.debug("cap_comp_nod", cap_comp_nod)
+
+        app_dev_mxd = env.config.wifi_range
+        logging.debug("app_dev_mxd", app_dev_mxd)
+
+
+        cap_comp_lnk = np.array([[0 for col in range(num_comp)] for row in range(num_comp)], dtype=float)
+
+        c: int=0              #Counter used in iteration
+        for index, item in enumerate(self.stack):
+            for i in range(comp_app[index]):
+                for j in range(comp_app[index]):
+                    cap_comp_lnk[c + i, c + j] = item.application_to_place.proc_links[i, j]
+            c += comp_app[index]
+
+        # Only tested on small range, might need to double check the index by hand
+        logging.debug("cap_comp_lnk", cap_comp_lnk)
+
+        cap_dev_lnk = env.physical_network.extract_available_bandwidth_matrix()
+        cap_dev_lnk = np.where(np.isinf(cap_dev_lnk), 10000, cap_dev_lnk)
+        logging.debug("cap_dev_lnk", cap_dev_lnk)
+        # Same, untested, using previous placholder implementation for this specific case but should work out of the box
+
+        LAPL=np.diag(np.transpose(np.dot(cap_comp_lnk, np.ones((num_comp, 1))))[0])-cap_comp_lnk
+
+        start_time = time.time()
+
+        comp_dev_asg, ZE = O_N_M(env, num_dev, num_comp, num_app, num_resource, pos_app, comp_app, pos_dev, cap_comp_nod, cap_dev_nod, cap_dev_lnk, app_dev_mxd, dim, LAPL)
+
+        end_time = time.time()
+        elapsed_time = end_time - start_time
+
+        print(f"O_N_M Elapsed time: {elapsed_time:.2f} seconds")
+
+
+        start_time = time.time()
+
+        hop_max = 3
+        cst_max = 40
+        f_max = max(max(cap_dev_lnk, key=max))                                                      #Upper bound on throughput of PHY-NET links
+
+
+        yy_sol, zz_sol, ff_sol, ALL_PA, MFFM, fil_MF, MF, num_app2, numlnk, Cnumlnk = O_L_M(env, num_dev, num_app, pos_app, \
+                                                                                    comp_app, pos_dev, cap_comp_lnk, cap_dev_lnk, comp_dev_asg, hop_max, cst_max, f_max, ZE)
+
+        end_time = time.time()
+        elapsed_time = end_time - start_time
+        print(f"O_L_M Elapsed time: {elapsed_time:.2f} seconds")
+
+
+        OLM_RES1 = {s:[] for s in range(num_app2)}
+        # OLM_RES2 = {s:[] for s in range(num_app2)}
+        OLM_RES2 = {s:[] for s in range(len(MFFM))}
+        FRR ={s:[] for s in range(num_app2)}
+        
+
+        ct =0
+        ONM_RES={i:[] for i in range(num_app)}
+        ONM_TEX={i:[] for i in range(num_app)}
+        for s, item in enumerate(self.stack):
+            b=0
+            bb=[]
+            for u in range(ZE[s], ZE[s+1]):
+                for i in range(num_dev):
+                    if comp_dev_asg[i][u]==1:
+                        b += 1
+                        bb.append(i)
+            ONM_RES[s]=bb
+            if b == comp_app[s]:
+                ct += 1
+                logging.debug(f"{comp_app[s]} Comp(s) of App {s} are deployed on Dev(s) {bb} in O-N-M step (Partial-S)")
+
+                for deployment_index in range(len(bb)):
+                    DeployProc("Deployment Proc", self.queue, item.application_to_place, bb, {None: None}, deployment_index, event_time=int((self.time+10)/10)*10, last=(deployment_index+1==len(bb))).add_to_queue()
+
+                ONM_TEX[s]=str(comp_app[s])+" Comp(s) of App "+str(s)+" are deployed on Dev(s) "+str(bb)+" in O-N-M step (Partial-S)"
+
+                ## FYI, debug, TODO remove this
+                if item.tentatives != 1:
+                    logging.debug(f"App {item.application_to_place.id} was finally accepted after {item.tentatives} tentatives")
+            else:
+                logging.debug(f"App {s} with {comp_app[s]} Comps failed in O-N-M step (Total-F)")
+                ONM_TEX[s]=str(comp_app[s])+" Comp(s) of App "+str(s)+" failed to be deployed in O-N-M step (Total-F)"
+
+                # Backoff handling
+
+                if item.tentatives >= 15:
+                    self.update_app_rejected(env)
+                    self.update_app_waiting(env, -1)
+                    logging.debug(f"App {item.application_to_place.id} was rejected after 15 failures")
+                else:
+                    item.tentatives +=1
+                    self.next_batch.add_to_batch(item)
+
+
+        oo=0
+        for s in range(num_app2):
+            if zz_sol[s][0]==0:
+                FRR[s]= "App "+str(self.stack[fil_MF[s][0][0]].application_to_place.id)+" fails to pass O-L-M (Total-F)"
+                OLM_RES1[s] = "App "+str(self.stack[fil_MF[s][0][0]].application_to_place.id)+" fails to pass O-L-M (Total-F)"
+                print(f"App {str(self.stack[fil_MF[s][0][0]].application_to_place.id)} fails to pass O-L-M (Total-F)")
+                for i in range(len(fil_MF[s])):
+                    OLM_RES2[i+Cnumlnk[s]]=""
+
+        logging.debug(f"{ct} of {num_app} Apps successfully passed O-N-M step with Acceptance Ratio(%) of O-N-M= {round(ct/num_app*100, 2)}")
+        self.update_app_waiting(env, -ct)
+
+    def old_process(self, env):
         logging.debug(f"\n ######### \n Batch Processing \n Time : {self.time} \n")
         logging.debug(f"self.stack is {[item.application_to_place.id for item in self.stack]}")
 
         prob = gp.Model(env=env.math_env)
-
 
         num_dev = len(env.devices)
         logging.debug("num_dev ", num_dev)
@@ -180,7 +329,6 @@ class BatchProcessing(Event):
         ####################### PRINT RESULTS
 
         comp_dev_asg=np.array([[0 for col in range(num_comp)] for row in range(num_dev)], dtype=float)
-        app_dev_asg=np.array([[0 for col in range(num_app)] for row in range(num_dev)], dtype=float)
         for i in range(num_dev):
             for u in range(num_comp):
                 if x[u, i].X == 1.0:
@@ -203,13 +351,10 @@ class BatchProcessing(Event):
                 logging.debug(f"{comp_app[s]} Comp(s) of App {s} are deployed on Dev(s) {bb} in O-N-M step (Partial-S)")
 
                 for deployment_index in range(len(bb)):
-                    DeployProc("Deployment Proc", self.queue, item.application_to_place, bb, {None: None}, deployment_index, event_time=int((self.time+10)/10)*10, last=(deployment_index+1==len(bb))).add_to_queue()
+                    DeployProc("Deployment Proc", self.queue, item.application_to_place, bb, {None: None}, deployment_index, event_time=int((self.time+10*ct)/10)*10, last=(deployment_index+1==len(bb))).add_to_queue()
 
                 ONM_TEX[s]=str(comp_app[s])+" Comp(s) of App "+str(s)+" are deployed on Dev(s) "+str(bb)+" in O-N-M step (Partial-S)"
-                if len(bb)>0:
-                    for j in range(len(bb)):
-                        app_dev_asg[bb[j]][s]+=1
-                
+
                 ## FYI, debug, TODO remove this
                 if item.tentatives != 1:
                     logging.debug(f"App {item.application_to_place.id} was finally accepted after {item.tentatives} tentatives")
